@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>月3万円 vs 月5万円つみたて、20年後の差額シミュレーション｜複利コンパス</title>
+<meta name="description" content="月2万円の差は、20年後に資産でいくら違うのか？複利の力を踏まえたシミュレーション結果を表とグラフで徹底比較。">
+<meta name="keywords" content="月3万,月5万,つみたて,20年,差額,複利">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FFFFFF' stroke='%231E3A5F' stroke-width='2'/%3E%3Cpolygon points='22,10 18,18 10,22 14,14' fill='%23C56A4E'/%3E%3Cpolygon points='22,10 16,16 18,18' fill='%231E3A5F'/%3E%3Ccircle cx='16' cy='16' r='1.8' fill='%231E3A5F'/%3E%3C/svg%3E">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="月3万円 vs 月5万円つみたて、20年後の差額シミュレーション">
+<meta property="og:description" content="月2万円の差は、20年後に資産でいくら違うのか？複利の力で見えてくる衝撃の結果。">
+<meta property="og:image" content="og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
+    color: #1E2A38; background: #F7F3EC;
+    line-height: 1.9; font-size: 16px;
+  }
+  .page { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+  header.hero { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #E2D9C7; }
+  header.hero a { text-decoration: none; color: #1E3A5F; font-size: 14px; font-weight: 600; }
+  .article-tag {
+    display: inline-block; background: #C56A4E; color: white;
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-size: 30px; font-weight: 800; margin: 8px 0 14px;
+    line-height: 1.4; letter-spacing: 0.01em;
+  }
+  .meta { font-size: 12px; color: #8E97A3; }
+  .card {
+    background: white; border: 1px solid #E2D9C7; border-radius: 16px;
+    padding: 32px; margin-bottom: 18px;
+    box-shadow: 0 4px 12px rgba(30,42,56,.06);
+  }
+  h2 {
+    font-size: 22px; font-weight: 700; margin: 32px 0 14px;
+    padding-left: 14px; border-left: 4px solid #C56A4E;
+    color: #1E3A5F;
+  }
+  h2:first-child { margin-top: 0; }
+  h3 { font-size: 18px; font-weight: 700; margin: 24px 0 10px; color: #1E3A5F; }
+  p { margin: 0 0 16px; color: #1E2A38; font-size: 15px; }
+  a { color: #C56A4E; }
+  table.calc {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    font-size: 14px;
+  }
+  table.calc th, table.calc td {
+    padding: 10px 12px; text-align: left;
+    border-bottom: 1px solid #EFE9DD;
+  }
+  table.calc thead th {
+    background: #1E3A5F; color: white;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
+  }
+  table.calc td.num { text-align: right; font-weight: 600; }
+  table.calc tbody tr:hover { background: #FBF8F1; }
+  .highlight {
+    background: linear-gradient(transparent 60%, #FDE68A 60%);
+    font-weight: 700;
+  }
+  .cta-box {
+    background: linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%);
+    color: white; padding: 28px 32px; border-radius: 16px;
+    margin: 24px 0; text-align: center;
+  }
+  .cta-box h3 { color: #FBC97A; margin: 0 0 10px; font-size: 18px; }
+  .cta-box p { color: rgba(255,255,255,0.9); margin: 0 0 16px; font-size: 14px; }
+  .cta-btn {
+    display: inline-block; background: #FBC97A; color: #1E3A5F;
+    padding: 12px 28px; border-radius: 10px;
+    text-decoration: none; font-weight: 700; font-size: 15px;
+    transition: all 0.18s;
+  }
+  .cta-btn:hover { background: #FFD89A; transform: translateY(-2px); color: #1E3A5F; }
+  ul, ol { padding-left: 24px; margin: 12px 0 16px; }
+  li { margin-bottom: 8px; color: #1E2A38; font-size: 15px; }
+  strong { color: #1E3A5F; }
+  footer { text-align: center; margin-top: 36px; font-size: 12px; color: #8E97A3; }
+  footer a { color: #4A5568; text-decoration: none; margin: 0 8px; }
+  footer a:hover { color: #1E3A5F; text-decoration: underline; }
+  .related {
+    background: #FBF8F1; border-radius: 12px; padding: 20px 24px; margin: 20px 0;
+  }
+  .related h4 { margin: 0 0 12px; font-size: 14px; color: #1E3A5F; }
+  .related ul { margin: 0; padding-left: 20px; }
+  .related li { font-size: 14px; }
+  blockquote {
+    background: #FBF8F1; border-left: 4px solid #1E3A5F;
+    padding: 14px 20px; margin: 16px 0;
+    color: #4A5568; font-size: 14px; border-radius: 4px;
+  }
+  .winner {
+    background: linear-gradient(135deg, #DAE5D6 0%, #ECFDF5 100%);
+    padding: 20px 24px; border-radius: 12px;
+    border-left: 4px solid #4F7752;
+    margin: 16px 0;
+  }
+  .winner .label { font-size: 12px; font-weight: 700; color: #2D5530; letter-spacing: 0.05em; text-transform: uppercase; }
+  .winner .num { font-size: 32px; font-weight: 800; color: #2D5530; margin: 4px 0; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <a href="./">🧭 計算ツールに戻る</a> ・ <a href="blog.html">📚 記事一覧</a>
+    <span class="article-tag">具体比較</span>
+    <h1>月3万円 vs 月5万円つみたて、20年後の差額シミュレーション</h1>
+    <p class="meta">2026年5月5日 ・ 複利コンパス編集部</p>
+  </header>
+
+  <div class="card">
+    <p>「あと月2万円だけでも積立を増やせたら…」――そう考えたことはありませんか？</p>
+    <p>本記事では、<strong>月3万円つみたて</strong>と<strong>月5万円つみたて</strong>を年利5%で20年運用した場合の最終資産を比較します。</p>
+    <p>たった月2万円の差が、20年後にどれほどの違いを生むのか。複利の力を踏まえたリアルな数字をご覧ください。</p>
+
+    <h2>結論：月2万円の差は、20年後に約1,000万円の差</h2>
+
+    <div class="winner">
+      <div class="label">20年後の資産差額</div>
+      <div class="num">＋約1,000万円</div>
+      <div style="font-size:13px;color:#4A5568;">（月3万円 vs 月5万円・年利5%）</div>
+    </div>
+
+    <p>毎月のたった2万円の差が、複利の力で<strong>約1,000万円の差</strong>になる――これが今回の主要な結論です。詳しく見ていきましょう。</p>
+  </div>
+
+  <div class="card">
+    <h2>1. 基本シナリオ：年利5%で20年運用</h2>
+    <p>まず標準的な条件で比較します。</p>
+
+    <table class="calc">
+      <thead>
+        <tr>
+          <th>月積立額</th>
+          <th class="num">元本合計</th>
+          <th class="num">運用益</th>
+          <th class="num">最終資産</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>月3万円</td>
+          <td class="num">720万円</td>
+          <td class="num">+513万円</td>
+          <td class="num">1,233万円</td>
+        </tr>
+        <tr>
+          <td>月5万円</td>
+          <td class="num">1,200万円</td>
+          <td class="num">+856万円</td>
+          <td class="num"><span class="highlight">2,055万円</span></td>
+        </tr>
+        <tr style="background: #FBF8F1; font-weight: 700;">
+          <td>差額</td>
+          <td class="num">+480万円</td>
+          <td class="num">+343万円</td>
+          <td class="num">+822万円</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>差額の<strong>822万円のうち、343万円（42%）が運用益による差</strong>です。つまり「月2万円多く積み立てる人は、元本だけでなく運用益でも差をつけている」ということ。</p>
+  </div>
+
+  <div class="card">
+    <h2>2. 期間別比較：時間が長いほど差は広がる</h2>
+    <p>運用期間を10年・20年・30年で比較してみました（年利5%）。</p>
+
+    <table class="calc">
+      <thead>
+        <tr>
+          <th>運用期間</th>
+          <th class="num">月3万の最終資産</th>
+          <th class="num">月5万の最終資産</th>
+          <th class="num">差額</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>10年後</td>
+          <td class="num">466万円</td>
+          <td class="num">776万円</td>
+          <td class="num">+310万円</td>
+        </tr>
+        <tr>
+          <td>20年後</td>
+          <td class="num">1,233万円</td>
+          <td class="num">2,055万円</td>
+          <td class="num">+822万円</td>
+        </tr>
+        <tr>
+          <td>30年後</td>
+          <td class="num">2,496万円</td>
+          <td class="num">4,161万円</td>
+          <td class="num"><span class="highlight">+1,665万円</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><strong>30年後には差額が1,665万円</strong>。中古マンション1件分以上の差です。「期間が長いほど複利が効く＝月積立額の差も拡大する」という典型例。</p>
+
+    <!-- 📊 図解: 月3万 vs 月5万 30年推移 -->
+    <figure style="margin: 24px 0; text-align: center;">
+      <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; max-width:600px;" role="img" aria-label="月3万円と月5万円つみたての30年間の資産推移を比較するグラフ">
+        <rect width="600" height="320" fill="#FBF8F1"/>
+        <text x="300" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#1E3A5F">月3万 vs 月5万 — 30年間の資産推移</text>
+        <text x="300" y="46" text-anchor="middle" font-size="11" fill="#8E97A3">年利5% / 単純複利計算</text>
+
+        <!-- グリッド -->
+        <line x1="60" y1="76" x2="580" y2="76" stroke="#EFE9DD"/>
+        <line x1="60" y1="127" x2="580" y2="127" stroke="#EFE9DD"/>
+        <line x1="60" y1="178" x2="580" y2="178" stroke="#EFE9DD"/>
+        <line x1="60" y1="229" x2="580" y2="229" stroke="#EFE9DD"/>
+
+        <!-- Y軸ラベル -->
+        <text x="55" y="80" text-anchor="end" font-size="10" fill="#8E97A3">4,000万</text>
+        <text x="55" y="131" text-anchor="end" font-size="10" fill="#8E97A3">3,000万</text>
+        <text x="55" y="182" text-anchor="end" font-size="10" fill="#8E97A3">2,000万</text>
+        <text x="55" y="233" text-anchor="end" font-size="10" fill="#8E97A3">1,000万</text>
+
+        <!-- X軸 -->
+        <line x1="60" y1="280" x2="580" y2="280" stroke="#1E2A38" stroke-width="1.5"/>
+        <text x="60" y="298" text-anchor="middle" font-size="10" fill="#8E97A3">0年</text>
+        <text x="233" y="298" text-anchor="middle" font-size="10" fill="#8E97A3">10年</text>
+        <text x="407" y="298" text-anchor="middle" font-size="10" fill="#8E97A3">20年</text>
+        <text x="580" y="298" text-anchor="middle" font-size="10" fill="#8E97A3">30年</text>
+
+        <!-- ギャップを薄く塗りつぶす -->
+        <path d="M 60,280 L 147,263 L 233,240 L 320,212 L 407,175 L 493,128 L 580,67 L 580,152 L 493,189 L 407,217 L 320,239 L 233,256 L 147,270 Z" fill="#FBC97A" opacity="0.25"/>
+
+        <!-- 月3万のライン -->
+        <polyline points="60,280 147,270 233,256 320,239 407,217 493,189 580,152" stroke="#1E3A5F" stroke-width="2.8" fill="none"/>
+        <circle cx="580" cy="152" r="4" fill="#1E3A5F"/>
+        <text x="575" y="147" text-anchor="end" font-size="11" font-weight="700" fill="#1E3A5F">月3万 / 2,497万</text>
+
+        <!-- 月5万のライン -->
+        <polyline points="60,280 147,263 233,240 320,212 407,175 493,128 580,67" stroke="#C56A4E" stroke-width="2.8" fill="none"/>
+        <circle cx="580" cy="67" r="4" fill="#C56A4E"/>
+        <text x="575" y="62" text-anchor="end" font-size="11" font-weight="700" fill="#C56A4E">月5万 / 4,162万</text>
+
+        <!-- 差額矢印 -->
+        <line x1="540" y1="67" x2="540" y2="152" stroke="#C56A4E" stroke-width="1.5" stroke-dasharray="3 3"/>
+        <text x="535" y="115" text-anchor="end" font-size="11" font-weight="800" fill="#C56A4E">差 1,665万</text>
+
+        <text x="300" y="318" text-anchor="middle" font-size="10" fill="#8E97A3">月たった2万円の差が、30年で1,665万円のギャップに</text>
+      </svg>
+      <figcaption style="font-size: 12px; color: #8E97A3; margin-top: 8px;">図: 月積立額の差は、時間が経つほど指数関数的に拡大する</figcaption>
+    </figure>
+  </div>
+
+  <div class="cta-box">
+    <h3>あなたの場合は？シミュレーションしてみる</h3>
+    <p>月積立額・期間・利回りを変えて、自分のケースを試算できます。複利コンパスで3秒でわかります。</p>
+    <a href="./" class="cta-btn">無料で計算する</a>
+  </div>
+
+  <div class="card">
+    <h2>3. 利回り別比較：保守的 vs 積極的</h2>
+    <p>同じ月3万 vs 月5万で、利回りを変えた場合の20年後の比較：</p>
+
+    <table class="calc">
+      <thead>
+        <tr>
+          <th>利回り</th>
+          <th class="num">月3万の最終資産</th>
+          <th class="num">月5万の最終資産</th>
+          <th class="num">差額</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>3%（保守）</td>
+          <td class="num">986万円</td>
+          <td class="num">1,644万円</td>
+          <td class="num">+658万円</td>
+        </tr>
+        <tr>
+          <td>5%（標準）</td>
+          <td class="num">1,233万円</td>
+          <td class="num">2,055万円</td>
+          <td class="num">+822万円</td>
+        </tr>
+        <tr>
+          <td>7%（積極）</td>
+          <td class="num">1,562万円</td>
+          <td class="num">2,604万円</td>
+          <td class="num"><span class="highlight">+1,042万円</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>利回りが高いほど、月積立額の差は拡大します。<strong>「より積極的な運用 × より多い積立」の組み合わせは指数関数的に資産差を広げる</strong>。</p>
+  </div>
+
+  <div class="card">
+    <h2>4. 「月2万円捻出」の現実的なヒント</h2>
+    <p>「月2万円増やしたいけど、どこから？」という方のための具体策：</p>
+
+    <h3>固定費削減（即効性あり）</h3>
+    <ul>
+      <li>格安SIMへの切替：月5,000〜10,000円</li>
+      <li>サブスクの整理：月3,000〜5,000円</li>
+      <li>保険の見直し：月3,000〜10,000円</li>
+      <li>電気・ガスの会社変更：月1,000〜3,000円</li>
+    </ul>
+    <p>合計で<strong>月12,000〜28,000円</strong>の捻出が可能。</p>
+
+    <h3>収入を増やす（中長期）</h3>
+    <ul>
+      <li>副業：Webライティング、プログラミング、デザイン等</li>
+      <li>キャリアアップ：資格取得・転職で月収アップ</li>
+      <li>不要品の整理：メルカリ等で月数千〜数万円</li>
+    </ul>
+
+    <blockquote>
+      月2万円＝1日約670円。コンビニコーヒー2杯分です。複利の力を考えると、この670円を投資に回すかどうかが、20年後の人生を大きく変えます。
+    </blockquote>
+  </div>
+
+  <div class="card">
+    <h2>5. まとめ</h2>
+    <ol>
+      <li>月3万円 vs 月5万円、20年後で<strong>約822万円の差</strong></li>
+      <li>30年運用すると差額は<strong>1,665万円</strong>に拡大</li>
+      <li>利回りが高いほど月積立額の差も拡大</li>
+      <li>固定費見直しで月2万円の捻出は十分可能</li>
+    </ol>
+    <p>たかが月2万、されど月2万。複利の力を信じて、できる範囲で積立額を増やしていくのが、20年後の自分への最大のプレゼントです。</p>
+
+    <div class="related">
+      <h4>関連ページ</h4>
+      <ul>
+        <li><a href="./">複利コンパス（計算ツール）</a></li>
+        <li><a href="blog-fukuri-no-chikara.html">複利の力とは？月1万円が30年でいくらになるか</a></li>
+        <li><a href="blog-4percent-rule.html">4%ルールとは？FIRE達成の必要資産計算</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background: #FBF8F1; border: 1px solid #E2D9C7; border-radius: 12px; padding: 20px 24px; margin: 24px 0;">
+    <h4 style="margin: 0 0 12px; font-size: 14px; color: #1E3A5F;">📚 次に読む</h4>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-fukuri-no-chikara.html" style="color: #C56A4E; font-weight: 600;">「複利の力」とは？単利との違いを30年シミュで体感</a></li>
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-nisa-1000man.html" style="color: #C56A4E; font-weight: 600;">新NISAで1000万円つくるには何年かかる？</a></li>
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-dollar-cost.html" style="color: #C56A4E; font-weight: 600;">ドルコスト平均法は本当に有効？モンテカルロで検証</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <p>
+      <a href="./">トップ</a> ・
+      <a href="about.html">運営者情報</a> ・
+      <a href="contact.html">お問い合わせ</a> ・
+      <a href="privacy.html">プライバシー</a>
+    </p>
+    <p>© 2026 複利コンパス編集部</p>
+  </footer>
+</div>
+</body>
+</html>

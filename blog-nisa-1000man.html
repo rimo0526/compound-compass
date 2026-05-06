@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新NISAで1000万円貯めるには何年かかる？月額別シミュレーション完全版｜複利コンパス</title>
+<meta name="description" content="新NISA枠を使って1000万円を貯めるのに必要な月額・期間・利回りを徹底シミュレーション。月3万円なら何年？月5万円なら？月10万円なら？すべて答えます。">
+<meta name="keywords" content="新NISA,1000万,つみたてNISA,シミュレーション,期間">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FFFFFF' stroke='%231E3A5F' stroke-width='2'/%3E%3Cpolygon points='22,10 18,18 10,22 14,14' fill='%23C56A4E'/%3E%3Cpolygon points='22,10 16,16 18,18' fill='%231E3A5F'/%3E%3Ccircle cx='16' cy='16' r='1.8' fill='%231E3A5F'/%3E%3C/svg%3E">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="新NISAで1000万円貯めるには何年かかる？月額別シミュレーション完全版">
+<meta property="og:description" content="月いくら×何年=1000万円？利回り別の達成期間早見表で、自分の目標設定がすぐわかる。">
+<meta property="og:image" content="og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
+    color: #1E2A38; background: #F7F3EC;
+    line-height: 1.9; font-size: 16px;
+  }
+  .page { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+  header.hero { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #E2D9C7; }
+  header.hero a { text-decoration: none; color: #1E3A5F; font-size: 14px; font-weight: 600; }
+  .article-tag {
+    display: inline-block; background: #C56A4E; color: white;
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+    margin-bottom: 14px;
+  }
+  h1 { font-size: 28px; font-weight: 800; margin: 8px 0 14px; line-height: 1.4; letter-spacing: 0.01em; }
+  .meta { font-size: 12px; color: #8E97A3; }
+  .card {
+    background: white; border: 1px solid #E2D9C7; border-radius: 16px;
+    padding: 32px; margin-bottom: 18px;
+    box-shadow: 0 4px 12px rgba(30,42,56,.06);
+  }
+  h2 {
+    font-size: 22px; font-weight: 700; margin: 32px 0 14px;
+    padding-left: 14px; border-left: 4px solid #C56A4E;
+    color: #1E3A5F;
+  }
+  h2:first-child { margin-top: 0; }
+  h3 { font-size: 18px; font-weight: 700; margin: 24px 0 10px; color: #1E3A5F; }
+  p { margin: 0 0 16px; color: #1E2A38; font-size: 15px; }
+  a { color: #C56A4E; }
+  blockquote {
+    background: #FBF8F1; border-left: 4px solid #1E3A5F;
+    padding: 14px 20px; margin: 16px 0;
+    color: #4A5568; font-size: 14px; border-radius: 4px;
+  }
+  table.calc {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    font-size: 14px;
+  }
+  table.calc th, table.calc td {
+    padding: 10px 12px; text-align: left;
+    border-bottom: 1px solid #EFE9DD;
+  }
+  table.calc thead th {
+    background: #1E3A5F; color: white;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
+  }
+  table.calc td.num { text-align: right; font-weight: 600; }
+  table.calc tbody tr:hover { background: #FBF8F1; }
+  .highlight { background: linear-gradient(transparent 60%, #FDE68A 60%); font-weight: 700; }
+  .cta-box {
+    background: linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%);
+    color: white; padding: 28px 32px; border-radius: 16px;
+    margin: 24px 0; text-align: center;
+  }
+  .cta-box h3 { color: #FBC97A; margin: 0 0 10px; font-size: 18px; }
+  .cta-box p { color: rgba(255,255,255,0.9); margin: 0 0 16px; font-size: 14px; }
+  .cta-btn {
+    display: inline-block; background: #FBC97A; color: #1E3A5F;
+    padding: 12px 28px; border-radius: 10px;
+    text-decoration: none; font-weight: 700; font-size: 15px;
+    transition: all 0.18s;
+  }
+  .cta-btn:hover { background: #FFD89A; transform: translateY(-2px); color: #1E3A5F; }
+  ul, ol { padding-left: 24px; margin: 12px 0 16px; }
+  li { margin-bottom: 8px; color: #1E2A38; font-size: 15px; }
+  strong { color: #1E3A5F; }
+  footer { text-align: center; margin-top: 36px; font-size: 12px; color: #8E97A3; }
+  footer a { color: #4A5568; text-decoration: none; margin: 0 8px; }
+  footer a:hover { color: #1E3A5F; text-decoration: underline; }
+  .related {
+    background: #FBF8F1; border-radius: 12px; padding: 20px 24px; margin: 20px 0;
+  }
+  .related h4 { margin: 0 0 12px; font-size: 14px; color: #1E3A5F; }
+  .related ul { margin: 0; padding-left: 20px; }
+  .related li { font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <a href="./">🧭 計算ツールに戻る</a> ・ <a href="blog.html">📚 記事一覧</a>
+    <span class="article-tag">NISA活用</span>
+    <h1>新NISAで1000万円貯めるには何年かかる？月額別シミュレーション完全版</h1>
+    <p class="meta">2026年5月5日 ・ 複利コンパス編集部</p>
+  </header>
+
+  <div class="card">
+    <p>2024年から始まった<strong>新NISA</strong>は、年間360万円・生涯1,800万円までが非課税。これを活用して「老後までに1,000万円」を貯めたい人は多いはず。</p>
+    <p>本記事では、月積立額別・利回り別に、<strong>1,000万円達成までの期間</strong>を完全シミュレーション。「自分の場合は何年？」が早見表でわかります。</p>
+
+    <h2>結論：月3万円なら年利5%で約16年</h2>
+    <p>結論から言うと、<strong>月3万円を年利5%で運用すると、約16年で1,000万円</strong>に到達します。月5万円なら約11年、月10万円なら約7年です。</p>
+    <p>詳しく見ていきましょう。</p>
+  </div>
+
+  <div class="card">
+    <h2>1. 月額別 1,000万円達成期間（年利5%）</h2>
+    <p>標準的な利回り5%（インデックス投資の長期平均）で、月積立額別の達成期間：</p>
+
+    <table class="calc">
+      <thead>
+        <tr>
+          <th>月積立額</th>
+          <th class="num">年間積立</th>
+          <th class="num">達成期間</th>
+          <th class="num">元本合計</th>
+          <th class="num">運用益</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>月1万円</td>
+          <td class="num">12万円</td>
+          <td class="num">約30年</td>
+          <td class="num">360万円</td>
+          <td class="num">+640万円</td>
+        </tr>
+        <tr>
+          <td>月2万円</td>
+          <td class="num">24万円</td>
+          <td class="num">約21年</td>
+          <td class="num">505万円</td>
+          <td class="num">+495万円</td>
+        </tr>
+        <tr>
+          <td>月3万円</td>
+          <td class="num">36万円</td>
+          <td class="num"><span class="highlight">約16年</span></td>
+          <td class="num">578万円</td>
+          <td class="num">+422万円</td>
+        </tr>
+        <tr>
+          <td>月5万円</td>
+          <td class="num">60万円</td>
+          <td class="num">約11年</td>
+          <td class="num">662万円</td>
+          <td class="num">+338万円</td>
+        </tr>
+        <tr>
+          <td>月10万円</td>
+          <td class="num">120万円</td>
+          <td class="num">約7年</td>
+          <td class="num">821万円</td>
+          <td class="num">+179万円</td>
+        </tr>
+        <tr>
+          <td>月30万円（NISA満額）</td>
+          <td class="num">360万円</td>
+          <td class="num">約3年</td>
+          <td class="num">926万円</td>
+          <td class="num">+74万円</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>面白いのは、<strong>月積立額が大きいほど運用益の割合が小さくなる</strong>こと。これは期間が短いほど複利効果が薄いから。逆に言えば、<strong>月1万でも30年続ければ運用益640万円</strong>と、元本の2倍近くを稼げます。</p>
+
+    <!-- 📊 図解: 月額別1000万達成期間 -->
+    <figure style="margin: 24px 0; text-align: center;">
+      <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; max-width:600px;" role="img" aria-label="月積立額別の1000万円達成期間を比較する横棒グラフ">
+        <rect width="600" height="320" fill="#FBF8F1"/>
+        <text x="300" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#1E3A5F">月積立額別 1,000万円達成期間</text>
+        <text x="300" y="48" text-anchor="middle" font-size="11" fill="#8E97A3">年利5% / 単純複利計算</text>
+
+        <!-- 月1万: 30年 -->
+        <text x="155" y="85" text-anchor="end" font-size="12" font-weight="700" fill="#1E3A5F">月1万円</text>
+        <rect x="160" y="73" width="360" height="22" fill="#94A3B8" rx="3"/>
+        <text x="530" y="88" font-size="12" font-weight="700" fill="#1E2A38">30年</text>
+
+        <!-- 月2万: 21年 -->
+        <text x="155" y="118" text-anchor="end" font-size="12" font-weight="700" fill="#1E3A5F">月2万円</text>
+        <rect x="160" y="106" width="252" height="22" fill="#94A3B8" rx="3"/>
+        <text x="422" y="121" font-size="12" font-weight="700" fill="#1E2A38">21年</text>
+
+        <!-- 月3万: 16年（強調） -->
+        <text x="155" y="151" text-anchor="end" font-size="12" font-weight="800" fill="#C56A4E">月3万円</text>
+        <rect x="160" y="139" width="192" height="22" fill="#C56A4E" rx="3"/>
+        <text x="362" y="154" font-size="12" font-weight="800" fill="#C56A4E">16年</text>
+        <text x="402" y="154" font-size="11" fill="#C56A4E" font-weight="700">★ 標準ペース</text>
+
+        <!-- 月5万: 11年 -->
+        <text x="155" y="184" text-anchor="end" font-size="12" font-weight="700" fill="#1E3A5F">月5万円</text>
+        <rect x="160" y="172" width="132" height="22" fill="#1E3A5F" rx="3"/>
+        <text x="302" y="187" font-size="12" font-weight="700" fill="#1E2A38">11年</text>
+
+        <!-- 月10万: 7年 -->
+        <text x="155" y="217" text-anchor="end" font-size="12" font-weight="700" fill="#1E3A5F">月10万円</text>
+        <rect x="160" y="205" width="84" height="22" fill="#1E3A5F" rx="3"/>
+        <text x="254" y="220" font-size="12" font-weight="700" fill="#1E2A38">7年</text>
+
+        <!-- 月30万: 3年 -->
+        <text x="155" y="250" text-anchor="end" font-size="12" font-weight="700" fill="#1E3A5F">月30万円</text>
+        <rect x="160" y="238" width="36" height="22" fill="#1E3A5F" rx="3"/>
+        <text x="206" y="253" font-size="12" font-weight="700" fill="#1E2A38">3年</text>
+
+        <!-- 横軸 -->
+        <line x1="160" y1="272" x2="520" y2="272" stroke="#E2D9C7" stroke-width="1"/>
+        <text x="160" y="286" font-size="9" fill="#8E97A3">0年</text>
+        <text x="280" y="286" font-size="9" fill="#8E97A3">10年</text>
+        <text x="400" y="286" font-size="9" fill="#8E97A3">20年</text>
+        <text x="520" y="286" text-anchor="end" font-size="9" fill="#8E97A3">30年</text>
+
+        <text x="300" y="308" text-anchor="middle" font-size="10" fill="#8E97A3">月3万円・16年が「無理せず到達できる」現実的ライン</text>
+      </svg>
+      <figcaption style="font-size: 12px; color: #8E97A3; margin-top: 8px;">図: 月積立額別の1,000万円達成期間（年利5%）</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h2>2. 利回り別 1,000万円達成期間（月3万円つみたて）</h2>
+    <p>同じ月3万円でも、利回りによって達成期間が変わります：</p>
+
+    <table class="calc">
+      <thead>
+        <tr>
+          <th>想定利回り</th>
+          <th class="num">達成期間</th>
+          <th>備考</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1%（定期預金級）</td>
+          <td class="num">約25年</td>
+          <td>ほぼ単純計算と同じ</td>
+        </tr>
+        <tr>
+          <td>3%（バランス型）</td>
+          <td class="num">約20年</td>
+          <td>債券中心の保守運用</td>
+        </tr>
+        <tr>
+          <td>5%（標準）</td>
+          <td class="num"><span class="highlight">約16年</span></td>
+          <td>株+債券バランス</td>
+        </tr>
+        <tr>
+          <td>7%（積極）</td>
+          <td class="num">約13年</td>
+          <td>全世界株インデックス</td>
+        </tr>
+        <tr>
+          <td>10%（リスク高）</td>
+          <td class="num">約11年</td>
+          <td>個別株・新興国株</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>利回りが1%上がると、達成期間が約2年短縮。<strong>長期投資では「利回りの差」が「年数の差」になって現れる</strong>のがわかります。</p>
+  </div>
+
+  <div class="cta-box">
+    <h3>あなたの目標は何年で達成？</h3>
+    <p>複利コンパスの「必要期間モード」なら、目標金額・月積立・利回りを入力するだけで達成年数がわかります。</p>
+    <a href="./" class="cta-btn">無料で計算する</a>
+  </div>
+
+  <div class="card">
+    <h2>3. 新NISAを活用するメリット</h2>
+    <p>同じ運用でも、新NISAを使うかどうかで<strong>手取り金額が大きく変わります</strong>。</p>
+
+    <h3>例：月3万円・年利5%・16年運用で1,000万円達成</h3>
+    <table class="calc">
+      <thead>
+        <tr>
+          <th>口座種別</th>
+          <th class="num">運用益</th>
+          <th class="num">税金</th>
+          <th class="num">手取り</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>特定口座（課税）</td>
+          <td class="num">+422万円</td>
+          <td class="num">-86万円</td>
+          <td class="num">914万円</td>
+        </tr>
+        <tr style="background: #DAE5D6;">
+          <td>新NISA口座（非課税）</td>
+          <td class="num">+422万円</td>
+          <td class="num">0円</td>
+          <td class="num"><span class="highlight">1,000万円</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>同じ運用結果でも、<strong>NISA活用で86万円の差</strong>。これは長期になるほど大きくなります。</p>
+  </div>
+
+  <div class="card">
+    <h2>4. 新NISAの上限と戦略</h2>
+
+    <h3>新NISA枠の概要</h3>
+    <ul>
+      <li><strong>つみたて投資枠</strong>：年120万円（月10万円）</li>
+      <li><strong>成長投資枠</strong>：年240万円（月20万円）</li>
+      <li><strong>合計</strong>：年360万円（月30万円）</li>
+      <li><strong>生涯投資枠</strong>：1,800万円（うち成長投資枠は1,200万円）</li>
+    </ul>
+
+    <h3>戦略：1,000万円ゴールへの最適経路</h3>
+    <p>1,000万円を最速で貯めたいなら、生涯投資枠1,800万円の範囲内で<strong>つみたて投資枠だけでも十分</strong>です。</p>
+
+    <blockquote>
+      無理して月30万円積み立てる必要はありません。「<strong>続けられる金額で長く</strong>」が複利の原則。月3〜5万円を着実に続けるのが現実的です。
+    </blockquote>
+  </div>
+
+  <div class="card">
+    <h2>5. まとめ</h2>
+    <ol>
+      <li>月3万・年利5%で<strong>約16年</strong>で1,000万円達成</li>
+      <li>月5万なら約11年、月10万なら約7年</li>
+      <li>新NISA活用で同じ運用でも<strong>86万円の差</strong>（税金分）</li>
+      <li>「続けられる金額で長く」が成功の鍵</li>
+    </ol>
+
+    <div class="related">
+      <h4>関連ページ</h4>
+      <ul>
+        <li><a href="./">複利コンパス（計算ツール）</a></li>
+        <li><a href="blog-fukuri-no-chikara.html">複利の力とは？月1万円が30年でいくらになるか</a></li>
+        <li><a href="blog-3man-vs-5man.html">月3万円 vs 月5万円つみたて、20年後の差額</a></li>
+        <li><a href="blog-monte-carlo.html">モンテカルロ法を使った投資シミュレーション</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background: #FBF8F1; border: 1px solid #E2D9C7; border-radius: 12px; padding: 20px 24px; margin: 24px 0;">
+    <h4 style="margin: 0 0 12px; font-size: 14px; color: #1E3A5F;">📚 次に読む</h4>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-idecovsnisa.html" style="color: #C56A4E; font-weight: 600;">iDeCo vs 新NISA、どっちを優先すべき？</a></li>
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-3man-vs-5man.html" style="color: #C56A4E; font-weight: 600;">月3万円 vs 月5万円つみたて、20年後の差額シミュレーション</a></li>
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-sp500-vs-allcountry.html" style="color: #C56A4E; font-weight: 600;">S&P500 vs 全世界株式（オルカン）どっちを選ぶ？</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <p>
+      <a href="./">トップ</a> ・
+      <a href="about.html">運営者情報</a> ・
+      <a href="contact.html">お問い合わせ</a> ・
+      <a href="privacy.html">プライバシー</a>
+    </p>
+    <p>© 2026 複利コンパス編集部</p>
+  </footer>
+</div>
+</body>
+</html>

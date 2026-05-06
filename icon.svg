@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- 背景 -->
+  <rect width="512" height="512" fill="#F7F3EC"/>
+
+  <!-- コンパス本体 -->
+  <circle cx="256" cy="256" r="200" fill="#FFFFFF" stroke="#1E3A5F" stroke-width="14"/>
+
+  <!-- 方角マーカー -->
+  <text x="256" y="100" text-anchor="middle" font-size="32" font-weight="700" fill="#1E3A5F" font-family="sans-serif">N</text>
+  <text x="256" y="430" text-anchor="middle" font-size="28" font-weight="500" fill="#8E97A3" font-family="sans-serif">S</text>
+  <text x="92" y="270" text-anchor="middle" font-size="28" font-weight="500" fill="#8E97A3" font-family="sans-serif">W</text>
+  <text x="420" y="270" text-anchor="middle" font-size="28" font-weight="500" fill="#8E97A3" font-family="sans-serif">E</text>
+
+  <!-- 針 -->
+  <polygon points="340,162 290,256 162,350 222,256" fill="#C56A4E"/>
+  <polygon points="340,162 256,256 290,256" fill="#1E3A5F"/>
+
+  <!-- 中心 -->
+  <circle cx="256" cy="256" r="20" fill="#1E3A5F"/>
+  <circle cx="256" cy="256" r="8" fill="#FFFFFF"/>
+</svg>

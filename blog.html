@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>記事一覧｜複利コンパス</title>
+<meta name="description" content="複利・投資・FIREに関する解説記事一覧。複利コンパス編集部がわかりやすく解説します。カテゴリ別検索・キーワード検索対応。">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FFFFFF' stroke='%231E3A5F' stroke-width='2'/%3E%3Cpolygon points='22,10 18,18 10,22 14,14' fill='%23C56A4E'/%3E%3Cpolygon points='22,10 16,16 18,18' fill='%231E3A5F'/%3E%3Ccircle cx='16' cy='16' r='1.8' fill='%231E3A5F'/%3E%3C/svg%3E">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
+    color: #1E2A38; background: #F7F3EC;
+    line-height: 1.8; font-size: 15px;
+  }
+  .topnav {
+    background: #1E2A38;
+    color: white;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(30,42,56,0.15);
+  }
+  .topnav-inner {
+    max-width: 760px; margin: 0 auto;
+    padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .topnav-logo {
+    display: inline-flex; align-items: center; gap: 8px;
+    text-decoration: none; color: white;
+    font-weight: 700; font-size: 15px;
+  }
+  .topnav-logo svg { width: 22px; height: 22px; color: #FBC97A; }
+  .topnav-logo .accent { color: #FBC97A; }
+  .topnav-links { display: flex; gap: 6px; }
+  .topnav-links a {
+    text-decoration: none; color: rgba(255,255,255,0.85);
+    font-size: 13px; font-weight: 600;
+    padding: 7px 14px; border-radius: 8px;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+  }
+  .topnav-links a:hover { background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.2); }
+  .topnav-links a.active { background: #C56A4E; color: white; border-color: #C56A4E; }
+  @media (max-width: 480px) {
+    .topnav-logo span { display: none; }
+    .topnav-links a { padding: 7px 10px; font-size: 12px; }
+  }
+  .page { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+  header.hero { text-align: center; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #E2D9C7; }
+  header.hero a { text-decoration: none; color: #1E3A5F; font-size: 14px; font-weight: 600; }
+  h1 { font-size: 28px; font-weight: 700; margin: 8px 0 6px; letter-spacing: 0.02em; }
+  .meta { font-size: 12px; color: #8E97A3; }
+
+  /* 検索＆フィルタ */
+  .search-bar {
+    background: white;
+    border: 1px solid #E2D9C7;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 12px rgba(30,42,56,.04);
+  }
+  .search-input-wrap {
+    position: relative;
+    margin-bottom: 14px;
+  }
+  .search-input {
+    width: 100%;
+    padding: 12px 16px 12px 42px;
+    font-size: 14px;
+    border: 1px solid #E2D9C7;
+    border-radius: 10px;
+    background: #FBF8F1;
+    font-family: inherit;
+    color: #1E2A38;
+    transition: all 0.15s;
+  }
+  .search-input:focus {
+    outline: none;
+    border-color: #1E3A5F;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(30,58,95,0.08);
+  }
+  .search-icon {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: #8E97A3;
+  }
+
+  .category-filters {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .filter-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #F7F3EC;
+    color: #4A5568;
+    border: 1px solid #E2D9C7;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .filter-btn:hover { border-color: #C56A4E; color: #C56A4E; }
+  .filter-btn.active {
+    background: #1E3A5F;
+    color: white;
+    border-color: #1E3A5F;
+  }
+  .filter-btn .count {
+    font-size: 10px;
+    margin-left: 4px;
+    opacity: 0.8;
+  }
+
+  .results-info {
+    font-size: 12px;
+    color: #8E97A3;
+    margin: 8px 0 16px;
+    text-align: center;
+  }
+  .no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: #8E97A3;
+    font-size: 14px;
+    background: white;
+    border: 1px dashed #E2D9C7;
+    border-radius: 12px;
+  }
+
+  .post {
+    background: white; border: 1px solid #E2D9C7; border-radius: 16px;
+    padding: 24px 28px; margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(30,42,56,.06);
+    transition: all 0.18s;
+    text-decoration: none; color: inherit; display: block;
+  }
+  .post:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(30,42,56,.10); border-color: #C56A4E; }
+  .post.hidden { display: none; }
+  .post .tag {
+    display: inline-block; background: #C56A4E; color: white;
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+  .post h2 {
+    font-size: 18px; font-weight: 700; margin: 0 0 8px;
+    color: #1E3A5F; line-height: 1.5;
+  }
+  .post .excerpt {
+    font-size: 13px; color: #4A5568; margin: 0 0 8px;
+    line-height: 1.7;
+  }
+  .post .date { font-size: 11px; color: #8E97A3; }
+  .highlight-match {
+    background: #FDE68A;
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+
+  footer { text-align: center; margin-top: 36px; font-size: 12px; color: #8E97A3; }
+  footer a { color: #4A5568; text-decoration: none; margin: 0 8px; }
+  footer a:hover { color: #1E3A5F; text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="./" class="topnav-logo">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="16" r="13"/><path d="M21 11l-3 7-7 3 3-7z" fill="currentColor" stroke="none"/><circle cx="16" cy="16" r="1.2" fill="white" stroke="none"/></svg>
+      <span>複利<span class="accent">コンパス</span></span>
+    </a>
+    <div class="topnav-links">
+      <a href="./">計算ツール</a>
+      <a href="blog.html" class="active">📚 記事</a>
+      <a href="about.html">運営者</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+  <header class="hero">
+    <a href="./">← 複利コンパスに戻る</a>
+    <h1>記事一覧</h1>
+    <p class="meta">複利・投資・FIREの基礎知識</p>
+  </header>
+
+  <!-- 🔍 検索＆フィルタ -->
+  <div class="search-bar">
+    <div class="search-input-wrap">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" class="search-input" placeholder="キーワード検索（例：FIRE、複利、月3万）" oninput="filterPosts()">
+    </div>
+    <div class="category-filters" id="categoryFilters">
+      <button class="filter-btn active" data-category="all" onclick="setCategory(this, 'all')">すべて<span class="count">15</span></button>
+      <button class="filter-btn" data-category="基礎知識" onclick="setCategory(this, '基礎知識')">基礎知識<span class="count">2</span></button>
+      <button class="filter-btn" data-category="FIRE" onclick="setCategory(this, 'FIRE')">FIRE<span class="count">2</span></button>
+      <button class="filter-btn" data-category="NISA活用" onclick="setCategory(this, 'NISA活用')">NISA活用<span class="count">1</span></button>
+      <button class="filter-btn" data-category="制度比較" onclick="setCategory(this, '制度比較')">制度比較<span class="count">1</span></button>
+      <button class="filter-btn" data-category="具体比較" onclick="setCategory(this, '具体比較')">具体比較<span class="count">1</span></button>
+      <button class="filter-btn" data-category="手法解説" onclick="setCategory(this, '手法解説')">手法解説<span class="count">1</span></button>
+      <button class="filter-btn" data-category="投資コスト" onclick="setCategory(this, '投資コスト')">投資コスト<span class="count">1</span></button>
+      <button class="filter-btn" data-category="投資手法" onclick="setCategory(this, '投資手法')">投資手法<span class="count">1</span></button>
+      <button class="filter-btn" data-category="商品比較" onclick="setCategory(this, '商品比較')">商品比較<span class="count">1</span></button>
+      <button class="filter-btn" data-category="資産戦略" onclick="setCategory(this, '資産戦略')">資産戦略<span class="count">2</span></button>
+      <button class="filter-btn" data-category="資格・学習" onclick="setCategory(this, '資格・学習')">資格・学習<span class="count">1</span></button>
+      <button class="filter-btn" data-category="健康・ダイエット" onclick="setCategory(this, '健康・ダイエット')">健康・ダイエット<span class="count">1</span></button>
+    </div>
+  </div>
+
+  <div class="results-info" id="resultsInfo">8件の記事</div>
+
+  <div id="postsContainer">
+
+  <a href="blog-fukuri-no-chikara.html" class="post" data-category="基礎知識" data-keywords="複利 元本 単利 雪だるま 30年 月1万 月3万 月5万 アインシュタイン">
+    <span class="tag">基礎知識</span>
+    <h2>複利の力とは？月1万円が30年でいくらになるかシミュレーションしてみた</h2>
+    <p class="excerpt">アインシュタインが「人類最大の発明」と呼んだ複利の力。月1万円・3万円・5万円を年利5%で30年運用すると、いくらになるのか具体的に解説します。</p>
+    <span class="date">2026年5月5日</span>
+  </a>
+
+  <a href="blog-4percent-rule.html" class="post" data-category="FIRE" data-keywords="FIRE 4%ルール Trinity Study 必要資産 リタイア 早期退職">
+    <span class="tag">FIRE</span>
+    <h2>4%ルールとは？FIRE達成に必要な資産の計算方法を徹底解説</h2>
+    <p class="excerpt">「年間支出の25倍の資産があれば一生食べていける」という4%ルール。Trinity Studyの解説から日本での適用注意点まで完全網羅。</p>
+    <span class="date">2026年5月5日</span>
+  </a>
+
+  <a href="blog-3man-vs-5man.html" class="post" data-category="具体比較" data-keywords="月3万 月5万 つみたて 20年 差額 822万 比較">
+    <span class="tag">具体比較</span>
+    <h2>月3万円 vs 月5万円つみたて、20年後の差額シミュレーション</h2>
+    <p class="excerpt">月2万円の差は、20年後に資産でいくら違うのか？答えは約822万円。複利の力を踏まえたリアルな数字を表で徹底比較。</p>
+    <span class="date">2026年5月5日</span>
+  </a>
+
+  <a href="blog-monte-carlo.html" class="post" data-category="手法解説" data-keywords="モンテカルロ 投資 シミュレーション リスク Box-Muller">
+    <span class="tag">手法解説</span>
+    <h2>モンテカルロ法を使った投資シミュレーションのススメ</h2>
+    <p class="excerpt">単純な複利計算では見えない「リスク」を可視化するモンテカルロ法。プロのFPが使う手法を、個人投資家向けにわかりやすく解説。</p>
+    <span class="date">2026年5月5日</span>
+  </a>
+
+  <a href="blog-nisa-1000man.html" class="post" data-category="NISA活用" data-keywords="新NISA 1000万 つみたてNISA シミュレーション 期間 16年">
+    <span class="tag">NISA活用</span>
+    <h2>新NISAで1000万円貯めるには何年かかる？月額別シミュレーション完全版</h2>
+    <p class="excerpt">月3万円なら年利5%で約16年、月5万円なら11年、月10万円なら7年。利回り別の達成期間早見表で目標設定が3秒でわかる。</p>
+    <span class="date">2026年5月5日</span>
+  </a>
+
+  <a href="blog-idecovsnisa.html" class="post" data-category="制度比較" data-keywords="iDeCo 新NISA 比較 優先 使い分け 所得控除">
+    <span class="tag">制度比較</span>
+    <h2>iDeCo vs 新NISA、どっちを優先すべき？年代・年収別の使い分け完全ガイド</h2>
+    <p class="excerpt">年齢・年収・退職予定年齢別に、iDeCoとNISAの最適な使い分けを徹底解説。シミュレーション付き。</p>
+    <span class="date">2026年5月5日</span>
+  </a>
+
+  <a href="blog-shintaku-1percent.html" class="post" data-category="投資コスト" data-keywords="信託報酬 投資信託 コスト 1% 長期投資 605万">
+    <span class="tag">投資コスト</span>
+    <h2>信託報酬1%の差で30年後に何百万円違う？コスト軽視は致命傷</h2>
+    <p class="excerpt">信託報酬0.1% vs 1.5%で30年後に605万円の差。長期投資ほどコストが致命的になる理由を徹底解説。</p>
+    <span class="date">2026年5月5日</span>
+  </a>
+
+  <a href="blog-dollar-cost.html" class="post" data-category="投資手法" data-keywords="ドルコスト平均法 つみたて 一括投資 検証 モンテカルロ">
+    <span class="tag">投資手法</span>
+    <h2>ドルコスト平均法は本当に有効？モンテカルロで検証してみた</h2>
+    <p class="excerpt">「ドルコスト最強」は本当か？一括投資との比較、向いている人を徹底検証。学術的な結論と実用的な使い方。</p>
+    <span class="date">2026年5月5日</span>
+  </a>
+
+  <a href="blog-sp500-vs-allcountry.html" class="post" data-category="商品比較" data-keywords="S&P500 オルカン 全世界株式 eMAXIS NISA 比較 米国株 分散">
+    <span class="tag">商品比較</span>
+    <h2>S&P500 vs 全世界株式（オルカン）どっちを選ぶ？数字で見る20年後の差</h2>
+    <p class="excerpt">過去30年のリターン・リスク・為替の3軸で徹底比較。月3万・20年で約273万円差の根拠と、迷ったときの判断基準。</p>
+    <span class="date">2026年5月6日</span>
+  </a>
+
+  <a href="blog-prepay-vs-invest.html" class="post" data-category="資産戦略" data-keywords="繰上げ返済 投資 住宅ローン 比較 Monte Carlo 純資産 余剰資金">
+    <span class="tag">資産戦略</span>
+    <h2>住宅ローンの繰上げ返済 vs 投資、結局どっちが得？モンテカルロで結論を出す</h2>
+    <p class="excerpt">月5万円の余剰資金、繰上げか投資か。Monte Carlo 1,000本で純資産を比較し、判断基準フローチャートを提示。</p>
+    <span class="date">2026年5月6日</span>
+  </a>
+
+  <a href="blog-fire-withdrawal.html" class="post" data-category="FIRE" data-keywords="FIRE 取り崩し 4%ルール 定額 定率 バケット リタイア NISA">
+    <span class="tag">FIRE</span>
+    <h2>FIRE達成後の取り崩し術完全ガイド｜4%ルールの実践と日本の税制対応</h2>
+    <p class="excerpt">FIRE後どう取り崩す？定額vs定率、3バケット戦略、NISA優先順位、税金・保険まで完全解説。</p>
+    <span class="date">2026年5月6日</span>
+  </a>
+
+  <a href="blog-rebalance.html" class="post" data-category="基礎知識" data-keywords="リバランス ポートフォリオ アセットアロケーション 株式 債券 投資 年1回">
+    <span class="tag">基礎知識</span>
+    <h2>リバランスとは？ポートフォリオを定期的に整える理由と実践方法</h2>
+    <p class="excerpt">「年1回・5%ズレたら整える」が基本ルール。なぜ必要か、いつ・どうやるかを実践的に解説。</p>
+    <span class="date">2026年5月7日</span>
+  </a>
+
+  <a href="blog-age-strategy.html" class="post" data-category="資産戦略" data-keywords="年代別 投資戦略 20代 30代 40代 50代 ポートフォリオ">
+    <span class="tag">資産戦略</span>
+    <h2>年代別投資戦略｜20代・30代・40代・50代それぞれの最適解</h2>
+    <p class="excerpt">「100−年齢」ルールの根拠と、年代ごとの具体的なポートフォリオ例。残期間・人生イベント別の戦略付き。</p>
+    <span class="date">2026年5月7日</span>
+  </a>
+
+  <a href="blog-fp3-hours.html" class="post" data-category="資格・学習" data-keywords="FP3級 勉強時間 合格時間 シミュレーション ファイナンシャルプランナー">
+    <span class="tag">資格・学習</span>
+    <h2>FP3級は何時間で合格できる？中央値80時間の根拠と週X時間ペース別シミュ</h2>
+    <p class="excerpt">中央値80時間・幅50〜150時間。週X時間ペース別の合格目安と、よくある挫折パターン4種を完全解説。</p>
+    <span class="date">2026年5月7日</span>
+  </a>
+
+  <a href="blog-5kg-diet.html" class="post" data-category="健康・ダイエット" data-keywords="5kg痩せる 期間 何ヶ月 ダイエット カロリー 健康的">
+    <span class="tag">健康・ダイエット</span>
+    <h2>5kg痩せるのに何ヶ月かかる？体重別の現実的な期間と必要カロリー</h2>
+    <p class="excerpt">3〜5ヶ月で5kg減が現実的。1日−400kcal削減の食事＋運動プランと、避けるべき危険ダイエット例も網羅。</p>
+    <span class="date">2026年5月7日</span>
+  </a>
+
+  </div>
+
+  <div class="no-results" id="noResults" style="display:none;">
+    🔍 該当する記事が見つかりませんでした<br>
+    <small style="color:#8E97A3;">別のキーワードで検索するか、フィルタを「すべて」に戻してください</small>
+  </div>
+
+  <footer>
+    <p>
+      <a href="./">トップ</a> ・
+      <a href="about.html">運営者情報</a> ・
+      <a href="contact.html">お問い合わせ</a> ・
+      <a href="privacy.html">プライバシー</a>
+    </p>
+    <p>© 2026 複利コンパス編集部</p>
+  </footer>
+</div>
+
+<script>
+let currentCategory = 'all';
+
+function setCategory(btn, cat) {
+  currentCategory = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterPosts();
+}
+
+function filterPosts() {
+  const search = document.getElementById('searchInput').value.toLowerCase().trim();
+  const posts = document.querySelectorAll('.post');
+  let visibleCount = 0;
+
+  posts.forEach(post => {
+    const cat = post.dataset.category;
+    const keywords = (post.dataset.keywords || '').toLowerCase();
+    const title = post.querySelector('h2').textContent.toLowerCase();
+    const excerpt = post.querySelector('.excerpt').textContent.toLowerCase();
+    const haystack = `${title} ${excerpt} ${keywords} ${cat}`.toLowerCase();
+
+    const categoryMatch = currentCategory === 'all' || cat === currentCategory;
+    const searchMatch = !search || haystack.includes(search);
+
+    if (categoryMatch && searchMatch) {
+      post.classList.remove('hidden');
+      visibleCount++;
+    } else {
+      post.classList.add('hidden');
+    }
+  });
+
+  document.getElementById('resultsInfo').textContent = visibleCount + '件の記事';
+  document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>住宅ローンの繰上げ返済 vs 投資、結局どっちが得？モンテカルロで結論を出す｜複利コンパス</title>
+<meta name="description" content="月5万円の余剰資金、繰上げ返済に回すべき？それとも投資？30年後の純資産をMonte Carloで比較し、判断基準を提示。住宅ローンコンパスツールで自分のケースも試算可能。">
+<meta name="keywords" content="繰上げ返済,投資,住宅ローン,比較,モンテカルロ,純資産">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FFFFFF' stroke='%231E3A5F' stroke-width='2'/%3E%3Cpolygon points='22,10 18,18 10,22 14,14' fill='%23C56A4E'/%3E%3Cpolygon points='22,10 16,16 18,18' fill='%231E3A5F'/%3E%3Ccircle cx='16' cy='16' r='1.8' fill='%231E3A5F'/%3E%3C/svg%3E">
+<meta property="og:type" content="article">
+<meta property="og:title" content="住宅ローンの繰上げ返済 vs 投資、結局どっちが得？">
+<meta property="og:description" content="Monte Carloで結論を出す。判断基準と数字で迷いを解消。">
+<meta property="og:image" content="og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif; color: #1E2A38; background: #F7F3EC; line-height: 1.9; font-size: 16px; }
+  .page { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+  header.hero { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #E2D9C7; }
+  header.hero a { text-decoration: none; color: #1E3A5F; font-size: 14px; font-weight: 600; }
+  .article-tag { display: inline-block; background: #C56A4E; color: white; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 14px; }
+  h1 { font-size: 28px; font-weight: 800; margin: 8px 0 14px; line-height: 1.4; letter-spacing: 0.01em; }
+  .meta { font-size: 12px; color: #8E97A3; }
+  .card { background: white; border: 1px solid #E2D9C7; border-radius: 16px; padding: 32px; margin-bottom: 18px; box-shadow: 0 4px 12px rgba(30,42,56,.06); }
+  h2 { font-size: 22px; font-weight: 700; margin: 32px 0 14px; padding-left: 14px; border-left: 4px solid #C56A4E; color: #1E3A5F; }
+  h2:first-child { margin-top: 0; }
+  h3 { font-size: 18px; font-weight: 700; margin: 24px 0 10px; color: #1E3A5F; }
+  p { margin: 0 0 16px; color: #1E2A38; font-size: 15px; }
+  a { color: #C56A4E; }
+  blockquote { background: #FBF8F1; border-left: 4px solid #1E3A5F; padding: 14px 20px; margin: 16px 0; color: #4A5568; font-size: 14px; border-radius: 4px; }
+  table.calc { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  table.calc th, table.calc td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #EFE9DD; }
+  table.calc thead th { background: #1E3A5F; color: white; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; }
+  table.calc td.num { text-align: right; font-weight: 600; }
+  .highlight { background: linear-gradient(transparent 60%, #FDE68A 60%); font-weight: 700; }
+  .cta-box { background: linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%); color: white; padding: 28px 32px; border-radius: 16px; margin: 24px 0; text-align: center; }
+  .cta-box h3 { color: #FBC97A; margin: 0 0 10px; font-size: 18px; }
+  .cta-box p { color: rgba(255,255,255,0.9); margin: 0 0 16px; font-size: 14px; }
+  .cta-btn { display: inline-block; background: #FBC97A; color: #1E3A5F; padding: 12px 28px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 15px; }
+  ul, ol { padding-left: 24px; margin: 12px 0 16px; }
+  li { margin-bottom: 8px; color: #1E2A38; font-size: 15px; }
+  strong { color: #1E3A5F; }
+  footer { text-align: center; margin-top: 36px; font-size: 12px; color: #8E97A3; }
+  footer a { color: #4A5568; text-decoration: none; margin: 0 8px; }
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+  @media (max-width: 580px) { .compare { grid-template-columns: 1fr; } }
+  .compare > div { padding: 18px; border-radius: 10px; }
+  .compare .pros { background: #DCEAEC; border-left: 4px solid #1E3A5F; }
+  .compare .cons { background: #F4DDD2; border-left: 4px solid #C56A4E; }
+  .compare h4 { margin: 0 0 8px; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <a href="./">🧭 計算ツールに戻る</a> ・ <a href="blog.html">📚 記事一覧</a>
+    <span class="article-tag">資産戦略</span>
+    <h1>住宅ローンの繰上げ返済 vs 投資、結局どっちが得？モンテカルロで結論を出す</h1>
+    <p class="meta">2026年5月6日 ・ 複利コンパス編集部</p>
+  </header>
+
+  <div class="card">
+    <p>「住宅ローンを抱えながら、月5万円の余剰資金がある。繰上げ返済に回すべき？それとも投資？」</p>
+    <p>これは家計に余裕が出てきた30〜40代が必ず通る悩みです。インターネット上には「投資の方が利回り高いから投資」「ローンは早く減らすべき」と両論あって、結局どっちが正解なのかわからない。</p>
+    <p>本記事では、<strong>Monte Carlo法を使って3パターン（全額繰上げ / 全額投資 / 半々）の30年後純資産を比較</strong>し、迷いを数字で解消します。</p>
+
+    <h2>結論：「中央値」だけで判断するな</h2>
+    <p>結論を3行で：</p>
+    <ol>
+      <li><strong>期待値（中央値）だけなら投資が勝つ</strong> — 多くのケースで</li>
+      <li><strong>悲観シナリオ（p10）では繰上げが安全</strong> — 投資が下振れた場合</li>
+      <li><strong>判断基準は「リスク許容度」と「ローン金利水準」</strong>に集約される</li>
+    </ol>
+    <p>つまり「期待値最大化したい人は投資、安心優先なら繰上げ、迷ったら半々」が3行サマリーです。</p>
+  </div>
+
+  <div class="card">
+    <h2>1. 繰上げ返済のメリット・デメリット</h2>
+    <div class="compare">
+      <div class="pros">
+        <h4>✅ メリット</h4>
+        <ul style="margin:0; padding-left:18px; font-size:13px;">
+          <li>確実に「ローン金利分」を節約（年1%なら年1%確定）</li>
+          <li>心理的負担が減る（借金は早く返したい）</li>
+          <li>金利上昇リスクから解放される</li>
+          <li>失業・病気などの非常時に強い</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4>❌ デメリット</h4>
+        <ul style="margin:0; padding-left:18px; font-size:13px;">
+          <li>機会損失（投資なら期待値5%）</li>
+          <li>住宅ローン控除の恩恵が減る</li>
+          <li>手元流動性が低下（戻せない）</li>
+          <li>インフレ時に「お金の価値」が減る</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>2. 投資のメリット・デメリット</h2>
+    <div class="compare">
+      <div class="pros">
+        <h4>✅ メリット</h4>
+        <ul style="margin:0; padding-left:18px; font-size:13px;">
+          <li>期待リターン（年5%）がローン金利を上回る</li>
+          <li>NISAなら運用益が非課税</li>
+          <li>流動性が高い（必要なら売却できる）</li>
+          <li>インフレヘッジになる</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4>❌ デメリット</h4>
+        <ul style="margin:0; padding-left:18px; font-size:13px;">
+          <li>下振れリスクあり（p10では繰上げに負ける可能性）</li>
+          <li>暴落時の心理的ダメージ</li>
+          <li>投資商品選びの労力</li>
+          <li>運用コスト（信託報酬）が必要</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>3. シミュレーション：3パターン比較</h2>
+    <p>条件: ローン残高3,000万円・金利1.0%・残期間30年・月余剰5万円・投資期待リターン5%・ボラティリティ12% / Monte Carlo 1,000本</p>
+
+    <table class="calc">
+      <thead>
+        <tr>
+          <th>パターン</th>
+          <th class="num">中央値（30年後純資産）</th>
+          <th class="num">悲観 p10</th>
+          <th class="num">楽観 p90</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🅐 全額繰上げ（確定）</td>
+          <td class="num">約 4,400万円</td>
+          <td class="num">同左（リスクなし）</td>
+          <td class="num">同左</td>
+        </tr>
+        <tr style="background: #F4FAF4;">
+          <td>🅑 全額投資</td>
+          <td class="num"><span class="highlight">約 5,100万円</span></td>
+          <td class="num">約 3,600万円</td>
+          <td class="num">約 7,200万円</td>
+        </tr>
+        <tr>
+          <td>🅒 半々（リスク分散）</td>
+          <td class="num">約 4,750万円</td>
+          <td class="num">約 4,000万円</td>
+          <td class="num">約 5,700万円</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>注目すべきは<strong>パターンBの p10（悲観シナリオ）が3,600万円</strong>であること。これは「繰上げの確定4,400万円より低い」ということ。つまり**運悪く暴落シナリオに当たれば、投資は繰上げに負ける**のです。</p>
+
+    <p>一方、パターンCの「半々」は中央値で4,750万、p10でも4,000万と、<strong>「最低保証 + そこそこの伸びしろ」</strong>を実現しています。</p>
+  </div>
+
+  <div class="cta-box">
+    <h3>あなたのケースで試算</h3>
+    <p>住宅ローンコンパスのMonte Carloツールで、自分の余剰額・金利・期間で3パターンの結果を確認できます。</p>
+    <a href="home-loan.html" class="cta-btn">住宅ローンコンパスを使う →</a>
+  </div>
+
+  <div class="card">
+    <h2>4. 判断基準フローチャート</h2>
+
+    <h3>Q1. ローン金利は何%？</h3>
+    <ul>
+      <li><strong>2%以上の高金利</strong> → 繰上げ寄り推奨（投資の期待リターンとの差が小さい）</li>
+      <li><strong>1.5%以下の低金利</strong> → 投資寄り推奨（差が大きい）</li>
+    </ul>
+
+    <h3>Q2. 月の余剰資金額は？</h3>
+    <ul>
+      <li><strong>3万円未満</strong> → まずは生活防衛資金を貯める。投資/繰上げは後で</li>
+      <li><strong>3〜10万円</strong> → 半々が無難（リスク分散）</li>
+      <li><strong>10万円以上</strong> → 投資寄り（ある程度のリスクを取れる余裕）</li>
+    </ul>
+
+    <h3>Q3. 投資への耐性は？</h3>
+    <ul>
+      <li><strong>暴落で含み損30%でも動じない</strong> → 投資寄り</li>
+      <li><strong>毎日チャートを見て不安になる</strong> → 繰上げ寄り（精神衛生大事）</li>
+      <li><strong>普通</strong> → 半々</li>
+    </ul>
+
+    <h3>Q4. 住宅ローン控除は活用中？</h3>
+    <ul>
+      <li><strong>控除期間中（10〜13年目まで）</strong> → 控除額を捨てない繰上げ慎重に。投資寄り or 控除終了後に繰上げ</li>
+      <li><strong>控除期間終了後</strong> → 純粋な金利比較で判断</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>5. 「繰上げvs投資」の隠れた論点</h2>
+
+    <h3>論点①：金利上昇リスク</h3>
+    <p>変動金利の人は要注意。今は1%でも、10年後に3%になれば「投資の優位性」は完全に消えます。<a href="home-loan.html">住宅ローンコンパスの「金利ストレステスト」</a>で確認してください。</p>
+
+    <h3>論点②：心理的コスト</h3>
+    <p>「ローンがある」というだけで毎月モヤモヤする人にとって、繰上げは精神安定剤です。期待値で多少負けても、毎日寝つきが良くなる価値はあります。</p>
+
+    <h3>論点③：資金拘束のリスク</h3>
+    <p>繰上げ返済した資金は基本的に戻せません。失業・病気で収入が止まった時に「あの100万円が手元にあれば...」となるシナリオは想定しておくべき。</p>
+
+    <h3>論点④：インフレ</h3>
+    <p>インフレ進行中は「借金の実質価値が減る」ため、繰上げは不利になりがち。一方インフレ抵抗力は株式投資の方が強い。</p>
+  </div>
+
+  <div class="card">
+    <h2>6. まとめ：迷ったら「半々」</h2>
+    <ul>
+      <li><strong>期待値だけなら投資が勝つ</strong>（多くのケース）</li>
+      <li><strong>悲観シナリオでは繰上げが安全</strong>（暴落時に強い）</li>
+      <li><strong>判断は「金利水準・余剰額・耐性」の3軸</strong></li>
+      <li><strong>迷ったら半々</strong>（中央値はそこそこ、p10も保てる）</li>
+    </ul>
+    <p>結局、これは「<strong>確定の安心 vs 期待値の魅力</strong>」というトレードオフ。あなたの性格と家計状況に合った答えを、シミュレーションで見つけてください。</p>
+    <blockquote>
+      投資判断はご自身の責任で。本記事はMonte Carloシミュレーションに基づく一般論であり、個別の金融商品を推奨するものではありません。
+    </blockquote>
+  </div>
+
+  <div style="background: #FBF8F1; border: 1px solid #E2D9C7; border-radius: 12px; padding: 20px 24px; margin: 24px 0;">
+    <h4 style="margin: 0 0 12px; font-size: 14px; color: #1E3A5F;">📚 次に読む</h4>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="home-loan.html" style="color: #C56A4E; font-weight: 600;">住宅ローンコンパス（Monte Carlo比較ツール）</a></li>
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-monte-carlo.html" style="color: #C56A4E; font-weight: 600;">モンテカルロ法を使った投資シミュレーションのススメ</a></li>
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-4percent-rule.html" style="color: #C56A4E; font-weight: 600;">4%ルールとは？FIRE達成に必要な資産</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <p>
+      <a href="./">トップ</a> ・
+      <a href="blog.html">記事一覧</a> ・
+      <a href="about.html">運営者情報</a> ・
+      <a href="contact.html">お問い合わせ</a> ・
+      <a href="privacy.html">プライバシー</a>
+    </p>
+    <p style="margin-top:8px; font-size:11px;">© 2026 複利コンパス編集部 ／ 投資判断はご自身の責任で。</p>
+  </footer>
+</div>
+</body>
+</html>

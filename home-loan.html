@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>住宅ローンコンパス｜繰上げ返済 vs 投資をモンテカルロで比較</title>
+<meta name="description" content="住宅ローンの月返済額・総支払額シミュレーター。繰上げ返済 vs 投資をMonte Carloで比較する独自ツール。完全無料・ブラウザ完結・データ送信なし。">
+<meta name="keywords" content="住宅ローン,シミュレーション,繰上げ返済,投資,フラット35,変動金利">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FFFFFF' stroke='%231E3A5F' stroke-width='2'/%3E%3Cpath d='M8 18 L16 10 L24 18 L24 24 L8 24 Z' fill='%23C56A4E'/%3E%3Cpath d='M14 24 L14 18 L18 18 L18 24' fill='%23FFFFFF'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="住宅ローンコンパス｜繰上げ vs 投資をモンテカルロで比較">
+<meta property="og:description" content="住宅ローンの返済シミュ＋繰上げ返済vs投資の比較ツール。完全無料。">
+<meta property="og:image" content="og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root {
+  --bg: #F7F3EC;
+  --primary: #1E3A5F;
+  --accent: #C56A4E;
+  --soft: #FBC97A;
+  --text: #1E2A38;
+  --muted: #8E97A3;
+  --border: #E2D9C7;
+  --card: #FFFFFF;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.7;
+  font-size: 16px;
+}
+.page { max-width: 720px; margin: 0 auto; padding: 36px 20px 80px; }
+
+header.hero { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+header.hero a { text-decoration: none; color: var(--primary); font-size: 13px; font-weight: 600; }
+header.hero a:hover { color: var(--accent); }
+.beta-tag { display: inline-block; background: var(--soft); color: var(--primary); padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; margin-left: 8px; }
+h1 { font-size: 28px; font-weight: 800; margin: 10px 0 6px; line-height: 1.4; color: var(--primary); }
+.subtitle { font-size: 14px; color: var(--muted); margin: 0; }
+
+.tab-nav { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+.tab-btn {
+  padding: 10px 14px; border-radius: 10px 10px 0 0;
+  background: transparent; color: var(--muted); border: none;
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  border-bottom: 3px solid transparent; transition: all 0.15s;
+}
+.tab-btn:hover { color: var(--primary); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+  padding: 28px; margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(30,42,56,.06);
+}
+.card h2 { font-size: 20px; font-weight: 700; margin: 0 0 14px; padding-left: 12px; border-left: 4px solid var(--accent); color: var(--primary); }
+.card h3 { font-size: 16px; font-weight: 700; margin: 18px 0 8px; color: var(--primary); }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0 18px; }
+@media (max-width: 580px) { .form-grid { grid-template-columns: 1fr; } }
+.form-grid label {
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: 12px; color: var(--muted); font-weight: 600;
+}
+.form-grid input, .form-grid select {
+  padding: 10px 12px; font-size: 15px;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: #FAF6EE; color: var(--text);
+}
+.form-grid input:focus, .form-grid select:focus {
+  outline: none; border-color: var(--accent); background: #FFFFFF;
+}
+
+.calc-btn {
+  display: inline-block; padding: 12px 28px; border-radius: 10px;
+  background: var(--primary); color: white; border: none; cursor: pointer;
+  font-size: 15px; font-weight: 700;
+  transition: all 0.15s;
+}
+.calc-btn:hover { background: #2C4A75; transform: translateY(-1px); }
+
+.result-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 18px; }
+@media (max-width: 580px) { .result-grid { grid-template-columns: 1fr; } }
+.result-card {
+  background: linear-gradient(135deg, #FBF8F1, #F4DDD2);
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px; text-align: center;
+}
+.result-label { font-size: 11px; color: var(--muted); font-weight: 600; }
+.result-value { font-size: 22px; font-weight: 800; color: var(--accent); margin-top: 4px; }
+.result-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.coming-soon {
+  background: linear-gradient(135deg, #FBF8F1 0%, #F4DDD2 100%);
+  border: 1px dashed var(--accent);
+}
+.coming-soon-tag {
+  display: inline-block; background: var(--accent); color: white;
+  padding: 3px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 700; margin-bottom: 10px;
+}
+
+.feature-list { font-size: 14px; color: var(--text); padding-left: 20px; }
+.feature-list li { margin-bottom: 6px; }
+
+.cross-promo {
+  background: linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%);
+  color: white; padding: 24px 28px; border-radius: 16px; margin: 20px 0; text-align: center;
+}
+.cross-promo h3 { color: var(--soft); margin: 0 0 8px; font-size: 16px; }
+.cross-promo p { color: rgba(255,255,255,0.9); margin: 0 0 12px; font-size: 14px; }
+.cross-promo a { display: inline-block; background: var(--soft); color: var(--primary); padding: 10px 24px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px; }
+
+footer { text-align: center; margin-top: 32px; font-size: 12px; color: var(--muted); }
+footer a { color: #4A5568; text-decoration: none; margin: 0 8px; }
+
+.disclaimer { background: #FBF8F1; border-left: 4px solid var(--primary); padding: 12px 16px; margin: 14px 0; font-size: 12px; color: #4A5568; border-radius: 4px; }
+
+.vs-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+@media (max-width: 580px) { .vs-grid { grid-template-columns: 1fr; } }
+.vs-card { padding: 16px; border-radius: 12px; background: white; border: 1px solid var(--border); transition: transform 0.15s; }
+.vs-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(30,42,56,.10); }
+.vs-card.a { border-left: 4px solid var(--primary); }
+.vs-card.b { border-left: 4px solid var(--accent); }
+.vs-card.c { border-left: 4px solid var(--soft); }
+.vs-card h4 { margin: 0 0 6px; font-size: 13px; font-weight: 700; color: var(--primary); }
+.vs-card .median-val { font-size: 22px; font-weight: 800; color: var(--accent); line-height: 1.1; }
+.vs-card .vs-range { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+.vs-card.winner { background: linear-gradient(135deg, #FBE9D2, #F4DDD2); border-color: var(--accent); border-width: 2px; }
+.vs-card .winner-tag { display: inline-block; background: var(--accent); color: white; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <a href="./">🧭 複利コンパス</a> ・ <a href="study-plan.html">📒 学習計画</a> ・ <a href="diet.html">🥗 ダイエット</a> ・ <a href="blog.html">📚 記事</a>
+    <h1>🏠 住宅ローンコンパス<span class="beta-tag">β版</span></h1>
+    <p class="subtitle">月返済シミュ + 繰上げ vs 投資をモンテカルロで比較する独自ツール</p>
+  </header>
+
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="basic" onclick="setTab(this, 'basic')">📊 基本シミュ</button>
+    <button class="tab-btn" data-tab="vs" onclick="setTab(this, 'vs')">⚖ 繰上 vs 投資</button>
+    <button class="tab-btn" data-tab="stress" onclick="setTab(this, 'stress')">📈 金利ストレス</button>
+    <button class="tab-btn" data-tab="compare" onclick="setTab(this, 'compare')">🏷 商品比較</button>
+  </div>
+
+  <!-- ===== TAB 1: 基本シミュレーション ===== -->
+  <div class="tab-panel active" data-panel="basic">
+    <div class="card">
+      <h2>基本シミュレーション（元利均等返済）</h2>
+      <p style="font-size:14px; color:var(--muted); margin:0 0 8px;">借入条件を入力すると、月返済額・総支払額・利息合計を計算します。</p>
+
+      <div class="form-grid">
+        <label>借入金額（万円）<input id="loan" type="number" value="3000" min="100" max="20000"></label>
+        <label>金利（年率 %）<input id="rate" type="number" value="1.0" step="0.05" min="0" max="10"></label>
+        <label>返済期間（年）<input id="years" type="number" value="35" min="5" max="50"></label>
+        <label>返済方式<select id="method">
+          <option value="equal">元利均等</option>
+          <option value="principal">元金均等</option>
+        </select></label>
+      </div>
+
+      <button class="calc-btn" onclick="calcBasic()">計算する</button>
+
+      <div id="basicResult" style="display:none;">
+        <div class="result-grid">
+          <div class="result-card">
+            <div class="result-label">月返済額</div>
+            <div class="result-value" id="monthlyPay">—</div>
+            <div class="result-sub">毎月の支払い</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">総支払額</div>
+            <div class="result-value" id="totalPay">—</div>
+            <div class="result-sub">期間中の合計</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">利息合計</div>
+            <div class="result-value" id="totalInterest">—</div>
+            <div class="result-sub">元本との差額</div>
+          </div>
+        </div>
+
+        <div id="chartArea" style="margin-top:18px;"></div>
+
+        <div class="disclaimer">
+          ※ 元利均等返済の概算です。実際は手数料・保証料・団信などが加算されます。あくまで参考値としてご利用ください。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 2: 繰上 vs 投資 ===== -->
+  <div class="tab-panel" data-panel="vs">
+    <div class="card">
+      <h2>繰上げ返済 vs 投資 比較 <span style="font-size:11px;color:var(--accent);font-weight:700;background:#FBE9D2;padding:2px 8px;border-radius:999px;">★ 独自機能</span></h2>
+      <p style="font-size:14px; color:var(--muted); margin:0 0 14px;">月X万の余剰資金を、繰上げに回すか投資に回すか — 30年後の純資産をMonte Carlo 1,000本で比較します。</p>
+
+      <div class="form-grid">
+        <label>ローン残高（万円）<input id="vsLoan" type="number" value="3000" min="100" max="20000"></label>
+        <label>ローン金利（%）<input id="vsRate" type="number" value="1.0" step="0.05" min="0" max="10"></label>
+        <label>残期間（年）<input id="vsYears" type="number" value="30" min="5" max="50"></label>
+        <label>月余剰資金（万円）<input id="vsExtra" type="number" value="5" min="1" max="50"></label>
+        <label>投資 期待リターン（%）<input id="vsReturn" type="number" value="5" step="0.5" min="0" max="15"></label>
+        <label>投資 ボラティリティ（%）<input id="vsVol" type="number" value="12" step="1" min="0" max="50"></label>
+      </div>
+
+      <button class="calc-btn" onclick="calcVs()">3パターン比較する（Monte Carlo 1,000本）</button>
+
+      <div id="vsResult" style="display:none; margin-top:18px;">
+        <h3 style="margin-top:0;">30年後の純資産（投資資産 − ローン残高）</h3>
+        <div class="vs-grid" id="vsGrid"></div>
+        <div id="vsChart" style="margin-top:18px;"></div>
+        <div style="background:#FBF8F1;border-radius:10px;padding:14px 18px;margin-top:14px;font-size:13px;line-height:1.7;">
+          <strong style="color:var(--primary);">📖 読み方:</strong><br>
+          🅐 確定値で安全（投資リスクなし、心理的ラク）<br>
+          🅑 中央値は最大だが、悲観シナリオではAより低くなる場合も<br>
+          🅒 中間。リスク分散したい人向け<br>
+          <span style="color:var(--muted);font-size:12px;">※ Aは確定計算、B/Cは確率分布。p10は「20回中2回しか起きない悪いシナリオ」</span>
+        </div>
+        <div class="disclaimer">
+          ※ 実際は税制（住宅ローン控除）・運用コスト・繰上手数料等で結果は変動します。意思決定の参考値として。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 3: 金利ストレステスト ===== -->
+  <div class="tab-panel" data-panel="stress">
+    <div class="card">
+      <h2>金利ストレステスト <span style="font-size:11px;color:var(--accent);font-weight:700;background:#FBE9D2;padding:2px 8px;border-radius:999px;">変動金利の人は必須</span></h2>
+      <p style="font-size:14px; color:var(--muted); margin:0 0 14px;">変動金利を選んだ場合の「金利上昇」シナリオを4パターン同時に試算します。</p>
+
+      <div class="form-grid">
+        <label>借入残高（万円）<input id="stLoan" type="number" value="3000" min="100" max="20000"></label>
+        <label>現在の金利（%）<input id="stRate" type="number" value="0.5" step="0.05" min="0" max="10"></label>
+        <label>残期間（年）<input id="stYears" type="number" value="35" min="5" max="50"></label>
+        <label>金利上昇のタイミング（年後）<input id="stRiseYear" type="number" value="5" min="1" max="40"></label>
+      </div>
+
+      <button class="calc-btn" onclick="calcStress()">4シナリオ比較</button>
+
+      <div id="stResult" style="display:none; margin-top:18px;">
+        <h3 style="margin-top:0;">シナリオ別 総支払額・月返済額</h3>
+        <div class="vs-grid" id="stGrid"></div>
+        <div id="stChart" style="margin-top:18px;"></div>
+        <div style="background:#FBF8F1;border-radius:10px;padding:14px 18px;margin-top:14px;font-size:13px;line-height:1.7;">
+          <strong style="color:var(--primary);">📖 読み方:</strong><br>
+          ・現状維持シナリオを「基準」として、各シナリオの増加額を比較<br>
+          ・月返済額は「金利上昇後」の新しい返済額（変動金利は再計算される）<br>
+          <span style="color:var(--muted);font-size:12px;">※ 5年ルール・125%ルール等の優遇措置は考慮していません。最悪ケースの目安として。</span>
+        </div>
+        <div class="disclaimer">
+          ※ 実際の変動金利には金融機関ごとのルール（5年ルール・125%上限）があります。本シミュは「単純な再計算」のみで、保守的な目安として使ってください。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 4: 商品比較 ===== -->
+  <div class="tab-panel" data-panel="compare">
+    <div class="card">
+      <h2>住宅ローン商品比較ガイド</h2>
+      <p style="font-size:14px; color:var(--muted); margin:0 0 14px;">主要4タイプの特徴・金利水準・向いている人を一覧で比較。</p>
+
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;margin:0 0 16px;">
+          <thead>
+            <tr style="background:var(--primary);color:white;">
+              <th style="padding:10px;text-align:left;font-size:12px;">タイプ</th>
+              <th style="padding:10px;text-align:right;font-size:12px;">金利水準*</th>
+              <th style="padding:10px;text-align:left;font-size:12px;">変動有無</th>
+              <th style="padding:10px;text-align:left;font-size:12px;">特徴</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:10px;"><strong>変動金利</strong><br><span style="color:var(--muted);font-size:11px;">民間銀行</span></td>
+              <td style="padding:10px;text-align:right;font-weight:700;color:var(--accent);">0.3〜0.7%</td>
+              <td style="padding:10px;">変動<br><span style="color:var(--muted);font-size:11px;">半年ごと見直し</span></td>
+              <td style="padding:10px;">低金利だが将来上昇リスクあり。5年ルール等で激変緩和。</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);background:#FBF8F1;">
+              <td style="padding:10px;"><strong>10年固定</strong><br><span style="color:var(--muted);font-size:11px;">民間銀行</span></td>
+              <td style="padding:10px;text-align:right;font-weight:700;color:var(--accent);">0.7〜1.2%</td>
+              <td style="padding:10px;">10年は固定<br><span style="color:var(--muted);font-size:11px;">11年目以降変動</span></td>
+              <td style="padding:10px;">最初の10年だけ安定したい人向け。子育て前半と相性◎。</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:10px;"><strong>フラット35</strong><br><span style="color:var(--muted);font-size:11px;">住宅金融支援機構</span></td>
+              <td style="padding:10px;text-align:right;font-weight:700;color:var(--accent);">1.5〜1.9%</td>
+              <td style="padding:10px;">全期間固定<br><span style="color:var(--muted);font-size:11px;">35年間変わらず</span></td>
+              <td style="padding:10px;">金利上昇に対する完全保険。返済額が35年間確定で安心。</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);background:#FBF8F1;">
+              <td style="padding:10px;"><strong>ミックスローン</strong><br><span style="color:var(--muted);font-size:11px;">変動+固定 併用</span></td>
+              <td style="padding:10px;text-align:right;font-weight:700;color:var(--accent);">0.5〜1.5%</td>
+              <td style="padding:10px;">一部固定<br><span style="color:var(--muted);font-size:11px;">残りは変動</span></td>
+              <td style="padding:10px;">変動と固定を組み合わせてリスク分散。配分は自由設計。</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:11px;color:var(--muted);">* 2026年5月時点の金融機関平均（実際の金利は審査・属性により変動）</p>
+      </div>
+
+      <h3 style="margin-top:24px;">どのタイプを選ぶべき？— 簡易フローチャート</h3>
+
+      <div style="background:#FBF8F1;border-radius:12px;padding:16px 20px;margin:14px 0;">
+        <div style="font-size:13px;line-height:1.9;">
+          <strong style="color:var(--primary);">Q1. 金利上昇のリスクをどれくらい気にしますか？</strong>
+          <ul style="margin:6px 0 14px;padding-left:20px;">
+            <li><strong>絶対避けたい / 35年安定が最優先</strong> → <span style="color:var(--accent);font-weight:700;">フラット35</span></li>
+            <li><strong>多少リスク取って低金利を取りたい</strong> → 次へ</li>
+          </ul>
+
+          <strong style="color:var(--primary);">Q2. 繰上げ返済する余力はありますか？</strong>
+          <ul style="margin:6px 0 14px;padding-left:20px;">
+            <li><strong>YES（年100万以上の余剰収入）</strong> → <span style="color:var(--accent);font-weight:700;">変動金利</span>（金利上昇前に元本を減らせる）</li>
+            <li><strong>NO / わからない</strong> → 次へ</li>
+          </ul>
+
+          <strong style="color:var(--primary);">Q3. 返済期間と人生プラン</strong>
+          <ul style="margin:6px 0;padding-left:20px;">
+            <li><strong>子育てピークが10年以内に終わる</strong> → <span style="color:var(--accent);font-weight:700;">10年固定</span></li>
+            <li><strong>長期で安定とリスク分散の両立</strong> → <span style="color:var(--accent);font-weight:700;">ミックスローン</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="margin-top:24px;">3つの判断軸</h3>
+
+      <div class="vs-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+        <div class="vs-card" style="border-left:4px solid #16A34A;">
+          <h4 style="color:#16A34A;">💰 金利の絶対水準</h4>
+          <p style="font-size:12px;color:var(--text);margin:0;line-height:1.6;">変動 < 10年固定 < ミックス < フラット35。短期だけ見るなら変動が最安。</p>
+        </div>
+        <div class="vs-card" style="border-left:4px solid #C56A4E;">
+          <h4 style="color:#C56A4E;">⚠ 上昇リスク耐性</h4>
+          <p style="font-size:12px;color:var(--text);margin:0;line-height:1.6;">フラット35 > ミックス > 10年固定 > 変動。心理的安心はフラット35が圧倒。</p>
+        </div>
+        <div class="vs-card" style="border-left:4px solid #1E3A5F;">
+          <h4 style="color:#1E3A5F;">🔄 繰上げ柔軟性</h4>
+          <p style="font-size:12px;color:var(--text);margin:0;line-height:1.6;">変動・10年固定は無料繰上げ可、フラット35は有料の場合あり。</p>
+        </div>
+      </div>
+
+      <div class="disclaimer" style="margin-top:20px;">
+        ※ 金利は2026年5月時点の市場平均値です。実際の金利は金融機関・属性・物件により大きく変動します。最終判断は複数行に相見積もりを取って比較してください。
+      </div>
+    </div>
+
+    <!-- 関連ブログ -->
+    <div class="card">
+      <h3 style="margin-top:0;">📚 関連記事（複利コンパス内）</h3>
+      <ul style="font-size:14px; line-height:1.9; padding-left:20px; margin:0;">
+        <li><a href="blog-monte-carlo.html" style="color:var(--accent); font-weight:600;">モンテカルロ法を使った投資シミュレーションのススメ</a> — 繰上げvs投資判断の前提</li>
+        <li><a href="blog-4percent-rule.html" style="color:var(--accent); font-weight:600;">4%ルールとFIRE達成資産</a> — 住宅ローン完済後の人生設計</li>
+        <li><a href="blog-shintaku-1percent.html" style="color:var(--accent); font-weight:600;">信託報酬1%の差で30年後の差</a> — 投資側の重要論点</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="cross-promo">
+    <h3>姉妹ツール（Monte Carlo計画ツール）</h3>
+    <p>資産形成・学習計画・ダイエットも同じシミュレーション方式</p>
+    <a href="./">複利コンパス</a>
+    <a href="study-plan.html">学習計画</a>
+    <a href="diet.html">ダイエット</a>
+  </div>
+
+  <footer>
+    <p>
+      <a href="./">トップ</a> ・
+      <a href="blog.html">記事一覧</a> ・
+      <a href="about.html">運営者情報</a> ・
+      <a href="contact.html">お問い合わせ</a> ・
+      <a href="privacy.html">プライバシー</a>
+    </p>
+    <p style="margin-top:8px; font-size:11px;">© 2026 複利コンパス編集部 ／ 投資判断はご自身の責任で。</p>
+  </footer>
+</div>
+
+<script>
+function setTab(btn, name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('[data-panel="' + name + '"]').classList.add('active');
+}
+
+function fmt(n) {
+  if (n >= 100000000) return (n/100000000).toFixed(2) + '億';
+  if (n >= 10000) return Math.round(n/10000).toLocaleString() + '万';
+  return Math.round(n).toLocaleString() + '円';
+}
+
+function calcBasic() {
+  const P = parseFloat(document.getElementById('loan').value) * 10000;
+  const annualRate = parseFloat(document.getElementById('rate').value) / 100;
+  const r = annualRate / 12;
+  const n = parseInt(document.getElementById('years').value) * 12;
+  const method = document.getElementById('method').value;
+
+  let monthly, total, interest;
+  let principalSeries = [], interestSeries = [];
+
+  if (method === 'equal') {
+    // 元利均等
+    if (r === 0) {
+      monthly = P / n;
+    } else {
+      monthly = P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+    }
+    total = monthly * n;
+    interest = total - P;
+    // 年単位で principal/interest 累計を計算
+    let bal = P;
+    for (let m = 1; m <= n; m++) {
+      const i = bal * r;
+      const p = monthly - i;
+      bal -= p;
+      if (m % 12 === 0) {
+        principalSeries.push(P - bal);
+        interestSeries.push((P - bal) + (m * monthly - (P - bal)));
+      }
+    }
+  } else {
+    // 元金均等
+    const principalMonthly = P / n;
+    let bal = P;
+    let totalSum = 0;
+    let firstMonthly = 0;
+    for (let m = 1; m <= n; m++) {
+      const i = bal * r;
+      const pay = principalMonthly + i;
+      if (m === 1) firstMonthly = pay;
+      totalSum += pay;
+      bal -= principalMonthly;
+      if (m % 12 === 0) {
+        principalSeries.push(P - bal);
+        interestSeries.push(totalSum);
+      }
+    }
+    monthly = firstMonthly; // 初月返済額（漸減）
+    total = totalSum;
+    interest = total - P;
+  }
+
+  document.getElementById('monthlyPay').textContent = fmt(monthly);
+  document.getElementById('totalPay').textContent = fmt(total);
+  document.getElementById('totalInterest').textContent = fmt(interest);
+  document.getElementById('basicResult').style.display = 'block';
+
+  // 元金/利息 推移チャート（簡易版）
+  renderStackedChart(principalSeries, interestSeries, P);
+}
+
+function renderStackedChart(principals, totals, loanP) {
+  const years = principals.length;
+  const maxVal = Math.max(...totals);
+  const niceMax = Math.ceil(maxVal / 10000000) * 10000000; // 1000万円単位で切り上げ
+  const W = 600, H = 280, padL = 60, padR = 20, padT = 30, padB = 40;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+
+  let bars = '';
+  const barW = plotW / years * 0.7;
+  const barGap = plotW / years * 0.3;
+  for (let i = 0; i < years; i++) {
+    const x = padL + (plotW / years) * i + barGap / 2;
+    const principalH = (principals[i] / niceMax) * plotH;
+    const interestH = ((totals[i] - principals[i]) / niceMax) * plotH;
+    const yPrincipal = padT + plotH - principalH;
+    const yInterest = yPrincipal - interestH;
+    bars += `<rect x="${x}" y="${yPrincipal}" width="${barW}" height="${principalH}" fill="#1E3A5F"/>`;
+    bars += `<rect x="${x}" y="${yInterest}" width="${barW}" height="${interestH}" fill="#C56A4E"/>`;
+  }
+
+  let yLabels = '';
+  for (let i = 0; i <= 4; i++) {
+    const val = niceMax * i / 4;
+    const y = padT + plotH - (i / 4) * plotH;
+    yLabels += `<text x="${padL - 6}" y="${y + 3}" text-anchor="end" font-size="10" fill="#8E97A3">${fmt(val)}</text>`;
+    yLabels += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#EFE9DD"/>`;
+  }
+
+  const xLabels = `<text x="${padL}" y="${H - 10}" font-size="10" fill="#8E97A3">1年</text>
+                   <text x="${W - padR}" y="${H - 10}" text-anchor="end" font-size="10" fill="#8E97A3">${years}年</text>`;
+
+  const legend = `
+    <rect x="${W - 180}" y="10" width="10" height="10" fill="#1E3A5F"/>
+    <text x="${W - 165}" y="19" font-size="11" fill="#1E3A5F">元金累計</text>
+    <rect x="${W - 100}" y="10" width="10" height="10" fill="#C56A4E"/>
+    <text x="${W - 85}" y="19" font-size="11" fill="#C56A4E">利息累計</text>
+  `;
+
+  document.getElementById('chartArea').innerHTML = `
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; max-width:${W}px;" xmlns="http://www.w3.org/2000/svg">
+      <rect width="${W}" height="${H}" fill="#FBF8F1" rx="8"/>
+      ${yLabels}
+      ${bars}
+      <line x1="${padL}" y1="${padT + plotH}" x2="${W - padR}" y2="${padT + plotH}" stroke="#1E2A38" stroke-width="1.5"/>
+      ${xLabels}
+      ${legend}
+    </svg>
+    <p style="font-size:11px; color:var(--muted); text-align:center; margin-top:6px;">図: 年次の元金累計・利息累計の推移</p>
+  `;
+}
+
+// ===== Tab 2: 繰上 vs 投資 Monte Carlo =====
+
+function gaussian() {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+function calcMonthly(P, r, n) {
+  if (r === 0) return P / n;
+  return P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+}
+
+// パターンA: 全額繰上げ（確定計算、リスクなし）
+function simulatePrepay(loan, loanR, totalMonths, prepay, expReturn) {
+  let bal = loan;
+  const regular = calcMonthly(loan, loanR, totalMonths);
+  const invR = expReturn / 12;
+  let invested = 0;
+
+  for (let m = 1; m <= totalMonths; m++) {
+    if (bal > 0) {
+      const interest = bal * loanR;
+      let principal = (regular - interest) + prepay;
+      principal = Math.min(principal, bal);
+      bal -= principal;
+    } else {
+      // 完済後は浮いた分（regular + prepay）を投資（確定リターン）
+      invested = invested * (1 + invR) + (regular + prepay);
+    }
+  }
+  return invested - Math.max(0, bal);
+}
+
+// パターンB: 全額投資（Monte Carlo）
+function simulateInvest(loan, loanR, totalMonths, investMonthly, expReturn, vol, MC) {
+  const mu = expReturn / 12;
+  const sigma = (vol / 100) / Math.sqrt(12);
+  const ends = [];
+
+  for (let i = 0; i < MC; i++) {
+    let invested = 0;
+    for (let m = 0; m < totalMonths; m++) {
+      const r = mu + sigma * gaussian();
+      invested = invested * (1 + r) + investMonthly;
+    }
+    // ローンは予定通り完済（残高0）
+    ends.push(invested);
+  }
+  ends.sort((a, b) => a - b);
+  return {
+    p10: ends[Math.floor(MC * 0.1)],
+    p50: ends[Math.floor(MC * 0.5)],
+    p90: ends[Math.floor(MC * 0.9)]
+  };
+}
+
+// パターンC: 半々（Monte Carlo）
+function simulateHalf(loan, loanR, totalMonths, prepay, expReturn, vol, MC) {
+  const regular = calcMonthly(loan, loanR, totalMonths);
+  const mu = expReturn / 12;
+  const sigma = (vol / 100) / Math.sqrt(12);
+  const halfPrepay = prepay / 2;
+  const halfInvest = prepay / 2;
+  const ends = [];
+
+  for (let i = 0; i < MC; i++) {
+    let bal = loan;
+    let invested = 0;
+
+    for (let m = 1; m <= totalMonths; m++) {
+      // ローン側: 通常返済 + 半額繰上げ
+      if (bal > 0) {
+        const interest = bal * loanR;
+        let principal = (regular - interest) + halfPrepay;
+        principal = Math.min(principal, bal);
+        bal -= principal;
+      } else {
+        // 完済後は通常返済+半繰上げ分も投資へ
+        const r = mu + sigma * gaussian();
+        invested = invested * (1 + r) + (regular + halfPrepay);
+      }
+      // 投資側: 半額は常に投資
+      const r2 = mu + sigma * gaussian();
+      invested = invested * (1 + r2) + halfInvest;
+    }
+    ends.push(invested - Math.max(0, bal));
+  }
+  ends.sort((a, b) => a - b);
+  return {
+    p10: ends[Math.floor(MC * 0.1)],
+    p50: ends[Math.floor(MC * 0.5)],
+    p90: ends[Math.floor(MC * 0.9)]
+  };
+}
+
+function calcVs() {
+  const loan = parseFloat(document.getElementById('vsLoan').value) * 10000;
+  const rate = parseFloat(document.getElementById('vsRate').value) / 100 / 12;
+  const months = parseInt(document.getElementById('vsYears').value) * 12;
+  const extra = parseFloat(document.getElementById('vsExtra').value) * 10000;
+  const expReturn = parseFloat(document.getElementById('vsReturn').value) / 100;
+  const vol = parseFloat(document.getElementById('vsVol').value);
+  const MC = 1000;
+
+  const a = simulatePrepay(loan, rate, months, extra, expReturn);
+  const b = simulateInvest(loan, rate, months, extra, expReturn, vol, MC);
+  const c = simulateHalf(loan, rate, months, extra, expReturn, vol, MC);
+
+  // どの中央値が最大か
+  const medians = [
+    { name: 'a', val: a },
+    { name: 'b', val: b.p50 },
+    { name: 'c', val: c.p50 }
+  ];
+  medians.sort((x, y) => y.val - x.val);
+  const winner = medians[0].name;
+
+  const card = (key, title, value, range) => {
+    const isWin = key === winner;
+    return `
+      <div class="vs-card ${key} ${isWin ? 'winner' : ''}">
+        ${isWin ? '<span class="winner-tag">★ 中央値ベスト</span>' : ''}
+        <h4>${title}</h4>
+        <div class="median-val">${fmt(value)}</div>
+        <div class="vs-range">${range}</div>
+      </div>
+    `;
+  };
+
+  document.getElementById('vsGrid').innerHTML =
+    card('a', '🅐 全額繰上げ', a, '確定値（投資リスクなし）') +
+    card('b', '🅑 全額投資', b.p50, `悲観 ${fmt(b.p10)} 〜 楽観 ${fmt(b.p90)}`) +
+    card('c', '🅒 半々（リスク分散）', c.p50, `悲観 ${fmt(c.p10)} 〜 楽観 ${fmt(c.p90)}`);
+
+  document.getElementById('vsResult').style.display = 'block';
+  renderVsChart(a, b, c);
+}
+
+function renderVsChart(a, b, c) {
+  const W = 600, H = 220, padL = 70, padR = 30, padT = 20, padB = 40;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const maxVal = Math.max(a, b.p90, c.p90);
+  const niceMax = Math.ceil(maxVal / 10000000) * 10000000;
+  const sx = v => padL + (v / niceMax) * plotW;
+
+  const barH = 26, gap = 18;
+  const yA = padT, yB = padT + barH + gap, yC = padT + (barH + gap) * 2;
+
+  const svg = `
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto;" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="繰上げ・投資・半々の3パターン純資産比較">
+      <rect width="${W}" height="${H}" fill="#FBF8F1" rx="8"/>
+
+      <!-- A: 確定 -->
+      <text x="${padL-8}" y="${yA+barH/2+4}" text-anchor="end" font-size="11" font-weight="700" fill="#1E3A5F">A: 繰上</text>
+      <rect x="${padL}" y="${yA}" width="${sx(a)-padL}" height="${barH}" fill="#1E3A5F" rx="3"/>
+      <text x="${sx(a)+6}" y="${yA+barH/2+4}" font-size="11" font-weight="700" fill="#1E3A5F">${fmt(a)}</text>
+
+      <!-- B: 投資（p10〜p90帯 + 中央値） -->
+      <text x="${padL-8}" y="${yB+barH/2+4}" text-anchor="end" font-size="11" font-weight="700" fill="#C56A4E">B: 投資</text>
+      <rect x="${sx(b.p10)}" y="${yB}" width="${sx(b.p90)-sx(b.p10)}" height="${barH}" fill="#C56A4E" opacity="0.3" rx="3"/>
+      <line x1="${sx(b.p50)}" y1="${yB-3}" x2="${sx(b.p50)}" y2="${yB+barH+3}" stroke="#C56A4E" stroke-width="3"/>
+      <text x="${sx(b.p50)}" y="${yB-6}" text-anchor="middle" font-size="10" font-weight="700" fill="#C56A4E">中央値 ${fmt(b.p50)}</text>
+
+      <!-- C: 半々 -->
+      <text x="${padL-8}" y="${yC+barH/2+4}" text-anchor="end" font-size="11" font-weight="700" fill="#B45309">C: 半々</text>
+      <rect x="${sx(c.p10)}" y="${yC}" width="${sx(c.p90)-sx(c.p10)}" height="${barH}" fill="#FBC97A" opacity="0.6" rx="3"/>
+      <line x1="${sx(c.p50)}" y1="${yC-3}" x2="${sx(c.p50)}" y2="${yC+barH+3}" stroke="#B45309" stroke-width="3"/>
+      <text x="${sx(c.p50)}" y="${yC-6}" text-anchor="middle" font-size="10" font-weight="700" fill="#B45309">中央値 ${fmt(c.p50)}</text>
+
+      <!-- 軸 -->
+      <line x1="${padL}" y1="${H-padB+5}" x2="${W-padR}" y2="${H-padB+5}" stroke="#1E2A38" stroke-width="1.5"/>
+      <text x="${padL}" y="${H-padB+22}" font-size="10" fill="#8E97A3">0</text>
+      <text x="${(padL+W-padR)/2}" y="${H-padB+22}" text-anchor="middle" font-size="10" fill="#8E97A3">${fmt(niceMax/2)}</text>
+      <text x="${W-padR}" y="${H-padB+22}" text-anchor="end" font-size="10" fill="#8E97A3">${fmt(niceMax)}</text>
+    </svg>
+    <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px;">図: 30年後の純資産比較（B,C は p10〜p90 の80%帯と中央値）</p>
+  `;
+  document.getElementById('vsChart').innerHTML = svg;
+}
+
+// ===== Tab 3: 金利ストレステスト =====
+
+function simulateRateScenario(loan, baseRate, totalMonths, riseAtMonth, riseDelta) {
+  // 現在の金利でスタート → riseAtMonth で金利が riseDelta 上がる
+  // 月返済額は据え置き5年などのルールは考慮せず、即再計算（保守的シナリオ）
+  let bal = loan;
+  let mRate = baseRate / 12;
+  let monthly = calcMonthly(loan, mRate, totalMonths);
+  let totalPaid = 0;
+  let monthlyAfterRise = monthly;
+
+  for (let m = 1; m <= totalMonths; m++) {
+    if (m === riseAtMonth) {
+      mRate = (baseRate + riseDelta) / 12;
+      const remainingMonths = totalMonths - m + 1;
+      monthly = calcMonthly(bal, mRate, remainingMonths);
+      monthlyAfterRise = monthly;
+    }
+    const interest = bal * mRate;
+    const principal = monthly - interest;
+    bal -= principal;
+    totalPaid += monthly;
+  }
+  return { totalPaid, monthlyAfterRise };
+}
+
+function calcStress() {
+  const loan = parseFloat(document.getElementById('stLoan').value) * 10000;
+  const baseRate = parseFloat(document.getElementById('stRate').value) / 100;
+  const totalMonths = parseInt(document.getElementById('stYears').value) * 12;
+  const riseAtMonth = parseInt(document.getElementById('stRiseYear').value) * 12;
+
+  const scenarios = [
+    { label: '現状維持', delta: 0, color: '#16A34A', cls: 'a' },
+    { label: '+1% 上昇', delta: 0.01, color: '#1E3A5F', cls: 'b' },
+    { label: '+2% 上昇', delta: 0.02, color: '#C56A4E', cls: 'c' },
+    { label: '+3% 上昇', delta: 0.03, color: '#B91C1C', cls: 'd' }
+  ];
+
+  const results = scenarios.map(s => ({
+    ...s,
+    ...simulateRateScenario(loan, baseRate, totalMonths, riseAtMonth, s.delta)
+  }));
+
+  const baseline = results[0].totalPaid;
+
+  const card = (s, r) => {
+    const diff = r.totalPaid - baseline;
+    const diffStr = diff === 0 ? '基準' : `+${fmt(diff)}`;
+    const color = s.delta === 0 ? '#16A34A' : (s.delta >= 0.02 ? '#B91C1C' : '#C56A4E');
+    return `
+      <div class="vs-card" style="border-left: 4px solid ${color};">
+        <h4 style="color:${color};">${s.label}</h4>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">月返済額（上昇後）</div>
+        <div class="median-val" style="color:${color};font-size:18px;">${fmt(r.monthlyAfterRise)}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px;">総支払額</div>
+        <div style="font-size:14px;font-weight:700;color:var(--primary);">${fmt(r.totalPaid)}</div>
+        <div style="font-size:11px;color:${color};font-weight:700;margin-top:4px;">${diffStr}</div>
+      </div>
+    `;
+  };
+
+  document.getElementById('stGrid').innerHTML =
+    `<div class="vs-grid" style="grid-template-columns: repeat(4, 1fr);">` +
+    scenarios.map((s, i) => card(s, results[i])).join('') +
+    `</div>`;
+
+  document.getElementById('stResult').style.display = 'block';
+  renderStressChart(results);
+}
+
+function renderStressChart(results) {
+  const W = 600, H = 240, padL = 80, padR = 30, padT = 30, padB = 40;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const maxVal = Math.max(...results.map(r => r.totalPaid));
+  const niceMax = Math.ceil(maxVal / 10000000) * 10000000;
+  const sx = v => padL + (v / niceMax) * plotW;
+
+  const barH = 28, gap = 14;
+  let svg = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto;" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="金利上昇シナリオ別の総支払額比較">
+    <rect width="${W}" height="${H}" fill="#FBF8F1" rx="8"/>
+    <text x="${W/2}" y="20" text-anchor="middle" font-size="12" font-weight="700" fill="#1E3A5F">金利上昇シナリオ別 総支払額</text>`;
+
+  results.forEach((r, i) => {
+    const y = padT + (barH + gap) * i;
+    const w = sx(r.totalPaid) - padL;
+    svg += `<text x="${padL-8}" y="${y+barH/2+4}" text-anchor="end" font-size="11" font-weight="700" fill="${r.color}">${r.label}</text>`;
+    svg += `<rect x="${padL}" y="${y}" width="${w}" height="${barH}" fill="${r.color}" opacity="0.85" rx="3"/>`;
+    svg += `<text x="${padL+w-6}" y="${y+barH/2+4}" text-anchor="end" font-size="11" font-weight="700" fill="white">${fmt(r.totalPaid)}</text>`;
+  });
+
+  // 軸
+  svg += `<line x1="${padL}" y1="${H-padB+5}" x2="${W-padR}" y2="${H-padB+5}" stroke="#1E2A38" stroke-width="1.5"/>`;
+  svg += `<text x="${padL}" y="${H-padB+22}" font-size="10" fill="#8E97A3">0</text>`;
+  svg += `<text x="${(padL+W-padR)/2}" y="${H-padB+22}" text-anchor="middle" font-size="10" fill="#8E97A3">${fmt(niceMax/2)}</text>`;
+  svg += `<text x="${W-padR}" y="${H-padB+22}" text-anchor="end" font-size="10" fill="#8E97A3">${fmt(niceMax)}</text>`;
+  svg += `</svg>
+    <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px;">図: 金利上昇シナリオ別の総支払額（バー長さが支払総額）</p>`;
+
+  document.getElementById('stChart').innerHTML = svg;
+}
+
+// 初回ロード時に自動計算
+window.addEventListener('DOMContentLoaded', calcBasic);
+</script>
+</body>
+</html>

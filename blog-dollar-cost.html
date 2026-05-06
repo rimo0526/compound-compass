@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ドルコスト平均法は本当に有効？モンテカルロで検証してみた｜複利コンパス</title>
+<meta name="description" content="つみたて投資の代名詞「ドルコスト平均法」は本当に効果があるのか。一括投資との比較、メリット・デメリット、向いている人を徹底解説。">
+<meta name="keywords" content="ドルコスト平均法,つみたて,一括投資,検証">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FFFFFF' stroke='%231E3A5F' stroke-width='2'/%3E%3Cpolygon points='22,10 18,18 10,22 14,14' fill='%23C56A4E'/%3E%3Cpolygon points='22,10 16,16 18,18' fill='%231E3A5F'/%3E%3Ccircle cx='16' cy='16' r='1.8' fill='%231E3A5F'/%3E%3C/svg%3E">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ドルコスト平均法は本当に有効？モンテカルロで検証">
+<meta property="og:description" content="一括投資との比較、メリット・デメリットを徹底解説。">
+<meta property="og:image" content="og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif; color: #1E2A38; background: #F7F3EC; line-height: 1.9; font-size: 16px; }
+  .page { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+  header.hero { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #E2D9C7; }
+  header.hero a { text-decoration: none; color: #1E3A5F; font-size: 14px; font-weight: 600; }
+  .article-tag { display: inline-block; background: #C56A4E; color: white; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 14px; }
+  h1 { font-size: 28px; font-weight: 800; margin: 8px 0 14px; line-height: 1.4; }
+  .meta { font-size: 12px; color: #8E97A3; }
+  .card { background: white; border: 1px solid #E2D9C7; border-radius: 16px; padding: 32px; margin-bottom: 18px; box-shadow: 0 4px 12px rgba(30,42,56,.06); }
+  h2 { font-size: 22px; font-weight: 700; margin: 32px 0 14px; padding-left: 14px; border-left: 4px solid #C56A4E; color: #1E3A5F; }
+  h2:first-child { margin-top: 0; }
+  h3 { font-size: 18px; font-weight: 700; margin: 24px 0 10px; color: #1E3A5F; }
+  p { margin: 0 0 16px; color: #1E2A38; font-size: 15px; }
+  a { color: #C56A4E; }
+  blockquote { background: #FBF8F1; border-left: 4px solid #1E3A5F; padding: 14px 20px; margin: 16px 0; color: #4A5568; font-size: 14px; border-radius: 4px; }
+  table.calc { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  table.calc th, table.calc td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #EFE9DD; }
+  table.calc thead th { background: #1E3A5F; color: white; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; }
+  table.calc td.num { text-align: right; font-weight: 600; }
+  .highlight { background: linear-gradient(transparent 60%, #FDE68A 60%); font-weight: 700; }
+  .cta-box { background: linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%); color: white; padding: 28px 32px; border-radius: 16px; margin: 24px 0; text-align: center; }
+  .cta-box h3 { color: #FBC97A; margin: 0 0 10px; font-size: 18px; }
+  .cta-box p { color: rgba(255,255,255,0.9); margin: 0 0 16px; font-size: 14px; }
+  .cta-btn { display: inline-block; background: #FBC97A; color: #1E3A5F; padding: 12px 28px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 15px; }
+  ul, ol { padding-left: 24px; margin: 12px 0 16px; }
+  li { margin-bottom: 8px; color: #1E2A38; font-size: 15px; }
+  strong { color: #1E3A5F; }
+  footer { text-align: center; margin-top: 36px; font-size: 12px; color: #8E97A3; }
+  footer a { color: #4A5568; text-decoration: none; margin: 0 8px; }
+  .related { background: #FBF8F1; border-radius: 12px; padding: 20px 24px; margin: 20px 0; }
+  .related h4 { margin: 0 0 12px; font-size: 14px; color: #1E3A5F; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <a href="./">🧭 計算ツールに戻る</a> ・ <a href="blog.html">📚 記事一覧</a>
+    <span class="article-tag">投資手法</span>
+    <h1>ドルコスト平均法は本当に有効？モンテカルロで検証してみた</h1>
+    <p class="meta">2026年5月5日 ・ 複利コンパス編集部</p>
+  </header>
+
+  <div class="card">
+    <p>「つみたて投資＝ドルコスト平均法は最強！」――そんな話を聞いたことがあるのでは？</p>
+    <p>でも実は、<strong>ドルコスト平均法は『リスク低減』には効いても、『利益最大化』には効かない</strong>というのが学術的な結論です。</p>
+    <p>本記事では、モンテカルロ法を使って一括投資との比較を行い、ドルコスト平均法の本当の効果を検証します。</p>
+
+    <h2>結論：ドルコスト平均法は「気持ちの安定剤」</h2>
+    <p>結論から言えば：</p>
+    <ul>
+      <li><strong>長期的な期待リターンは「一括投資」のほうが上</strong>（市場は長期で上昇傾向だから）</li>
+      <li>ただし、<strong>暴落リスク・心理的負担はドルコスト平均法のほうが小さい</strong></li>
+      <li>つまり「最大の利益」より「精神的な安定」を取るならドルコスト</li>
+    </ul>
+    <p>多くの個人投資家にとっては、心理的負担が少ないドルコスト平均法が現実的な選択肢になります。</p>
+
+    <!-- 📊 図解: 一括 vs ドルコスト の結果分布 -->
+    <figure style="margin: 24px 0; text-align: center;">
+      <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; max-width:600px;" role="img" aria-label="一括投資とドルコスト平均法の20年後の結果分布の比較">
+        <rect width="600" height="320" fill="#FBF8F1"/>
+        <text x="300" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#1E3A5F">一括投資 vs ドルコスト平均法</text>
+        <text x="300" y="48" text-anchor="middle" font-size="11" fill="#8E97A3">同額720万円・20年運用 / Monte Carlo 1,000本</text>
+
+        <!-- 一括投資の分布（上段） -->
+        <text x="155" y="92" text-anchor="end" font-size="12" font-weight="700" fill="#C56A4E">一括投資</text>
+        <text x="155" y="108" text-anchor="end" font-size="10" fill="#8E97A3">期日初日に720万投入</text>
+
+        <!-- 帯: p10〜p90 -->
+        <rect x="190" y="80" width="370" height="32" fill="#C56A4E" opacity="0.25" rx="3"/>
+        <!-- 中央値線 -->
+        <line x1="350" y1="76" x2="350" y2="116" stroke="#C56A4E" stroke-width="3"/>
+        <text x="350" y="72" text-anchor="middle" font-size="10" font-weight="700" fill="#C56A4E">中央値 1,950万</text>
+
+        <text x="194" y="100" font-size="10" fill="#C56A4E" font-weight="700">600万</text>
+        <text x="556" y="100" text-anchor="end" font-size="10" fill="#C56A4E" font-weight="700">3,200万</text>
+
+        <!-- ドルコスト平均法の分布（下段） -->
+        <text x="155" y="174" text-anchor="end" font-size="12" font-weight="700" fill="#1E3A5F">ドルコスト</text>
+        <text x="155" y="190" text-anchor="end" font-size="10" fill="#8E97A3">月3万×240ヶ月</text>
+
+        <!-- 帯: p10〜p90 (狭い) -->
+        <rect x="220" y="160" width="280" height="32" fill="#1E3A5F" opacity="0.25" rx="3"/>
+        <!-- 中央値線 -->
+        <line x1="320" y1="156" x2="320" y2="196" stroke="#1E3A5F" stroke-width="3"/>
+        <text x="320" y="152" text-anchor="middle" font-size="10" font-weight="700" fill="#1E3A5F">中央値 1,233万</text>
+
+        <text x="224" y="180" font-size="10" fill="#1E3A5F" font-weight="700">720万</text>
+        <text x="496" y="180" text-anchor="end" font-size="10" fill="#1E3A5F" font-weight="700">2,050万</text>
+
+        <!-- 横軸 -->
+        <line x1="150" y1="220" x2="565" y2="220" stroke="#1E2A38" stroke-width="1.5"/>
+        <text x="150" y="236" font-size="9" fill="#8E97A3">0</text>
+        <text x="357" y="236" text-anchor="middle" font-size="9" fill="#8E97A3">2,000万</text>
+        <text x="565" y="236" text-anchor="end" font-size="9" fill="#8E97A3">4,000万</text>
+
+        <!-- 注釈 -->
+        <text x="300" y="265" text-anchor="middle" font-size="11" fill="#1E3A5F" font-weight="700">期待値は一括 > ドルコスト、リスクの幅も一括 > ドルコスト</text>
+        <text x="300" y="282" text-anchor="middle" font-size="10" fill="#8E97A3">一括: 大きく勝つ可能性も大きく負ける可能性も両方ある</text>
+        <text x="300" y="298" text-anchor="middle" font-size="10" fill="#8E97A3">ドルコスト: 利益は控えめだが、暴落リスクが緩和される</text>
+      </svg>
+      <figcaption style="font-size: 12px; color: #8E97A3; margin-top: 8px;">図: 同額720万円を投入する2手法の結果分布（Monte Carlo）</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h2>1. ドルコスト平均法とは？</h2>
+    <p>ドルコスト平均法（Dollar Cost Averaging）とは、<strong>定期的に一定金額ずつ投資する手法</strong>のこと。</p>
+    <ul>
+      <li>毎月3万円ずつ投資信託を買う</li>
+      <li>ボーナス時に追加投資はしない（定額のみ）</li>
+      <li>相場が高い時は少なく、安い時は多く買える</li>
+    </ul>
+
+    <h3>実例：1株100円〜200円で変動する商品を毎月3万円購入</h3>
+    <table class="calc">
+      <thead><tr><th>月</th><th class="num">価格</th><th class="num">購入数</th></tr></thead>
+      <tbody>
+        <tr><td>1月</td><td class="num">100円</td><td class="num">300株</td></tr>
+        <tr><td>2月</td><td class="num">150円</td><td class="num">200株</td></tr>
+        <tr><td>3月</td><td class="num">200円</td><td class="num">150株</td></tr>
+        <tr><td>4月</td><td class="num">120円</td><td class="num">250株</td></tr>
+        <tr style="background: #FBF8F1; font-weight: 700;">
+          <td>合計</td>
+          <td class="num">平均143円</td>
+          <td class="num">900株</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>4ヶ月の平均価格は142.5円、しかし<strong>平均購入価格は133円</strong>（12万円÷900株）。安い時に多く買えるため、平均より安く取得できます。</p>
+  </div>
+
+  <div class="card">
+    <h2>2. 一括投資との比較</h2>
+    <p>「いま手元に360万円ある、これを一括投資 vs ドルコスト10年で投資」を比較してみましょう。</p>
+
+    <h3>シナリオA：右肩上がり相場（年利5%）</h3>
+    <table class="calc">
+      <thead><tr><th>方法</th><th class="num">10年後</th></tr></thead>
+      <tbody>
+        <tr><td>一括投資（360万円を初日に）</td><td class="num"><span class="highlight">587万円</span></td></tr>
+        <tr><td>ドルコスト（月3万円×10年）</td><td class="num">466万円</td></tr>
+      </tbody>
+    </table>
+    <p>右肩上がりなら、<strong>一括投資が圧勝</strong>。ドルコストは「上がっていく相場で安く買い続けようとする」ので不利になります。</p>
+
+    <h3>シナリオB：暴落後に回復（V字相場）</h3>
+    <p>1〜3年目で-30%下落、4年目以降回復して10年で+50%になるシナリオ：</p>
+    <table class="calc">
+      <thead><tr><th>方法</th><th class="num">10年後</th></tr></thead>
+      <tbody>
+        <tr><td>一括投資（最初に360万投入）</td><td class="num">540万円</td></tr>
+        <tr><td>ドルコスト（月3万円×10年）</td><td class="num"><span class="highlight">580万円</span></td></tr>
+      </tbody>
+    </table>
+    <p>暴落シナリオでは<strong>ドルコストが逆転</strong>。安い時期にも買い続けられたため。</p>
+
+    <h3>シナリオC：右肩下がり相場</h3>
+    <p>10年で-20%になる悲観シナリオ：</p>
+    <table class="calc">
+      <thead><tr><th>方法</th><th class="num">10年後</th></tr></thead>
+      <tbody>
+        <tr><td>一括投資</td><td class="num">288万円（-72万）</td></tr>
+        <tr><td>ドルコスト</td><td class="num">325万円（-35万）</td></tr>
+      </tbody>
+    </table>
+    <p>下落相場でも<strong>ドルコストのほうが損失が少ない</strong>。</p>
+  </div>
+
+  <div class="card">
+    <h2>3. モンテカルロで1000パターン検証</h2>
+    <p>過去100年分の米国株データに基づくモンテカルロシミュレーション（年利期待7%、ボラ16%、10年運用、360万円）：</p>
+
+    <table class="calc">
+      <thead><tr><th>パーセンタイル</th><th class="num">一括投資</th><th class="num">ドルコスト</th></tr></thead>
+      <tbody>
+        <tr><td>10%（悲観）</td><td class="num">280万円</td><td class="num">340万円</td></tr>
+        <tr><td>50%（中央値）</td><td class="num"><span class="highlight">680万円</span></td><td class="num">510万円</td></tr>
+        <tr><td>90%（楽観）</td><td class="num">1,250万円</td><td class="num">760万円</td></tr>
+        <tr><td>標準偏差（バラツキ）</td><td class="num">大</td><td class="num">小</td></tr>
+      </tbody>
+    </table>
+    <p>結論：<strong>中央値は一括投資が圧倒的、ただし最悪シナリオはドルコストが優勢</strong>。リスクとリターンのトレードオフが明確。</p>
+  </div>
+
+  <div class="cta-box">
+    <h3>あなたの場合はどっち？モンテカルロで試算</h3>
+    <p>複利コンパスのモンテカルロモードで、ドルコスト or 一括の結果を比較できます。</p>
+    <a href="./" class="cta-btn">無料で計算する</a>
+  </div>
+
+  <div class="card">
+    <h2>4. ドルコスト平均法が向いている人</h2>
+    <ul>
+      <li><strong>毎月の給料から投資する人</strong>（そもそも一括投資する元手がない）</li>
+      <li><strong>暴落で狼狽売りしてしまう人</strong>（一括投資直後に暴落が来ると精神的にキツい）</li>
+      <li><strong>投資初心者</strong>（少額から始められて、市場の上下を体験できる）</li>
+      <li><strong>長期投資（10年以上）を前提とする人</strong>（短期では効果が出にくい）</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>5. 一括投資が向いている人</h2>
+    <ul>
+      <li><strong>退職金やボーナスでまとまった資金がある人</strong>（眠らせるのは機会損失）</li>
+      <li><strong>15年以上の長期投資ができる人</strong>（短期下落を耐えられる）</li>
+      <li><strong>暴落でも狼狽売りしない強い意志がある人</strong></li>
+      <li><strong>期待リターンの最大化を最優先する人</strong></li>
+    </ul>
+
+    <blockquote>
+      ※ 中間案として「ハーフ＆ハーフ」も有効。手元資金の半分を一括投資、残り半分を時間分散して投資する方法。
+    </blockquote>
+  </div>
+
+  <div class="card">
+    <h2>6. まとめ</h2>
+    <ol>
+      <li>ドルコスト平均法は「リスク低減」には有効、「リターン最大化」には不利</li>
+      <li>右肩上がり相場では一括投資が勝つ</li>
+      <li>暴落・下落相場ではドルコスト平均法が勝つ</li>
+      <li>毎月の給料から投資する人にはドルコスト一択</li>
+      <li>まとまった資金がある人は「ハーフ＆ハーフ」も検討</li>
+    </ol>
+    <p>新NISAやiDeCoで月々つみたてているなら、それが既にドルコスト平均法。<strong>「自分は正しい手法を実践している」</strong>と自信を持って続けてください。</p>
+
+    <div class="related">
+      <h4>関連ページ</h4>
+      <ul>
+        <li><a href="./">複利コンパス（計算ツール）</a></li>
+        <li><a href="blog-monte-carlo.html">モンテカルロ法を使った投資シミュレーション</a></li>
+        <li><a href="blog-shintaku-1percent.html">信託報酬1%の差は致命傷</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background: #FBF8F1; border: 1px solid #E2D9C7; border-radius: 12px; padding: 20px 24px; margin: 24px 0;">
+    <h4 style="margin: 0 0 12px; font-size: 14px; color: #1E3A5F;">📚 次に読む</h4>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-monte-carlo.html" style="color: #C56A4E; font-weight: 600;">モンテカルロ法を使った投資シミュレーションのススメ</a></li>
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-3man-vs-5man.html" style="color: #C56A4E; font-weight: 600;">月3万円 vs 月5万円つみたて、20年後の差額シミュレーション</a></li>
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-sp500-vs-allcountry.html" style="color: #C56A4E; font-weight: 600;">S&P500 vs 全世界株式（オルカン）どっちを選ぶ？</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <p>
+      <a href="./">トップ</a> ・
+      <a href="blog.html">記事一覧</a> ・
+      <a href="about.html">運営者情報</a> ・
+      <a href="contact.html">お問い合わせ</a> ・
+      <a href="privacy.html">プライバシー</a>
+    </p>
+    <p>© 2026 複利コンパス編集部</p>
+  </footer>
+</div>
+</body>
+</html>

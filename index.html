@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- SEO -->
+<title>複利計算ツール｜つみたて＆FIREシミュレーション【無料・登録不要】複利コンパス</title>
+<meta name="description" content="月いくら積み立てればいくらになる？目標金額からの逆算、モンテカルロ法による1,000通りのシミュレーション、FIRE試算までできる無料の複利計算ツール。登録不要・スマホ対応・データ送信なし。">
+<meta name="keywords" content="複利計算,複利,つみたて,シミュレーション,FIRE,モンテカルロ,投資,NISA,iDeCo,計算ツール,資産運用">
+<meta name="author" content="複利コンパス">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1E3A5F">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="複利計算ツール｜つみたて＆FIREシミュレーション">
+<meta property="og:description" content="月いくら積み立てればいくらになる？モンテカルロ法で1,000通りの未来を試算。目標金額からの逆算、FIRE試算もできる無料ツール。">
+<meta property="og:image" content="og-image.svg">
+<meta property="og:site_name" content="複利コンパス">
+<meta property="og:locale" content="ja_JP">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="複利計算ツール｜複利コンパス">
+<meta name="twitter:description" content="月いくら積み立てればいくらになる？モンテカルロ法で1,000通りの未来を試算。FIRE試算もできる無料ツール。">
+<meta name="twitter:image" content="og-image.svg">
+
+<!-- Favicon (inline SVG - コンパスアイコン) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FFFFFF' stroke='%231E3A5F' stroke-width='2'/%3E%3Cpolygon points='22,10 18,18 10,22 14,14' fill='%23C56A4E'/%3E%3Cpolygon points='22,10 16,16 18,18' fill='%231E3A5F'/%3E%3Ccircle cx='16' cy='16' r='1.8' fill='%231E3A5F'/%3E%3C/svg%3E">
+
+<!-- PWA: Progressive Web App -->
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="複利コンパス">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="複利コンパス">
+<style>
+  /* ============ Design Tokens ============ */
+  :root {
+    --bg:           #F7F3EC;
+    --bg-deep:      #EFE9DC;
+    --paper:        #FFFFFF;
+    --ink:          #1E2A38;
+    --ink-2:        #4A5568;
+    --ink-3:        #8E97A3;
+    --ink-4:        #C4CAD2;
+    --line:         #E2D9C7;
+    --line-soft:    #EFE9DD;
+    --primary:      #1E3A5F;
+    --primary-2:    #2C5282;
+    --accent:       #C56A4E;
+    --accent-soft:  #F4DDD2;
+    --gold:         #B8902F;
+    --gold-soft:    #F5E9C5;
+    --moss:         #4F7752;
+    --moss-soft:    #DAE5D6;
+    --crimson:      #A8483F;
+    --crimson-soft: #F1D8D4;
+    --shadow-1:     0 1px 2px rgba(30,42,56,.04), 0 1px 3px rgba(30,42,56,.04);
+    --shadow-2:     0 4px 12px rgba(30,42,56,.06), 0 2px 4px rgba(30,42,56,.04);
+    --shadow-3:     0 12px 28px rgba(30,42,56,.08), 0 4px 10px rgba(30,42,56,.05);
+    --r-sm: 6px; --r-md: 10px; --r-lg: 16px; --r-xl: 22px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic Medium', sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(197,106,78,0.04), transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(30,58,95,0.04), transparent 40%);
+    background-attachment: fixed;
+    line-height: 1.6;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============ Top Navigation (Sticky・濃色で目立たせる) ============ */
+  .topnav {
+    background: var(--ink);
+    color: var(--paper);
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(30,42,56,0.15);
+  }
+  .topnav-inner {
+    max-width: 760px; margin: 0 auto;
+    padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .topnav-logo {
+    display: inline-flex; align-items: center; gap: 8px;
+    text-decoration: none; color: var(--paper);
+    font-weight: 700; font-size: 15px;
+    letter-spacing: 0.02em;
+  }
+  .topnav-logo svg { width: 22px; height: 22px; color: #FBC97A; flex: none; }
+  .topnav-logo .accent { color: #FBC97A; }
+  .topnav-links { display: flex; gap: 6px; flex-wrap: wrap; }
+  .topnav-links a {
+    text-decoration: none; color: rgba(255,255,255,0.85);
+    font-size: 13px; font-weight: 600;
+    padding: 7px 14px; border-radius: 8px;
+    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 5px;
+    border: 1px solid transparent;
+  }
+  .topnav-links a:hover { background: rgba(255,255,255,0.1); color: var(--paper); border-color: rgba(255,255,255,0.2); }
+  .topnav-links a.active { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+  .topnav-links a.highlight {
+    background: var(--accent); color: var(--paper);
+    border-color: var(--accent);
+    box-shadow: 0 2px 8px rgba(197,106,78,0.4);
+  }
+  .topnav-links a.highlight:hover { background: #B65A40; }
+  .topnav-links a svg { width: 14px; height: 14px; }
+  @media (max-width: 480px) {
+    .topnav-logo span { display: none; }
+    .topnav-links a { padding: 7px 10px; font-size: 12px; }
+  }
+
+  /* ============ Hero CTA Button ============ */
+  .hero-cta { margin-top: 18px; }
+  .hero-cta-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, var(--accent) 0%, #B65A40 100%);
+    color: var(--paper);
+    font-size: 14px; font-weight: 700;
+    border-radius: 999px;
+    text-decoration: none;
+    box-shadow: 0 6px 16px rgba(197,106,78,0.3);
+    transition: all 0.18s;
+  }
+  .hero-cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(197,106,78,0.4);
+  }
+  .hero-cta-btn svg { width: 18px; height: 18px; }
+
+  /* ============ Article Showcase ============ */
+  .article-showcase { padding: 22px 24px 28px; }
+  .article-showcase h3 {
+    margin: 0 0 4px; font-size: 16px; font-weight: 700;
+    color: var(--ink);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .article-showcase h3 svg { width: 18px; height: 18px; color: var(--accent); }
+  .article-showcase .desc { margin: 0 0 18px; font-size: 12px; color: var(--ink-3); }
+  .article-cards { display: grid; gap: 10px; }
+  .article-card {
+    display: block; padding: 14px 16px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    text-decoration: none; color: inherit;
+    transition: all 0.18s;
+  }
+  .article-card:hover {
+    border-color: var(--accent); transform: translateY(-2px);
+    background: var(--paper); box-shadow: 0 6px 16px rgba(30,42,56,.08);
+  }
+  .article-card .ac-tag {
+    display: inline-block; background: var(--accent); color: white;
+    padding: 2px 8px; border-radius: 999px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .article-card .ac-title {
+    font-size: 14px; font-weight: 700; color: var(--ink);
+    line-height: 1.5; margin: 0;
+  }
+  .all-articles {
+    display: block; text-align: center;
+    margin-top: 16px; padding: 12px;
+    background: var(--ink); color: var(--paper);
+    border-radius: 10px; text-decoration: none;
+    font-size: 13px; font-weight: 700;
+    transition: all 0.18s;
+  }
+  .all-articles:hover { background: #2D3E54; transform: translateY(-1px); }
+
+  .page {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  /* ============ Hero ============ */
+  .hero { text-align: center; margin-bottom: 28px; }
+  .hero .mark {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--paper); border: 1.5px solid var(--line);
+    color: var(--primary); margin-bottom: 14px; box-shadow: var(--shadow-2);
+  }
+  .hero h1 {
+    margin: 0 0 6px;
+    font-size: 30px; font-weight: 700; letter-spacing: 0.02em;
+  }
+  .hero h1 span.accent { color: var(--accent); }
+  .hero .subtitle { margin: 0; font-size: 13px; color: var(--ink-2); font-weight: 500; }
+  .hero .meta { margin-top: 6px; font-size: 11px; color: var(--ink-3); letter-spacing: 0.05em; }
+
+  /* ============ Top Tabs ============ */
+  .top-tabs {
+    display: flex; justify-content: center; margin-bottom: 22px;
+  }
+  .top-tabs .group {
+    display: inline-flex; background: var(--paper);
+    border: 1px solid var(--line); border-radius: var(--r-md);
+    padding: 4px; box-shadow: var(--shadow-1);
+  }
+  .top-tab {
+    padding: 9px 22px; border: none; background: transparent;
+    font-size: 14px; font-weight: 600;
+    color: var(--ink-3); border-radius: var(--r-sm);
+    cursor: pointer; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: inherit;
+  }
+  .top-tab:hover:not(.active) { color: var(--ink-2); }
+  .top-tab.active { background: var(--ink); color: var(--paper); }
+  .top-tab svg { width: 15px; height: 15px; }
+
+  /* ============ Card ============ */
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: 28px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-2);
+  }
+
+  /* ============ Section heading ============ */
+  .section-h {
+    display: flex; align-items: center; gap: 10px;
+    margin: 0 0 16px;
+    font-size: 14px; font-weight: 700; color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+  .section-h .ico {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px;
+    background: var(--bg); border: 1px solid var(--line);
+    color: var(--primary); border-radius: 50%; flex: none;
+  }
+  .section-h .ico svg { width: 13px; height: 13px; }
+
+  /* ============ Mode Selector ============ */
+  .mode-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    margin-bottom: 22px;
+  }
+  @media (max-width: 580px) {
+    .mode-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .calc-mode {
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 12px 8px;
+    cursor: pointer; transition: all 0.18s;
+    text-align: center;
+    font-family: inherit;
+  }
+  .calc-mode:hover:not(.active) { border-color: var(--ink-3); }
+  .calc-mode.active {
+    border-color: var(--primary);
+    background: linear-gradient(180deg, #FAFBFD, #F1F4F8);
+    box-shadow: 0 2px 8px rgba(30,58,95,0.08);
+  }
+  .calc-mode .name {
+    font-size: 13px; font-weight: 700; color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .calc-mode .sub {
+    font-size: 10px; color: var(--ink-3); letter-spacing: 0.03em;
+  }
+  .calc-mode.active .name { color: var(--primary); }
+
+  /* ============ Form ============ */
+  .grid { display: grid; gap: 14px 16px; }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 580px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+  .field label {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600; color: var(--ink-2);
+    margin-bottom: 6px;
+  }
+  .field label svg { width: 13px; height: 13px; color: var(--ink-3); flex: none; }
+  .field label .badge {
+    background: var(--accent-soft); color: var(--accent);
+    font-size: 10px; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px; margin-left: auto;
+    letter-spacing: 0.05em;
+  }
+  .field input, .field select {
+    width: 100%; padding: 10px 12px;
+    font-size: 14px; font-family: inherit; color: var(--ink);
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    transition: all 0.15s; appearance: none;
+  }
+  .field input:hover, .field select:hover { border-color: var(--ink-3); }
+  .field input:focus, .field select:focus {
+    outline: none; border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(30,58,95,0.08);
+  }
+  .field input:disabled, .field select:disabled {
+    background: var(--bg-deep); color: var(--ink-4); cursor: not-allowed;
+  }
+  .field.target input, .field.target select {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--ink-3);
+  }
+  .field select {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238E97A3' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat; background-position: right 12px center;
+    padding-right: 32px;
+  }
+  .field .help { margin-top: 4px; font-size: 11px; color: var(--ink-3); }
+  .field.target .help { color: var(--accent); font-weight: 600; }
+
+  /* ============ MC Toggle ============ */
+  .mc-toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: var(--r-md); margin-top: 18px;
+  }
+  .mc-toggle.disabled { opacity: 0.5; cursor: not-allowed; }
+  .mc-toggle .info {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .mc-toggle .info .ico {
+    width: 28px; height: 28px; color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 50%;
+  }
+  .mc-toggle .info .ico svg { width: 14px; height: 14px; }
+  .mc-toggle .text .t1 { font-size: 13px; font-weight: 700; color: var(--ink); }
+  .mc-toggle .text .t2 { font-size: 11px; color: var(--ink-3); }
+
+  .switch-toggle {
+    position: relative; width: 42px; height: 22px;
+    background: var(--ink-4); border-radius: 22px;
+    cursor: pointer; transition: all 0.18s;
+  }
+  .switch-toggle::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 18px; height: 18px; background: var(--paper);
+    border-radius: 50%; transition: all 0.18s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .switch-toggle.on { background: var(--primary); }
+  .switch-toggle.on::after { left: 22px; }
+
+  .mc-extra {
+    margin-top: 14px; padding: 14px 16px;
+    background: var(--bg-deep); border-radius: var(--r-md);
+    display: none;
+  }
+  .mc-extra.show { display: block; }
+
+  /* ============ Schedule ============ */
+  .schedule-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .schedule-row .lbl {
+    font-size: 12px; color: var(--ink-3); white-space: nowrap;
+  }
+  .schedule-row input {
+    width: 70px; padding: 7px 9px; font-size: 13px;
+    border: 1px solid var(--line); border-radius: 6px;
+    font-family: inherit;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .schedule-row input:focus {
+    outline: none; border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(30,58,95,0.08);
+  }
+  .schedule-row .remove-btn {
+    margin-left: auto;
+    width: 26px; height: 26px;
+    background: none; border: none;
+    color: var(--ink-3); cursor: pointer;
+    border-radius: 4px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 18px; line-height: 1;
+    transition: all 0.15s;
+  }
+  .schedule-row .remove-btn:hover { color: var(--crimson); background: var(--crimson-soft); }
+  .add-schedule-btn {
+    width: 100%; padding: 11px;
+    background: var(--bg);
+    border: 1.5px dashed var(--line);
+    color: var(--ink-2);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    transition: all 0.15s;
+  }
+  .add-schedule-btn:hover {
+    border-color: var(--primary); color: var(--primary); background: var(--paper);
+  }
+  .schedule-summary {
+    margin-top: 12px; padding: 11px 14px;
+    background: var(--moss-soft); border-radius: var(--r-md);
+    font-size: 12px; color: #2D5530;
+    line-height: 1.7;
+    border-left: 3px solid var(--moss);
+  }
+  .schedule-summary strong { color: var(--moss); }
+
+  /* ============ Note ============ */
+  .note {
+    margin-top: 14px; padding: 10px 14px;
+    background: var(--gold-soft); border-left: 3px solid var(--gold);
+    border-radius: var(--r-sm);
+    font-size: 11px; color: #8B6E1F; line-height: 1.6;
+  }
+
+  /* ============ Buttons ============ */
+  .actions { display: flex; gap: 10px; margin-top: 22px; }
+  .btn-primary {
+    flex: 1; padding: 14px 24px;
+    font-size: 15px; font-weight: 700; font-family: inherit;
+    color: var(--paper); background: var(--ink);
+    border: none; border-radius: var(--r-md);
+    cursor: pointer; transition: all 0.18s;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: #2D3E54; transform: translateY(-1px); box-shadow: var(--shadow-3);
+  }
+  .btn-primary:disabled { opacity: 0.5; cursor: wait; }
+  .btn-primary svg { width: 16px; height: 16px; }
+  .btn-ghost {
+    padding: 14px 18px;
+    font-size: 13px; font-weight: 600; font-family: inherit;
+    color: var(--ink-2); background: var(--paper);
+    border: 1px solid var(--line); border-radius: var(--r-md);
+    cursor: pointer; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-ghost:hover { border-color: var(--ink-3); color: var(--ink); }
+  .btn-ghost svg { width: 14px; height: 14px; }
+
+  /* ============ Progress ============ */
+  .progress { margin-top: 14px; display: none; }
+  .progress.show { display: block; }
+  .progress-bar { height: 4px; background: var(--line-soft); border-radius: 999px; overflow: hidden; }
+  .progress-bar > div {
+    height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent));
+    transition: width 0.3s;
+  }
+  .progress-text {
+    margin-top: 6px; text-align: center;
+    font-size: 11px; color: var(--ink-3); letter-spacing: 0.05em;
+  }
+
+  /* ============ Results ============ */
+  #results { display: none; }
+  .answer-card {
+    background: linear-gradient(135deg, #1E3A5F 0%, #2C5282 60%, #1E3A5F 100%);
+    color: var(--paper);
+    border-radius: var(--r-lg);
+    padding: 32px 28px;
+    margin-bottom: 18px;
+    box-shadow: 0 16px 36px rgba(30,42,56,.18), 0 6px 14px rgba(30,42,56,.10);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-top: 3px solid #FBC97A;
+  }
+  .answer-card::before {
+    content: ''; position: absolute;
+    top: -50%; right: -20%;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(251,201,122,0.18), transparent 70%);
+    pointer-events: none;
+  }
+  .answer-card::after {
+    content: ''; position: absolute;
+    bottom: -60%; left: -20%;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(197,106,78,0.15), transparent 70%);
+    pointer-events: none;
+  }
+  .answer-card > * { position: relative; z-index: 1; }
+  .answer-card .label {
+    font-size: 12px; font-weight: 700;
+    color: #FBC97A;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .answer-card .value {
+    font-size: 48px; font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #FBC97A 0%, #FFE4B5 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.1;
+  }
+  .answer-card .value .unit {
+    font-size: 24px; font-weight: 600;
+    margin-left: 6px;
+    -webkit-text-fill-color: rgba(255,255,255,0.95);
+    background: none;
+  }
+  .answer-card .sub {
+    margin-top: 14px;
+    font-size: 13px; color: rgba(255,255,255,0.85);
+  }
+  .answer-card .sub strong { color: #FBC97A; font-weight: 700; }
+
+  .kpi-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+    margin-bottom: 18px;
+  }
+  @media (min-width: 720px) { .kpi-grid.three { grid-template-columns: repeat(3, 1fr); } }
+  .kpi {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: var(--r-md); padding: 14px 16px;
+    box-shadow: var(--shadow-1);
+  }
+  .kpi .label {
+    font-size: 11px; font-weight: 600; color: var(--ink-3);
+    letter-spacing: 0.05em; margin-bottom: 6px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .kpi .label svg { width: 12px; height: 12px; }
+  .kpi .value {
+    font-size: 22px; font-weight: 700; color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .kpi.principal .value { color: var(--ink-2); }
+  .kpi.principal .label svg { color: var(--ink-2); }
+  .kpi.gain {
+    background: linear-gradient(135deg, #FFFFFF 0%, #ECFDF5 100%);
+    border-color: #A7F3D0;
+  }
+  .kpi.gain .value {
+    color: #059669;
+    font-size: 24px;
+    text-shadow: 0 0 1px rgba(5,150,105,0.15);
+  }
+  .kpi.gain .label { color: #047857; }
+  .kpi.gain .label svg { color: #059669; }
+
+  /* ============ Share ============ */
+  .share-row {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 16px 20px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-1);
+  }
+  .share-label {
+    font-size: 13px; font-weight: 700; color: var(--ink);
+    margin-right: 4px;
+  }
+  .share-btn {
+    padding: 8px 14px;
+    font-size: 12px; font-weight: 700;
+    border: none; border-radius: var(--r-sm);
+    cursor: pointer; transition: all 0.15s;
+    font-family: inherit;
+    display: inline-flex; align-items: center; gap: 6px;
+    color: white;
+  }
+  .share-btn.twitter { background: #000000; }
+  .share-btn.line { background: #06C755; }
+  .share-btn.copy { background: var(--ink-2); }
+  .share-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-2); opacity: 0.92; }
+  .share-btn:active { transform: translateY(0); }
+  .share-btn svg { width: 14px; height: 14px; }
+
+  .verdict {
+    background: var(--paper); border: 1px solid var(--line);
+    border-left: 4px solid var(--ink-3);
+    border-radius: var(--r-md); padding: 16px 20px; margin-bottom: 18px;
+    box-shadow: var(--shadow-1);
+  }
+  .verdict.good { border-left-color: var(--moss); background: linear-gradient(90deg, #F4FAF4 0%, var(--paper) 60%); }
+  .verdict.warn { border-left-color: var(--gold); background: linear-gradient(90deg, #FAF6EC 0%, var(--paper) 60%); }
+  .verdict.bad  { border-left-color: var(--crimson); background: linear-gradient(90deg, #FAF0EE 0%, var(--paper) 60%); }
+  .verdict .title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .verdict.good .title { color: var(--moss); }
+  .verdict.warn .title { color: var(--gold); }
+  .verdict.bad  .title { color: var(--crimson); }
+  .verdict .body { font-size: 12px; color: var(--ink-2); line-height: 1.7; }
+
+  /* ============ Chart ============ */
+  .chart-card { padding: 22px; }
+  .chart-card h3 {
+    margin: 0 0 4px; font-size: 14px; font-weight: 700;
+    color: var(--ink); display: flex; align-items: center; gap: 8px;
+  }
+  .chart-card h3 svg { width: 16px; height: 16px; color: var(--primary); }
+  .chart-card .desc { margin: 0 0 16px; font-size: 11px; color: var(--ink-3); }
+  .chart-wrap { width: 100%; }
+  .chart-wrap svg { display: block; width: 100%; height: auto; }
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 8px 14px;
+    margin-top: 14px; font-size: 11px; color: var(--ink-2);
+  }
+  .legend .item { display: inline-flex; align-items: center; gap: 5px; }
+  .legend .swatch { width: 14px; height: 3px; border-radius: 2px; }
+
+  /* ============ Table ============ */
+  table.tbl {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+  }
+  table.tbl th, table.tbl td { padding: 9px 8px; text-align: left; }
+  table.tbl thead th {
+    border-bottom: 2px solid var(--line);
+    font-size: 11px; font-weight: 600; color: var(--ink-3);
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  table.tbl td.num { text-align: right; font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+  table.tbl th.num { text-align: right; }
+  table.tbl tbody tr { border-bottom: 1px solid var(--line-soft); }
+  table.tbl tbody tr:last-child { border-bottom: none; }
+
+  details.info { padding: 18px 22px; }
+  details.info summary {
+    cursor: pointer; user-select: none;
+    font-size: 13px; font-weight: 700; color: var(--ink);
+    display: flex; align-items: center; justify-content: space-between;
+    list-style: none;
+  }
+  details.info summary::-webkit-details-marker { display: none; }
+  details.info .body { margin-top: 14px; font-size: 12px; color: var(--ink-2); line-height: 1.7; }
+  details.info .body strong { color: var(--ink); }
+  details.info .body p { margin: 0 0 8px; }
+
+  footer {
+    text-align: center; margin-top: 36px;
+    font-size: 11px; color: var(--ink-3); letter-spacing: 0.05em;
+  }
+
+  .hidden { display: none !important; }
+  .invisible { visibility: hidden; }
+</style>
+</head>
+<body>
+
+<!-- Top Navigation -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="./" class="topnav-logo">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="16" r="13"/><path d="M21 11l-3 7-7 3 3-7z" fill="currentColor" stroke="none"/><circle cx="16" cy="16" r="1.2" fill="white" stroke="none"/></svg>
+      <span>複利<span class="accent">コンパス</span></span>
+    </a>
+    <div class="topnav-links">
+      <a href="./" class="active">🧭 ツール</a>
+      <a href="home-loan.html">🏠 住宅ローン</a>
+      <a href="study-plan.html">📒 学習計画</a>
+      <a href="diet.html">🥗 ダイエット</a>
+      <a href="blog.html" class="highlight">📚 記事一覧</a>
+      <a href="about.html">運営者</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <header class="hero">
+    <span class="mark" id="markIcon"></span>
+    <h1>複利 <span class="accent">コンパス</span></h1>
+    <p class="subtitle">つみたて投資のシミュレーション ・ FIRE試算もおまけ付き</p>
+    <p class="meta">v1.0 ・ 概算ツール ・ 投資判断は自己責任で</p>
+    <!-- ヒーローCTA：ブログ + 姉妹ツール -->
+    <div class="hero-cta" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+      <a href="blog.html" class="hero-cta-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 5.5v14"/></svg>
+        解説記事を読む（10本）
+      </a>
+      <a href="home-loan.html" class="hero-cta-btn" style="background:#FBC97A; color:#1E3A5F; border-color:#FBC97A;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
+        🏠 住宅ローンコンパス
+      </a>
+    </div>
+  </header>
+
+  <!-- TOP TABS -->
+  <div class="top-tabs">
+    <div class="group">
+      <button class="top-tab active" id="tabBtnCompound" onclick="setTab('compound')"><span id="iconChart"></span>複利シミュレーション</button>
+      <button class="top-tab" id="tabBtnFire" onclick="setTab('fire')"><span id="iconFlame"></span>FIRE試算</button>
+    </div>
+  </div>
+
+  <!-- ===================== COMPOUND TAB ===================== -->
+  <div data-tab="compound">
+
+    <div class="card">
+      <h2 class="section-h"><span class="ico" id="iconGauge"></span>計算モード</h2>
+      <div class="mode-grid">
+        <button type="button" class="calc-mode active" data-cmode="forward" onclick="setCalcMode('forward')">
+          <div class="name">順計算</div><div class="sub">積立 → 結果</div>
+        </button>
+        <button type="button" class="calc-mode" data-cmode="contrib" onclick="setCalcMode('contrib')">
+          <div class="name">必要積立額</div><div class="sub">目標 → 月額</div>
+        </button>
+        <button type="button" class="calc-mode" data-cmode="years" onclick="setCalcMode('years')">
+          <div class="name">必要期間</div><div class="sub">目標 → 年数</div>
+        </button>
+        <button type="button" class="calc-mode" data-cmode="rate" onclick="setCalcMode('rate')">
+          <div class="name">必要利回り</div><div class="sub">目標 → 年率</div>
+        </button>
+      </div>
+
+      <h2 class="section-h"><span class="ico" id="iconCoin"></span>条件入力</h2>
+      <div class="grid grid-2">
+
+        <div class="field" id="fieldInitial">
+          <label><span id="iconCoinSm"></span>初期資産（万円）</label>
+          <input type="number" id="initialAssets" data-default="100" value="100">
+        </div>
+
+        <div class="field" id="fieldMonthly">
+          <label><span id="iconCalSm"></span>月積立額（万円）</label>
+          <input type="number" id="monthlyContrib" data-default="3" value="3" step="0.1" onchange="updateScheduleSummary()">
+          <p class="help">毎月いくら積み立てる？</p>
+        </div>
+
+        <div class="field" id="fieldBonus">
+          <label><span id="iconGift"></span>ボーナス時 年間追加積立（万円）</label>
+          <input type="number" id="bonusContribution" data-default="0" value="0" min="0" step="1">
+          <p class="help">年単位の追加積立。年2回×30万なら60</p>
+        </div>
+
+        <div class="field" id="fieldYears">
+          <label><span id="iconHourglass"></span>運用期間（年）</label>
+          <input type="number" id="years" data-default="20" value="20">
+        </div>
+
+        <div class="field" id="fieldRate">
+          <label><span id="iconChartSm"></span>想定利回り（年率%）</label>
+          <input type="number" id="rate" data-default="5" value="5" step="0.1">
+          <p class="help">参考: 全世界株式長期平均 5-7%</p>
+        </div>
+
+        <div class="field" id="fieldTarget" style="grid-column: 1/-1">
+          <label><span id="iconFlag"></span>目標金額（万円）</label>
+          <input type="number" id="targetAmount" data-default="1000" value="1000">
+          <p class="help">逆算モード時に必要。順計算では達成判定に使用</p>
+        </div>
+      </div>
+
+      <!-- 積立額の変動スケジュール -->
+      <div id="scheduleSection" style="margin-top: 22px;">
+        <h2 class="section-h"><span class="ico" id="iconStairs"></span>積立額の変動（任意）</h2>
+        <p style="font-size:12px;color:var(--ink-3);margin:-8px 0 14px;">
+          将来、積立額を増減する予定があれば追加。例：「住宅ローン完済後に増やす」「子供独立後に増やす」
+        </p>
+        <div id="scheduleList"></div>
+        <button type="button" class="add-schedule-btn" onclick="addScheduleChange()">＋ 変動ポイントを追加</button>
+        <div id="scheduleSummary" class="schedule-summary" style="display:none;"></div>
+      </div>
+
+      <!-- Monte Carlo toggle -->
+      <div class="mc-toggle" id="mcToggle">
+        <div class="info">
+          <span class="ico" id="iconDice"></span>
+          <div class="text">
+            <div class="t1">モンテカルロ計算を使う</div>
+            <div class="t2">利回りを毎年確率的に変動させ、不確実性を可視化</div>
+          </div>
+        </div>
+        <div class="switch-toggle" id="mcSwitch" onclick="toggleMC()"></div>
+      </div>
+
+      <div class="mc-extra" id="mcExtra">
+        <div class="grid grid-2">
+          <div class="field">
+            <label>ボラティリティ（%）</label>
+            <input type="number" id="volatility" data-default="12" value="12" step="0.1">
+            <p class="help">参考: 株式 15-20% / 債券 5-8%</p>
+          </div>
+          <div class="field">
+            <label>シミュレーション回数</label>
+            <select id="iterations" data-default="1000">
+              <option value="100">100回</option>
+              <option value="1000" selected>1,000回</option>
+              <option value="5000">5,000回</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>計算前提：</strong>利回りは税引・手数料前の<strong>名目値</strong>です。新NISA・iDeCoの非課税制度活用前提を想定。実際の手取り運用益は、この値より低くなる可能性があります。インフレ率は考慮していません。
+      </div>
+
+      <div class="actions">
+        <button class="btn-ghost" onclick="resetCompoundForm(event)"><span id="iconReset"></span>リセット</button>
+        <button class="btn-primary" id="runBtn" onclick="runCompound()"><span id="iconPlay"></span>計算する</button>
+      </div>
+
+      <div class="progress" id="progress">
+        <div class="progress-bar"><div id="progressFill" style="width:0%"></div></div>
+        <div class="progress-text" id="progressText">準備中...</div>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="results">
+      <div class="answer-card" id="answerCard"></div>
+
+      <div class="share-row" id="shareRow">
+        <span class="share-label">この結果をシェア:</span>
+        <button class="share-btn twitter" onclick="shareTwitter()" title="Xでシェア">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          X (Twitter)
+        </button>
+        <button class="share-btn line" onclick="shareLine()" title="LINEでシェア">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+          LINE
+        </button>
+        <button class="share-btn copy" onclick="copyShareURL(event)" title="URLをコピー">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          URLコピー
+        </button>
+      </div>
+
+      <div class="kpi-grid" id="kpiGrid"></div>
+
+      <div id="verdictWrap"></div>
+
+      <div class="card chart-card" id="chartSection">
+        <h3><span id="iconChartH"></span>資産の推移</h3>
+        <p class="desc" id="chartDesc"></p>
+        <div class="chart-wrap" id="mainChartWrap"></div>
+        <div class="legend" id="chartLegend"></div>
+      </div>
+
+      <div class="card chart-card hidden" id="spagSection">
+        <h3>100通りの個別パス</h3>
+        <p class="desc">モンテカルロでサンプリングされた100本の未来。中央の濃い線が中央値です。</p>
+        <div class="chart-wrap" id="spagChartWrap"></div>
+      </div>
+
+      <div class="card chart-card">
+        <h3>年別推移（5年ごと）</h3>
+        <div id="yearTable"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== FIRE TAB ===================== -->
+  <div data-tab="fire" class="hidden">
+    <div class="card">
+      <h2 class="section-h"><span class="ico" id="iconFlameH"></span>FIRE試算（モンテカルロ）</h2>
+      <p style="font-size:12px;color:var(--ink-3);margin:0 0 18px;">
+        現在の積立ペースで、目標FIRE資産（年間支出 × 25年）にいつ到達できるかを確率的に試算。
+      </p>
+
+      <div class="grid grid-2">
+        <div class="field"><label>現在の年齢</label><input type="number" id="fCurrentAge" data-default="30" value="30"></div>
+        <div class="field"><label>現在の金融資産（万円）</label><input type="number" id="fCurrentAssets" data-default="200" value="200"></div>
+        <div class="field"><label>月積立額（万円）</label><input type="number" id="fMonthly" data-default="5" value="5" step="0.1"></div>
+        <div class="field"><label>FIRE後の月支出（万円）</label><input type="number" id="fMonthlyExpense" data-default="20" value="20" step="0.1"><p class="help">これ × 12 × 25 = FIRE目標額</p></div>
+        <div class="field"><label>想定利回り（年率%）</label><input type="number" id="fRate" data-default="5" value="5" step="0.1"></div>
+        <div class="field"><label>ボラティリティ（%）</label><input type="number" id="fVol" data-default="12" value="12" step="0.1"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-ghost" onclick="resetFireForm(event)"><span id="iconReset2"></span>リセット</button>
+        <button class="btn-primary" id="fireRunBtn" onclick="runFire()"><span id="iconPlay2"></span>FIREシミュレーション実行</button>
+      </div>
+
+      <div class="progress" id="fireProgress">
+        <div class="progress-bar"><div id="fireProgressFill" style="width:0%"></div></div>
+        <div class="progress-text" id="fireProgressText">準備中...</div>
+      </div>
+    </div>
+
+    <div id="fireResults" style="display:none;">
+      <div class="answer-card" id="fireAnswerCard"></div>
+      <div class="kpi-grid" id="fireKpiGrid"></div>
+      <div id="fireVerdictWrap"></div>
+      <div class="card chart-card">
+        <h3>FIRE達成までの資産推移</h3>
+        <p class="desc">パーセンタイル帯。中央線が中央値、外側ほど極端な未来です。</p>
+        <div class="chart-wrap" id="fireChartWrap"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 記事ショーケース -->
+  <div class="card article-showcase">
+    <h3>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 5.5v14"/></svg>
+      もっと知りたい人へ：おすすめ記事
+    </h3>
+    <p class="desc">複利・FIRE・NISA活用の解説記事を読んで、シミュレーションをもっと深く活用しよう。</p>
+    <div class="article-cards">
+      <a href="blog-fukuri-no-chikara.html" class="article-card">
+        <span class="ac-tag">基礎知識</span>
+        <p class="ac-title">複利の力とは？月1万円が30年で832万円になる仕組み</p>
+      </a>
+      <a href="blog-4percent-rule.html" class="article-card">
+        <span class="ac-tag">FIRE</span>
+        <p class="ac-title">4%ルールとは？FIRE達成に必要な資産の計算方法</p>
+      </a>
+      <a href="blog-nisa-1000man.html" class="article-card">
+        <span class="ac-tag">NISA活用</span>
+        <p class="ac-title">新NISAで1000万円貯めるには何年かかる？月額別早見表</p>
+      </a>
+      <a href="blog-monte-carlo.html" class="article-card">
+        <span class="ac-tag">手法解説</span>
+        <p class="ac-title">モンテカルロ法を使った投資シミュレーションのススメ</p>
+      </a>
+    </div>
+    <a href="blog.html" class="all-articles">📚 記事一覧をすべて見る（8本） →</a>
+  </div>
+
+  <details class="card info" id="infoCard">
+    <summary>計算方法・前提について</summary>
+    <div class="body">
+      <p><strong>1. 複利計算（順計算）</strong><br>
+      最終資産 = 初期資産 × (1+r)^n + 月積立 × 12 × ((1+r)^n − 1) / r<br>
+      （年末払いの年金として近似計算）</p>
+      <p><strong>2. 必要積立・期間・利回りの逆算</strong><br>
+      上記式を変形した解析解を使用。利回りのみ数値解法（二分法）で求めます。</p>
+      <p><strong>3. モンテカルロ法</strong><br>
+      毎年のリターンを「平均5%・標準偏差12%等の正規分布」から確率的に抽選。これを期間全体で繰り返して1パターン作り、N回繰り返すことで「ありえる未来」を分布として得ます。Box-Muller法で乱数生成。</p>
+      <p><strong>4. 重要な前提</strong><br>
+      利回りは<strong>税引前・手数料前の名目値</strong>。新NISA/iDeCoの非課税制度を活用する前提。実際の運用では信託報酬（年0.1〜1.5%）や課税で目減りします。インフレは考慮していません（実質値ではなく名目値）。</p>
+    </div>
+  </details>
+
+  <footer style="line-height: 2;">
+    <div style="margin-bottom: 8px;">
+      <a href="blog.html" style="color: var(--ink-2); text-decoration: none; margin: 0 10px; font-weight: 600;">記事一覧</a>
+      <span style="color: var(--ink-4);">·</span>
+      <a href="about.html" style="color: var(--ink-2); text-decoration: none; margin: 0 10px; font-weight: 600;">運営者情報</a>
+      <span style="color: var(--ink-4);">·</span>
+      <a href="contact.html" style="color: var(--ink-2); text-decoration: none; margin: 0 10px; font-weight: 600;">お問い合わせ</a>
+      <span style="color: var(--ink-4);">·</span>
+      <a href="privacy.html" style="color: var(--ink-2); text-decoration: none; margin: 0 10px; font-weight: 600;">プライバシー</a>
+    </div>
+    <div>複利コンパス v1.0 ・ © 2026 複利コンパス編集部</div>
+  </footer>
+</div>
+
+<script>
+// ====================================================
+// SVG ICONS
+// ====================================================
+const ICONS = {
+  compass: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><circle cx="16" cy="16" r="13"/><path d="M21 11l-3 7-7 3 3-7z" fill="currentColor" stroke="none"/><circle cx="16" cy="16" r="1.2" fill="var(--paper)" stroke="none"/></svg>',
+  chart:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M4 19h16"/><path d="M5 16l4-5 4 3 6-8"/></svg>',
+  flame:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 2-7 1 1 2 2 3 1z"/></svg>',
+  gauge:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M3 14a9 9 0 1 1 18 0"/><path d="M12 14l4-4"/><circle cx="12" cy="14" r="1.2" fill="currentColor"/></svg>',
+  coin:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v12M9 9h4.5a2 2 0 1 1 0 4H10a2 2 0 1 0 0 4h5"/></svg>',
+  cal:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 3v4M16 3v4"/></svg>',
+  hourglass:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M6 3h12M6 21h12"/><path d="M6 3v3l6 6 6-6V3M6 21v-3l6-6 6 6v3"/></svg>',
+  flag:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M5 21V4M5 5h12l-2 4 2 4H5"/></svg>',
+  dice:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8" cy="8" r="1.2" fill="currentColor"/><circle cx="16" cy="16" r="1.2" fill="currentColor"/><circle cx="16" cy="8" r="1.2" fill="currentColor"/><circle cx="8" cy="16" r="1.2" fill="currentColor"/></svg>',
+  stairs:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M3 19h4v-4h4v-4h4v-4h6"/></svg>',
+  gift:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="1"/><path d="M3 8l9-5 9 5"/><path d="M12 13v4M10 15h4"/></svg>',
+  reset:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 9 8 9"/></svg>',
+  play:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg>',
+};
+
+// ====================================================
+// Share / URL State
+// ====================================================
+function generateShareURL() {
+  const params = new URLSearchParams();
+  params.set('m', currentCalcMode);
+  params.set('i', document.getElementById('initialAssets').value);
+  params.set('mn', document.getElementById('monthlyContrib').value);
+  params.set('b', document.getElementById('bonusContribution').value);
+  params.set('y', document.getElementById('years').value);
+  params.set('r', document.getElementById('rate').value);
+  params.set('t', document.getElementById('targetAmount').value);
+  if (scheduleChanges.length > 0) {
+    params.set('s', JSON.stringify(scheduleChanges));
+  }
+  if (mcEnabled) {
+    params.set('mc', '1');
+    params.set('v', document.getElementById('volatility').value);
+  }
+  // ローカルファイル時は仮URL
+  let base = window.location.origin + window.location.pathname;
+  if (!base || base.startsWith('file:') || base === 'null') {
+    base = 'https://compound-compass.pages.dev/';
+  }
+  return `${base}?${params.toString()}`;
+}
+
+function getShareText() {
+  const monthly = document.getElementById('monthlyContrib').value;
+  const bonus = +document.getElementById('bonusContribution').value;
+  const years = document.getElementById('years').value;
+  const rate = document.getElementById('rate').value;
+  const target = document.getElementById('targetAmount').value;
+
+  const ansValue = (document.querySelector('.answer-card .value')?.textContent || '').trim();
+  const bonusStr = bonus > 0 ? `＋ボーナス${bonus}万/年` : '';
+
+  let text = '';
+  if (currentCalcMode === 'forward') {
+    text = `月${monthly}万円${bonusStr}を年率${rate}%で${years}年つみたてると→ ${ansValue} 💰\n`;
+  } else if (currentCalcMode === 'contrib') {
+    text = `${target}万円を${years}年で達成するには 月${ansValue}必要！💪\n`;
+  } else if (currentCalcMode === 'years') {
+    text = `${target}万円達成まで ${ansValue} ⏳\n（月${monthly}万${bonusStr}・年率${rate}%）\n`;
+  } else if (currentCalcMode === 'rate') {
+    text = `${target}万円達成には 年率${ansValue}必要！📈\n（月${monthly}万${bonusStr}・${years}年）\n`;
+  }
+  return text + '\n#複利コンパス で計算';
+}
+
+function shareTwitter() {
+  const text = getShareText();
+  const url = generateShareURL();
+  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+  window.open(tweetUrl, '_blank', 'width=600,height=500');
+}
+
+function shareLine() {
+  const url = generateShareURL();
+  const text = getShareText();
+  const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+  window.open(lineUrl, '_blank', 'width=600,height=500');
+}
+
+function copyShareURL(ev) {
+  const url = generateShareURL();
+  const btn = ev.target.closest('.share-btn');
+  const orig = btn.innerHTML;
+  const showFeedback = () => {
+    btn.innerHTML = '✓ コピーしました!';
+    setTimeout(() => btn.innerHTML = orig, 1500);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(showFeedback).catch(() => {
+      prompt('このURLをコピーしてください:', url);
+    });
+  } else {
+    prompt('このURLをコピーしてください:', url);
+  }
+}
+
+function loadFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  if (!params.has('m')) return;
+
+  const mode = params.get('m');
+  if (['forward', 'contrib', 'years', 'rate'].includes(mode)) {
+    setCalcMode(mode);
+  }
+  if (params.has('i'))  document.getElementById('initialAssets').value = params.get('i');
+  if (params.has('mn')) document.getElementById('monthlyContrib').value = params.get('mn');
+  if (params.has('b'))  document.getElementById('bonusContribution').value = params.get('b');
+  if (params.has('y'))  document.getElementById('years').value = params.get('y');
+  if (params.has('r'))  document.getElementById('rate').value = params.get('r');
+  if (params.has('t'))  document.getElementById('targetAmount').value = params.get('t');
+
+  if (params.has('s')) {
+    try {
+      scheduleChanges = JSON.parse(params.get('s'));
+      renderScheduleList();
+      updateScheduleSummary();
+    } catch (e) {}
+  }
+  if (params.has('mc')) {
+    if (!mcEnabled) toggleMC();
+    if (params.has('v')) document.getElementById('volatility').value = params.get('v');
+  }
+  // 自動実行
+  setTimeout(() => runCompound(), 200);
+}
+
+function injectIcons() {
+  const map = {
+    markIcon: ICONS.compass,
+    iconChart: ICONS.chart, iconChartH: ICONS.chart, iconChartSm: ICONS.chart,
+    iconFlame: ICONS.flame, iconFlameH: ICONS.flame,
+    iconGauge: ICONS.gauge,
+    iconCoin: ICONS.coin, iconCoinSm: ICONS.coin,
+    iconCalSm: ICONS.cal,
+    iconHourglass: ICONS.hourglass,
+    iconFlag: ICONS.flag,
+    iconDice: ICONS.dice,
+    iconStairs: ICONS.stairs,
+    iconGift: ICONS.gift,
+    iconReset: ICONS.reset, iconReset2: ICONS.reset,
+    iconPlay: ICONS.play, iconPlay2: ICONS.play,
+  };
+  Object.entries(map).forEach(([id, svg]) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = svg;
+  });
+}
+document.addEventListener('DOMContentLoaded', () => {
+  injectIcons();
+  loadFromURL();
+});
+
+// ====================================================
+// PWA: Service Worker 登録
+// ====================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      console.log('Service Worker 登録完了:', reg.scope);
+    }).catch(err => {
+      console.log('Service Worker 登録失敗:', err);
+    });
+  });
+}
+
+// PWA: ホーム画面追加プロンプト処理
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // 必要なら独自インストールボタンを表示
+});
+
+// ====================================================
+// State
+// ====================================================
+let currentTab = 'compound';
+let currentCalcMode = 'forward';
+let mcEnabled = false;
+let scheduleChanges = []; // [{year: 5, monthly: 8}, {year: 10, monthly: 12}]
+
+function setTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('[data-tab]').forEach(el => el.classList.toggle('hidden', el.dataset.tab !== tab));
+  document.getElementById('tabBtnCompound').classList.toggle('active', tab === 'compound');
+  document.getElementById('tabBtnFire').classList.toggle('active', tab === 'fire');
+}
+
+function setCalcMode(mode) {
+  currentCalcMode = mode;
+  document.querySelectorAll('.calc-mode').forEach(b => b.classList.toggle('active', b.dataset.cmode === mode));
+
+  // モードに応じて入力フィールドの表示/無効化を切り替え
+  // 各モードで「目標値（出力）」となるフィールドにtarget classを付与
+  ['fieldMonthly','fieldYears','fieldRate','fieldTarget'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('target');
+    el.querySelector('input').disabled = false;
+  });
+
+  const help = {
+    forward:  '結果として最終資産を計算',
+    contrib:  '月積立額を逆算',
+    years:    '達成までの年数を逆算',
+    rate:     '必要な年利を逆算'
+  };
+
+  if (mode === 'forward') {
+    // 目標金額は任意（達成判定）
+    document.getElementById('fieldTarget').querySelector('.help').textContent = '※任意：入力すると達成判定を表示';
+  } else if (mode === 'contrib') {
+    document.getElementById('fieldMonthly').classList.add('target');
+    document.getElementById('fieldMonthly').querySelector('input').disabled = true;
+    document.getElementById('fieldMonthly').querySelector('.help').textContent = '↑ この値を計算します';
+    document.getElementById('fieldTarget').querySelector('.help').textContent = '※必須';
+  } else if (mode === 'years') {
+    document.getElementById('fieldYears').classList.add('target');
+    document.getElementById('fieldYears').querySelector('input').disabled = true;
+    document.getElementById('fieldTarget').querySelector('.help').textContent = '※必須';
+  } else if (mode === 'rate') {
+    document.getElementById('fieldRate').classList.add('target');
+    document.getElementById('fieldRate').querySelector('input').disabled = true;
+    document.getElementById('fieldTarget').querySelector('.help').textContent = '※必須';
+  }
+
+  // モンテカルロは順計算モードのみ有効
+  const mcT = document.getElementById('mcToggle');
+  if (mode !== 'forward') {
+    mcT.classList.add('disabled');
+    if (mcEnabled) toggleMC();
+    document.querySelector('#mcToggle .t2').textContent = '逆算モードでは利用できません';
+  } else {
+    mcT.classList.remove('disabled');
+    document.querySelector('#mcToggle .t2').textContent = '利回りを毎年確率的に変動させ、不確実性を可視化';
+  }
+
+  // 積立変動スケジュールも順計算モードのみ
+  document.getElementById('scheduleSection').style.display = (mode === 'forward') ? 'block' : 'none';
+}
+
+function toggleMC() {
+  if (currentCalcMode !== 'forward') return;
+  mcEnabled = !mcEnabled;
+  document.getElementById('mcSwitch').classList.toggle('on', mcEnabled);
+  document.getElementById('mcExtra').classList.toggle('show', mcEnabled);
+}
+
+// ============ Schedule (積立額の変動) ============
+function addScheduleChange() {
+  // 直前のエントリの値をコピー（or デフォルト）
+  const last = scheduleChanges[scheduleChanges.length - 1];
+  const baseMonthly = +document.getElementById('monthlyContrib').value || 3;
+  scheduleChanges.push({
+    year: last ? last.year + 5 : 5,
+    monthly: last ? last.monthly + 2 : baseMonthly + 2,
+  });
+  renderScheduleList();
+  updateScheduleSummary();
+}
+
+function removeScheduleChange(idx) {
+  scheduleChanges.splice(idx, 1);
+  renderScheduleList();
+  updateScheduleSummary();
+}
+
+function updateScheduleChange(idx, field, value) {
+  scheduleChanges[idx][field] = +value;
+  updateScheduleSummary();
+}
+
+function renderScheduleList() {
+  const list = document.getElementById('scheduleList');
+  list.innerHTML = scheduleChanges.map((c, i) => `
+    <div class="schedule-row">
+      <span class="lbl">変動${i+1}：</span>
+      <input type="number" min="1" value="${c.year}" onchange="updateScheduleChange(${i}, 'year', this.value)">
+      <span class="lbl">年後から月</span>
+      <input type="number" min="0" step="0.1" value="${c.monthly}" onchange="updateScheduleChange(${i}, 'monthly', this.value)">
+      <span class="lbl">万円</span>
+      <button type="button" class="remove-btn" onclick="removeScheduleChange(${i})" title="削除">×</button>
+    </div>
+  `).join('');
+}
+
+function updateScheduleSummary() {
+  const summary = document.getElementById('scheduleSummary');
+  if (scheduleChanges.length === 0) {
+    summary.style.display = 'none';
+    return;
+  }
+  const baseMonthly = +document.getElementById('monthlyContrib').value || 0;
+  const sorted = [...scheduleChanges].sort((a, b) => a.year - b.year);
+  let parts = [`<strong>0〜${sorted[0].year}年</strong>: 月${baseMonthly}万`];
+  for (let i = 0; i < sorted.length; i++) {
+    const next = sorted[i+1];
+    const endYear = next ? `${next.year}年` : '以降';
+    parts.push(`<strong>${sorted[i].year}〜${endYear}</strong>: 月${sorted[i].monthly}万`);
+  }
+  summary.innerHTML = '→ ' + parts.join(' ／ ');
+  summary.style.display = 'block';
+}
+
+// 月積立額を時点別に取得
+function getMonthlyAtYear(yearOffset, baseMonthly, schedule) {
+  if (!schedule || schedule.length === 0) return baseMonthly;
+  const sorted = [...schedule].sort((a, b) => a.year - b.year);
+  let amount = baseMonthly;
+  for (const ch of sorted) {
+    if (yearOffset >= ch.year) amount = ch.monthly;
+    else break;
+  }
+  return amount;
+}
+
+function resetCompoundForm(ev) {
+  document.querySelectorAll('[data-tab="compound"] input[data-default], [data-tab="compound"] select[data-default]').forEach(el => {
+    if (el.type === 'checkbox') el.checked = (el.dataset.default === 'true');
+    else el.value = el.dataset.default;
+  });
+  setCalcMode('forward');
+  if (mcEnabled) toggleMC();
+  scheduleChanges = [];
+  renderScheduleList();
+  updateScheduleSummary();
+  document.getElementById('results').style.display = 'none';
+}
+
+function resetFireForm(ev) {
+  document.querySelectorAll('[data-tab="fire"] input[data-default]').forEach(el => el.value = el.dataset.default);
+  document.getElementById('fireResults').style.display = 'none';
+}
+
+// ====================================================
+// Compound Interest Engine
+// ====================================================
+
+// 月次複利計算（厳密）
+function fvMonthly(initial, monthlyContrib, annualRate, years, schedule) {
+  const months = Math.round(years * 12);
+  const r = annualRate / 100 / 12;
+  // スケジュールなし → 高速解析解
+  if (!schedule || schedule.length === 0) {
+    if (Math.abs(r) < 1e-10) return initial + monthlyContrib * months;
+    const fvI = initial * Math.pow(1 + r, months);
+    const fvC = monthlyContrib * (Math.pow(1 + r, months) - 1) / r;
+    return fvI + fvC;
+  }
+  // スケジュールあり → 月次ループ
+  let assets = initial;
+  for (let m = 1; m <= months; m++) {
+    const yr = (m - 1) / 12;
+    const monthly = getMonthlyAtYear(yr, monthlyContrib, schedule);
+    assets = assets * (1 + r) + monthly;
+  }
+  return assets;
+}
+
+function requiredContribution(target, initial, annualRate, years) {
+  const months = Math.round(years * 12);
+  const r = annualRate / 100 / 12;
+  if (Math.abs(r) < 1e-10) return Math.max(0, (target - initial) / months);
+  const fvI = initial * Math.pow(1 + r, months);
+  const remaining = target - fvI;
+  if (remaining <= 0) return 0;
+  return remaining * r / (Math.pow(1 + r, months) - 1);
+}
+
+function requiredYears(target, initial, monthlyContrib, annualRate) {
+  const r = annualRate / 100 / 12;
+  if (Math.abs(r) < 1e-10) {
+    if (monthlyContrib <= 0) return target > initial ? Infinity : 0;
+    return (target - initial) / (monthlyContrib * 12);
+  }
+  if (initial >= target) return 0;
+  const x = (target + monthlyContrib / r) / (initial + monthlyContrib / r);
+  if (x <= 0) return Infinity;
+  const months = Math.log(x) / Math.log(1 + r);
+  return months / 12;
+}
+
+function requiredRate(target, initial, monthlyContrib, years) {
+  // 二分法
+  let lo = -10, hi = 100;
+  for (let i = 0; i < 80; i++) {
+    const mid = (lo + hi) / 2;
+    const fv = fvMonthly(initial, monthlyContrib, mid, years);
+    if (fv < target) lo = mid;
+    else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+// 年別推移（決定論的）
+function yearlyTrajectory(initial, monthlyContrib, annualRate, years, schedule) {
+  const r = annualRate / 100 / 12;
+  let assets = initial;
+  let principal = initial;
+  const traj = [{year: 0, assets, principal, gain: 0}];
+  const monthsTotal = Math.round(years * 12);
+  for (let m = 1; m <= monthsTotal; m++) {
+    const yr = (m - 1) / 12;
+    const monthly = getMonthlyAtYear(yr, monthlyContrib, schedule);
+    assets = assets * (1 + r) + monthly;
+    principal += monthly;
+    if (m % 12 === 0) {
+      traj.push({year: m / 12, assets, principal, gain: assets - principal});
+    }
+  }
+  return traj;
+}
+
+// ====================================================
+// Monte Carlo
+// ====================================================
+function gaussian(mean, std) {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+  return mean + std * z;
+}
+
+// 1パスのモンテカルロ（年単位、各年のリターンを抽選）
+function singleMCPath(initial, monthlyContrib, expectedReturn, volatility, years, schedule) {
+  let assets = initial;
+  const traj = [assets];
+  for (let yr = 0; yr < years; yr++) {
+    const ret = gaussian(expectedReturn / 100, volatility / 100);
+    const monthly = getMonthlyAtYear(yr, monthlyContrib, schedule);
+    const annualContrib = monthly * 12;
+    assets = assets * (1 + ret) + annualContrib;
+    if (assets < 0) assets = 0;
+    traj.push(assets);
+  }
+  return traj;
+}
+
+function percentile(sortedArr, p) {
+  const idx = Math.floor(sortedArr.length * p);
+  return sortedArr[Math.min(idx, sortedArr.length - 1)];
+}
+
+// ====================================================
+// Format
+// ====================================================
+function fmtMoney(v) {
+  if (v == null || isNaN(v)) return '—';
+  if (Math.abs(v) >= 10000) return `${(v/10000).toFixed(2)}億円`;
+  return `${Math.round(v).toLocaleString()}万円`;
+}
+function fmtMoneyAns(v) {
+  if (v == null || isNaN(v)) return ['—', ''];
+  if (Math.abs(v) >= 10000) return [(v/10000).toFixed(2), '億円'];
+  return [Math.round(v).toLocaleString(), '万円'];
+}
+function fmtYears(v) {
+  if (!isFinite(v)) return '達成不可';
+  if (v < 1) return `${(v * 12).toFixed(1)}ヶ月`;
+  return `${v.toFixed(1)}年`;
+}
+function fmtRate(v) { return `${v.toFixed(2)}%`; }
+function fmtMonthly(v) {
+  if (v >= 100) return `${(v).toFixed(1)}万円`;
+  return `${v.toFixed(2)}万円`;
+}
+
+// ====================================================
+// Run Compound
+// ====================================================
+async function runCompound() {
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true;
+  btn.innerHTML = '計算中...';
+
+  const initial = +document.getElementById('initialAssets').value;
+  const monthly = +document.getElementById('monthlyContrib').value;
+  const bonus = +document.getElementById('bonusContribution').value || 0;
+  const years = +document.getElementById('years').value;
+  const rate = +document.getElementById('rate').value;
+  const target = +document.getElementById('targetAmount').value;
+
+  // ボーナスを月割り換算 → 既存の月積立計算に乗せる
+  const bonusPerMonth = bonus / 12;
+  const effectiveMonthly = monthly + bonusPerMonth;
+
+  const answerCard = document.getElementById('answerCard');
+  const kpiGrid = document.getElementById('kpiGrid');
+  const verdictWrap = document.getElementById('verdictWrap');
+  const chartDesc = document.getElementById('chartDesc');
+  const chartLegend = document.getElementById('chartLegend');
+  const spagSection = document.getElementById('spagSection');
+  spagSection.classList.add('hidden');
+
+  // 順計算モードのみ schedule を使用
+  const schedule = (currentCalcMode === 'forward') ? scheduleChanges : null;
+  // スケジュール各エントリにもボーナス分を加算
+  const effectiveSchedule = schedule ? schedule.map(s => ({year: s.year, monthly: s.monthly + bonusPerMonth})) : null;
+
+  if (currentCalcMode === 'forward') {
+    if (!mcEnabled) {
+      // 決定論
+      const fv = fvMonthly(initial, effectiveMonthly, rate, years, effectiveSchedule);
+      // 元本合計（変動・ボーナス考慮）
+      let totalContrib = initial;
+      for (let yr = 0; yr < years; yr++) {
+        totalContrib += getMonthlyAtYear(yr, effectiveMonthly, effectiveSchedule) * 12;
+      }
+      const gain = fv - totalContrib;
+
+      const [v, u] = fmtMoneyAns(fv);
+      answerCard.innerHTML = `
+        <div class="label">${years}年後の資産額</div>
+        <div class="value">${v}<span class="unit">${u}</span></div>
+        <div class="sub">月${monthly}万円 × ${years}年 + 初期${initial}万円 + 運用益<strong>${fmtMoney(gain)}</strong></div>
+      `;
+
+      kpiGrid.className = 'kpi-grid three';
+      kpiGrid.innerHTML = `
+        <div class="kpi principal"><div class="label">元本合計</div><div class="value">${fmtMoney(totalContrib)}</div></div>
+        <div class="kpi gain"><div class="label">運用益</div><div class="value">${fmtMoney(gain)}</div></div>
+        <div class="kpi"><div class="label">運用益／元本</div><div class="value">${(gain / totalContrib * 100).toFixed(0)}%</div></div>
+      `;
+
+      // 達成判定
+      verdictWrap.innerHTML = '';
+      if (target > 0) {
+        if (fv >= target) {
+          verdictWrap.innerHTML = `<div class="verdict good"><div class="title">目標達成</div><div class="body">${years}年後の資産は目標${fmtMoney(target)}を<strong>${fmtMoney(fv - target)}</strong>上回ります。</div></div>`;
+        } else {
+          verdictWrap.innerHTML = `<div class="verdict warn"><div class="title">目標未達</div><div class="body">${years}年後の資産は目標${fmtMoney(target)}に<strong>${fmtMoney(target - fv)}</strong>不足します。月積立を増やすか、期間/利回りの見直しを検討。</div></div>`;
+        }
+      }
+
+      // チャート（元本 vs 運用益の積み上げ）
+      const traj = yearlyTrajectory(initial, effectiveMonthly, rate, years, effectiveSchedule);
+      chartDesc.textContent = '青：元本、緑：運用益。年が経つほど運用益が雪だるま式に増えるのが複利の効果。';
+      chartLegend.innerHTML = `
+        <span class="item"><span class="swatch" style="background:#1E3A5F"></span>元本</span>
+        <span class="item"><span class="swatch" style="background:#7FA882"></span>運用益</span>
+      `;
+      renderStackedChart('mainChartWrap', traj);
+      renderYearTable(traj);
+
+    } else {
+      // モンテカルロ
+      const vol = +document.getElementById('volatility').value;
+      const iterations = +document.getElementById('iterations').value;
+      document.getElementById('progress').classList.add('show');
+
+      const paths = [];
+      const chunkSize = 200;
+      for (let s = 0; s < iterations; s += chunkSize) {
+        const e = Math.min(s + chunkSize, iterations);
+        for (let i = s; i < e; i++) paths.push(singleMCPath(initial, effectiveMonthly, rate, vol, years, effectiveSchedule));
+        document.getElementById('progressFill').style.width = `${Math.round(e / iterations * 100)}%`;
+        document.getElementById('progressText').textContent = `${e} / ${iterations} 回`;
+        await new Promise(r => setTimeout(r, 0));
+      }
+      document.getElementById('progress').classList.remove('show');
+
+      // 各年のパーセンタイル
+      const yearlyValues = [];
+      for (let yr = 0; yr <= years; yr++) {
+        yearlyValues.push(paths.map(p => p[yr]).sort((a, b) => a - b));
+      }
+      const labels = [];
+      for (let i = 0; i <= years; i++) labels.push(`${i}年`);
+      const p10 = yearlyValues.map(yv => percentile(yv, 0.10));
+      const p25 = yearlyValues.map(yv => percentile(yv, 0.25));
+      const p50 = yearlyValues.map(yv => percentile(yv, 0.50));
+      const p75 = yearlyValues.map(yv => percentile(yv, 0.75));
+      const p90 = yearlyValues.map(yv => percentile(yv, 0.90));
+
+      const finalSorted = paths.map(p => p[p.length - 1]).sort((a, b) => a - b);
+      const median = percentile(finalSorted, 0.5);
+      // 元本合計（変動・ボーナス考慮）
+      let totalContrib = initial;
+      for (let yr = 0; yr < years; yr++) {
+        totalContrib += getMonthlyAtYear(yr, effectiveMonthly, effectiveSchedule) * 12;
+      }
+
+      const [v, u] = fmtMoneyAns(median);
+      answerCard.innerHTML = `
+        <div class="label">${years}年後の資産（中央値）</div>
+        <div class="value">${v}<span class="unit">${u}</span></div>
+        <div class="sub">悲観${fmtMoney(percentile(finalSorted, 0.1))} 〜 楽観${fmtMoney(percentile(finalSorted, 0.9))} ・ ${iterations}回シミュレーション</div>
+      `;
+
+      kpiGrid.className = 'kpi-grid three';
+      kpiGrid.innerHTML = `
+        <div class="kpi principal"><div class="label">元本合計</div><div class="value">${fmtMoney(totalContrib)}</div></div>
+        <div class="kpi gain"><div class="label">運用益（中央値）</div><div class="value">${fmtMoney(median - totalContrib)}</div></div>
+        <div class="kpi"><div class="label">悲観時の運用益</div><div class="value">${fmtMoney(percentile(finalSorted, 0.1) - totalContrib)}</div></div>
+      `;
+
+      verdictWrap.innerHTML = '';
+      if (target > 0) {
+        const successCount = paths.filter(p => p[p.length - 1] >= target).length;
+        const successProb = successCount / iterations * 100;
+        let cls = 'good', title = '達成見込み高い';
+        if (successProb < 50) { cls = 'bad'; title = '達成困難'; }
+        else if (successProb < 80) { cls = 'warn'; title = '達成可能だが不確実'; }
+        verdictWrap.innerHTML = `<div class="verdict ${cls}"><div class="title">${title}</div><div class="body">目標${fmtMoney(target)}達成確率: <strong>${successProb.toFixed(1)}%</strong>（${iterations}通り中${successCount}通り）</div></div>`;
+      }
+
+      chartDesc.textContent = '色の帯は分布。中央線が中央値、外側ほど極端な未来。';
+      chartLegend.innerHTML = `
+        <span class="item"><span class="swatch" style="background:#4F7752"></span>90%(楽観)</span>
+        <span class="item"><span class="swatch" style="background:#7FA882"></span>75%</span>
+        <span class="item"><span class="swatch" style="background:#1E3A5F;height:4px"></span>50%(中央値)</span>
+        <span class="item"><span class="swatch" style="background:#D49460"></span>25%</span>
+        <span class="item"><span class="swatch" style="background:#A8483F"></span>10%(悲観)</span>
+      `;
+      renderPercentileChart('mainChartWrap', labels, p10, p25, p50, p75, p90);
+
+      // スパゲッティ
+      spagSection.classList.remove('hidden');
+      const sample = [];
+      for (let i = 0; i < Math.min(100, paths.length); i++) {
+        sample.push(paths[Math.floor(Math.random() * paths.length)]);
+      }
+      renderSpaghettiChart('spagChartWrap', labels, sample, p50);
+
+      // テーブル（中央値ベース、元本はボーナス・変動考慮）
+      const tableTraj = [];
+      let cumPrincipal = initial;
+      tableTraj.push({ year: 0, assets: p50[0], principal: cumPrincipal, gain: p50[0] - cumPrincipal });
+      for (let yr = 1; yr <= years; yr++) {
+        cumPrincipal += getMonthlyAtYear(yr - 1, effectiveMonthly, effectiveSchedule) * 12;
+        tableTraj.push({ year: yr, assets: p50[yr], principal: cumPrincipal, gain: p50[yr] - cumPrincipal });
+      }
+      renderYearTable(tableTraj);
+    }
+
+  } else if (currentCalcMode === 'contrib') {
+    if (target <= 0) { alert('目標金額を入力してください'); btn.disabled = false; btn.innerHTML = '計算する'; return; }
+    // 必要な「合計月額（ボーナス込）」を計算 → ボーナス分を引いた基礎月額を表示
+    const reqTotalMonthly = requiredContribution(target, initial, rate, years);
+    const reqMonthly = reqTotalMonthly - bonusPerMonth;
+    const totalContrib = initial + reqTotalMonthly * 12 * years;
+    const gain = target - totalContrib;
+
+    if (reqMonthly < 0) {
+      answerCard.innerHTML = `
+        <div class="label">必要な月積立額</div>
+        <div class="value">0<span class="unit">万円</span></div>
+        <div class="sub">ボーナス${bonus}万/年だけで目標達成可能。月積立は不要です。</div>
+      `;
+    } else {
+      answerCard.innerHTML = `
+        <div class="label">必要な月積立額</div>
+        <div class="value">${fmtMonthly(reqMonthly)}</div>
+        <div class="sub">${fmtMoney(target)}を${years}年で達成するには月<strong>${fmtMonthly(reqMonthly)}</strong>${bonus > 0 ? `＋ボーナス時${bonus}万円` : ''}のつみたてが必要</div>
+      `;
+    }
+    kpiGrid.className = 'kpi-grid three';
+    kpiGrid.innerHTML = `
+      <div class="kpi principal"><div class="label">元本合計</div><div class="value">${fmtMoney(totalContrib)}</div></div>
+      <div class="kpi gain"><div class="label">運用益</div><div class="value">${fmtMoney(gain)}</div></div>
+      <div class="kpi"><div class="label">利回り</div><div class="value">${rate.toFixed(1)}%</div></div>
+    `;
+    verdictWrap.innerHTML = '';
+
+    const traj = yearlyTrajectory(initial, reqTotalMonthly, rate, years);
+    chartDesc.textContent = `月${fmtMonthly(Math.max(0, reqMonthly))}${bonus > 0 ? `＋ボーナス${bonus}万/年` : ''}を積み立てた場合の資産推移`;
+    chartLegend.innerHTML = `
+      <span class="item"><span class="swatch" style="background:#1E3A5F"></span>元本</span>
+      <span class="item"><span class="swatch" style="background:#7FA882"></span>運用益</span>
+    `;
+    renderStackedChart('mainChartWrap', traj);
+    renderYearTable(traj);
+
+  } else if (currentCalcMode === 'years') {
+    if (target <= 0) { alert('目標金額を入力してください'); btn.disabled = false; btn.innerHTML = '計算する'; return; }
+    const reqYears = requiredYears(target, initial, effectiveMonthly, rate);
+    if (!isFinite(reqYears) || reqYears > 100) {
+      answerCard.innerHTML = `
+        <div class="label">目標達成までの期間</div>
+        <div class="value">達成不可</div>
+        <div class="sub">現在の積立・利回り条件では目標に到達しません。月積立を増やすか、利回り見直しが必要。</div>
+      `;
+      kpiGrid.innerHTML = ''; verdictWrap.innerHTML = '';
+      document.getElementById('chartSection').classList.add('hidden');
+      document.getElementById('yearTable').innerHTML = '';
+    } else {
+      document.getElementById('chartSection').classList.remove('hidden');
+      const totalContrib = initial + effectiveMonthly * 12 * reqYears;
+      const gain = target - totalContrib;
+
+      answerCard.innerHTML = `
+        <div class="label">目標達成までの期間</div>
+        <div class="value">${reqYears.toFixed(1)}<span class="unit">年</span></div>
+        <div class="sub">${fmtMoney(target)}を月${monthly}万${bonus > 0 ? `＋ボーナス${bonus}万/年` : ''}・年率${rate}%で積み立てると<strong>${fmtYears(reqYears)}</strong>で到達</div>
+      `;
+      kpiGrid.className = 'kpi-grid three';
+      kpiGrid.innerHTML = `
+        <div class="kpi principal"><div class="label">元本合計</div><div class="value">${fmtMoney(totalContrib)}</div></div>
+        <div class="kpi gain"><div class="label">運用益</div><div class="value">${fmtMoney(gain)}</div></div>
+        <div class="kpi"><div class="label">月積立${bonus > 0 ? '+ボーナス' : ''}</div><div class="value">${fmtMonthly(monthly)}${bonus > 0 ? `+${bonus}万` : ''}</div></div>
+      `;
+      verdictWrap.innerHTML = '';
+
+      const traj = yearlyTrajectory(initial, effectiveMonthly, rate, Math.ceil(reqYears));
+      chartDesc.textContent = `月${monthly}万${bonus > 0 ? `＋ボーナス${bonus}万/年` : ''}を積み立てた場合の資産推移`;
+      chartLegend.innerHTML = `
+        <span class="item"><span class="swatch" style="background:#1E3A5F"></span>元本</span>
+        <span class="item"><span class="swatch" style="background:#7FA882"></span>運用益</span>
+      `;
+      renderStackedChart('mainChartWrap', traj);
+      renderYearTable(traj);
+    }
+
+  } else if (currentCalcMode === 'rate') {
+    if (target <= 0) { alert('目標金額を入力してください'); btn.disabled = false; btn.innerHTML = '計算する'; return; }
+    const reqRate = requiredRate(target, initial, effectiveMonthly, years);
+    const totalContrib = initial + effectiveMonthly * 12 * years;
+    const gain = target - totalContrib;
+
+    let cls = 'good', title = '現実的な利回り';
+    if (reqRate > 10) { cls = 'bad'; title = '高すぎる利回り（達成困難）'; }
+    else if (reqRate > 7) { cls = 'warn'; title = '高めの利回り（リスク高）'; }
+
+    answerCard.innerHTML = `
+      <div class="label">必要な利回り（年率）</div>
+      <div class="value">${reqRate.toFixed(2)}<span class="unit">%</span></div>
+      <div class="sub">月${monthly}万${bonus > 0 ? `＋ボーナス${bonus}万/年` : ''}・${years}年で${fmtMoney(target)}達成には<strong>年率${reqRate.toFixed(2)}%</strong>が必要</div>
+    `;
+    kpiGrid.className = 'kpi-grid three';
+    kpiGrid.innerHTML = `
+      <div class="kpi principal"><div class="label">元本合計</div><div class="value">${fmtMoney(totalContrib)}</div></div>
+      <div class="kpi gain"><div class="label">必要運用益</div><div class="value">${fmtMoney(gain)}</div></div>
+      <div class="kpi"><div class="label">期間</div><div class="value">${years}年</div></div>
+    `;
+    verdictWrap.innerHTML = `<div class="verdict ${cls}"><div class="title">${title}</div><div class="body">参考：全世界株式の長期平均は5-7%、債券は1-3%、預金は0.001%程度。</div></div>`;
+
+    const traj = yearlyTrajectory(initial, effectiveMonthly, reqRate, years);
+    chartDesc.textContent = `必要利回り${reqRate.toFixed(2)}%で月${monthly}万${bonus > 0 ? `＋ボーナス${bonus}万/年` : ''}を運用した場合の資産推移`;
+    chartLegend.innerHTML = `
+      <span class="item"><span class="swatch" style="background:#1E3A5F"></span>元本</span>
+      <span class="item"><span class="swatch" style="background:#7FA882"></span>運用益</span>
+    `;
+    renderStackedChart('mainChartWrap', traj);
+    renderYearTable(traj);
+  }
+
+  document.getElementById('chartSection').classList.remove('hidden');
+  document.getElementById('results').style.display = 'block';
+  btn.disabled = false;
+  btn.innerHTML = `${ICONS.play} もう一度計算`;
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ====================================================
+// FIRE Run
+// ====================================================
+async function runFire() {
+  const btn = document.getElementById('fireRunBtn');
+  btn.disabled = true;
+  btn.innerHTML = '計算中...';
+  document.getElementById('fireProgress').classList.add('show');
+
+  const currentAge = +document.getElementById('fCurrentAge').value;
+  const initial = +document.getElementById('fCurrentAssets').value;
+  const monthly = +document.getElementById('fMonthly').value;
+  const monthlyExpense = +document.getElementById('fMonthlyExpense').value;
+  const rate = +document.getElementById('fRate').value;
+  const vol = +document.getElementById('fVol').value;
+
+  const fireTarget = monthlyExpense * 12 * 25; // 4%ルール
+  const maxYears = 60;
+  const iterations = 1000;
+
+  // 各イテレーション: いつ目標到達するかを記録
+  const reachAges = [];
+  const allPaths = [];
+  const chunkSize = 200;
+  for (let s = 0; s < iterations; s += chunkSize) {
+    const e = Math.min(s + chunkSize, iterations);
+    for (let i = s; i < e; i++) {
+      const path = singleMCPath(initial, monthly, rate, vol, maxYears);
+      let reachYr = -1;
+      for (let yr = 0; yr < path.length; yr++) {
+        if (path[yr] >= fireTarget) { reachYr = yr; break; }
+      }
+      reachAges.push(reachYr === -1 ? null : currentAge + reachYr);
+      allPaths.push(path);
+    }
+    document.getElementById('fireProgressFill').style.width = `${Math.round(e / iterations * 100)}%`;
+    document.getElementById('fireProgressText').textContent = `${e} / ${iterations} 回`;
+    await new Promise(r => setTimeout(r, 0));
+  }
+  document.getElementById('fireProgress').classList.remove('show');
+
+  const reachedAges = reachAges.filter(a => a !== null).sort((a, b) => a - b);
+  const reachProb = reachedAges.length / iterations * 100;
+  const medianAge = reachedAges.length > 0 ? percentile(reachedAges, 0.5) : null;
+  const optAge = reachedAges.length > 0 ? percentile(reachedAges, 0.1) : null;
+  const pesAge = reachedAges.length > 0 ? percentile(reachedAges, 0.9) : null;
+
+  const answerCard = document.getElementById('fireAnswerCard');
+  if (medianAge !== null && reachProb >= 50) {
+    answerCard.innerHTML = `
+      <div class="label">FIRE達成（中央値）</div>
+      <div class="value">${medianAge}<span class="unit">歳</span></div>
+      <div class="sub">楽観${optAge}歳 〜 悲観${pesAge}歳 ・ ${maxYears}年以内達成率<strong>${reachProb.toFixed(1)}%</strong></div>
+    `;
+  } else {
+    answerCard.innerHTML = `
+      <div class="label">FIRE達成（${maxYears}年以内）</div>
+      <div class="value">${reachProb.toFixed(0)}<span class="unit">%</span></div>
+      <div class="sub">目標${fmtMoney(fireTarget)}に到達する確率（中央値での到達は困難）</div>
+    `;
+  }
+
+  document.getElementById('fireKpiGrid').className = 'kpi-grid three';
+  document.getElementById('fireKpiGrid').innerHTML = `
+    <div class="kpi"><div class="label">FIRE目標額</div><div class="value">${fmtMoney(fireTarget)}</div></div>
+    <div class="kpi gain"><div class="label">達成確率</div><div class="value">${reachProb.toFixed(1)}%</div></div>
+    <div class="kpi principal"><div class="label">月積立</div><div class="value">${fmtMonthly(monthly)}</div></div>
+  `;
+
+  const fireVerdict = document.getElementById('fireVerdictWrap');
+  if (reachProb >= 80) fireVerdict.innerHTML = `<div class="verdict good"><div class="title">FIRE達成見込み高い</div><div class="body">${reachProb.toFixed(0)}%の確率で目標到達。中央値で${medianAge}歳FIRE。</div></div>`;
+  else if (reachProb >= 50) fireVerdict.innerHTML = `<div class="verdict warn"><div class="title">達成可能だが余裕は薄い</div><div class="body">${reachProb.toFixed(0)}%。月積立を増やす、運用利回りを上げる等で達成度UP。</div></div>`;
+  else fireVerdict.innerHTML = `<div class="verdict bad"><div class="title">現状ではFIRE困難</div><div class="body">達成率${reachProb.toFixed(0)}%。月積立${fmtMonthly(monthly)}では不足。改善要。</div></div>`;
+
+  // チャート（30年分のパーセンタイル）
+  const showYears = 30;
+  const labels = [];
+  for (let i = 0; i <= showYears; i++) labels.push(`${currentAge + i}歳`);
+  const yearlyValues = [];
+  for (let yr = 0; yr <= showYears; yr++) {
+    yearlyValues.push(allPaths.map(p => p[yr]).sort((a, b) => a - b));
+  }
+  const p10 = yearlyValues.map(yv => percentile(yv, 0.10));
+  const p25 = yearlyValues.map(yv => percentile(yv, 0.25));
+  const p50 = yearlyValues.map(yv => percentile(yv, 0.50));
+  const p75 = yearlyValues.map(yv => percentile(yv, 0.75));
+  const p90 = yearlyValues.map(yv => percentile(yv, 0.90));
+  renderPercentileChart('fireChartWrap', labels, p10, p25, p50, p75, p90, fireTarget);
+
+  document.getElementById('fireResults').style.display = 'block';
+  btn.disabled = false;
+  btn.innerHTML = `${ICONS.play} もう一度実行`;
+  document.getElementById('fireResults').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ====================================================
+// SVG Chart Renderers
+// ====================================================
+function buildLinePath(data, xScale, yScale) {
+  return data.map((v, i) => `${i === 0 ? 'M' : 'L'}${xScale(i).toFixed(1)},${yScale(v).toFixed(1)}`).join(' ');
+}
+function niceMax(v) {
+  if (v <= 0) return 1;
+  const step = Math.pow(10, Math.floor(Math.log10(v / 5)));
+  return Math.ceil(v / step) * step;
+}
+function fmtY(v) {
+  if (v >= 10000) return `${(v/10000).toFixed(1)}億`;
+  return `${Math.round(v)}万`;
+}
+
+// 元本＋運用益の積み上げ
+function renderStackedChart(containerId, traj) {
+  const W = 800, H = 360;
+  const padL = 56, padR = 16, padT = 16, padB = 32;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const yMax = niceMax(Math.max(...traj.map(t => t.assets)));
+  const xScale = i => padL + (i / Math.max(1, traj.length - 1)) * plotW;
+  const yScale = v => padT + plotH - (v / yMax) * plotH;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">`;
+
+  for (let i = 0; i <= 5; i++) {
+    const y = padT + (i / 5) * plotH;
+    const v = yMax - (i / 5) * yMax;
+    svg += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="#EFE9DD" stroke-width="1"/>`;
+    svg += `<text x="${padL - 6}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="#8E97A3" font-family="sans-serif">${fmtY(v)}</text>`;
+  }
+
+  // 元本ライン (積み上げの下)
+  const principalData = traj.map(t => t.principal);
+  const totalData = traj.map(t => t.assets);
+
+  // 運用益エリア（元本〜合計）
+  let areaPath = '';
+  totalData.forEach((v, i) => {
+    areaPath += `${i === 0 ? 'M' : 'L'}${xScale(i).toFixed(1)},${yScale(v).toFixed(1)}`;
+  });
+  for (let i = principalData.length - 1; i >= 0; i--) {
+    areaPath += ` L${xScale(i).toFixed(1)},${yScale(principalData[i]).toFixed(1)}`;
+  }
+  areaPath += ' Z';
+  svg += `<path d="${areaPath}" fill="rgba(127, 168, 130, 0.35)"/>`;
+
+  // 元本エリア（0〜元本）
+  let principalArea = `M${xScale(0).toFixed(1)},${yScale(0).toFixed(1)}`;
+  principalData.forEach((v, i) => {
+    principalArea += ` L${xScale(i).toFixed(1)},${yScale(v).toFixed(1)}`;
+  });
+  principalArea += ` L${xScale(principalData.length - 1).toFixed(1)},${yScale(0).toFixed(1)} Z`;
+  svg += `<path d="${principalArea}" fill="rgba(30, 58, 95, 0.20)"/>`;
+
+  // ライン
+  svg += `<path d="${buildLinePath(principalData, xScale, yScale)}" stroke="#1E3A5F" stroke-width="2" fill="none"/>`;
+  svg += `<path d="${buildLinePath(totalData, xScale, yScale)}" stroke="#4F7752" stroke-width="2.5" fill="none"/>`;
+
+  // X labels
+  const tickStep = Math.max(1, Math.floor((traj.length - 1) / 8));
+  for (let i = 0; i < traj.length; i += tickStep) {
+    svg += `<text x="${xScale(i).toFixed(1)}" y="${(H - 12).toFixed(1)}" text-anchor="middle" font-size="10" fill="#8E97A3" font-family="sans-serif">${traj[i].year}年</text>`;
+  }
+  svg += '</svg>';
+  document.getElementById(containerId).innerHTML = svg;
+}
+
+// パーセンタイル帯チャート
+function renderPercentileChart(containerId, labels, p10, p25, p50, p75, p90, targetLine) {
+  const W = 800, H = 360;
+  const padL = 56, padR = 16, padT = 16, padB = 32;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  let yMax = niceMax(Math.max(...p90));
+  if (targetLine && targetLine > yMax) yMax = niceMax(targetLine);
+  const xScale = i => padL + (i / Math.max(1, labels.length - 1)) * plotW;
+  const yScale = v => padT + plotH - (v / yMax) * plotH;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">`;
+
+  for (let i = 0; i <= 5; i++) {
+    const y = padT + (i / 5) * plotH;
+    const v = yMax - (i / 5) * yMax;
+    svg += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="#EFE9DD" stroke-width="1"/>`;
+    svg += `<text x="${padL - 6}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="#8E97A3" font-family="sans-serif">${fmtY(v)}</text>`;
+  }
+
+  function buildArea(upper, lower) {
+    const up = upper.map((v, i) => `${i === 0 ? 'M' : 'L'}${xScale(i).toFixed(1)},${yScale(v).toFixed(1)}`).join(' ');
+    const dn = [...lower].reverse().map((v, i) => {
+      const idx = lower.length - 1 - i;
+      return `L${xScale(idx).toFixed(1)},${yScale(v).toFixed(1)}`;
+    }).join(' ');
+    return `${up} ${dn} Z`;
+  }
+  svg += `<path d="${buildArea(p90, p75)}" fill="rgba(79, 119, 82, 0.14)"/>`;
+  svg += `<path d="${buildArea(p75, p50)}" fill="rgba(79, 119, 82, 0.10)"/>`;
+  svg += `<path d="${buildArea(p50, p25)}" fill="rgba(212, 148, 96, 0.10)"/>`;
+  svg += `<path d="${buildArea(p25, p10)}" fill="rgba(168, 72, 63, 0.12)"/>`;
+
+  svg += `<path d="${buildLinePath(p90, xScale, yScale)}" stroke="#4F7752" stroke-width="1.4" fill="none"/>`;
+  svg += `<path d="${buildLinePath(p75, xScale, yScale)}" stroke="#7FA882" stroke-width="1" fill="none"/>`;
+  svg += `<path d="${buildLinePath(p25, xScale, yScale)}" stroke="#D49460" stroke-width="1" fill="none"/>`;
+  svg += `<path d="${buildLinePath(p10, xScale, yScale)}" stroke="#A8483F" stroke-width="1.4" fill="none"/>`;
+  svg += `<path d="${buildLinePath(p50, xScale, yScale)}" stroke="#1E3A5F" stroke-width="2.5" fill="none"/>`;
+
+  if (targetLine) {
+    const ty = yScale(targetLine);
+    svg += `<line x1="${padL}" y1="${ty.toFixed(1)}" x2="${W - padR}" y2="${ty.toFixed(1)}" stroke="#C56A4E" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+    svg += `<text x="${W - padR}" y="${(ty - 4).toFixed(1)}" text-anchor="end" font-size="10" fill="#C56A4E" font-family="sans-serif">目標 ${fmtY(targetLine)}</text>`;
+  }
+
+  const tickStep = Math.max(1, Math.floor((labels.length - 1) / 8));
+  for (let i = 0; i < labels.length; i += tickStep) {
+    svg += `<text x="${xScale(i).toFixed(1)}" y="${(H - 12).toFixed(1)}" text-anchor="middle" font-size="10" fill="#8E97A3" font-family="sans-serif">${labels[i]}</text>`;
+  }
+  svg += '</svg>';
+  document.getElementById(containerId).innerHTML = svg;
+}
+
+// スパゲッティ
+function renderSpaghettiChart(containerId, labels, paths, median) {
+  const W = 800, H = 320;
+  const padL = 56, padR = 16, padT = 16, padB = 32;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  let yMax = 0;
+  paths.forEach(p => p.forEach(v => { if (v > yMax) yMax = v; }));
+  median.forEach(v => { if (v > yMax) yMax = v; });
+  yMax = niceMax(yMax);
+  const xScale = i => padL + (i / Math.max(1, labels.length - 1)) * plotW;
+  const yScale = v => padT + plotH - (v / yMax) * plotH;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">`;
+  for (let i = 0; i <= 5; i++) {
+    const y = padT + (i / 5) * plotH;
+    const v = yMax - (i / 5) * yMax;
+    svg += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="#EFE9DD" stroke-width="1"/>`;
+    svg += `<text x="${padL - 6}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="#8E97A3" font-family="sans-serif">${fmtY(v)}</text>`;
+  }
+  paths.forEach((path, i) => {
+    const hue = (i * 137.5) % 360;
+    svg += `<path d="${buildLinePath(path, xScale, yScale)}" stroke="hsla(${hue}, 45%, 55%, 0.22)" stroke-width="1" fill="none"/>`;
+  });
+  svg += `<path d="${buildLinePath(median, xScale, yScale)}" stroke="#1E3A5F" stroke-width="2.5" fill="none"/>`;
+  const tickStep = Math.max(1, Math.floor((labels.length - 1) / 8

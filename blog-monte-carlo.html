@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>モンテカルロ法を使った投資シミュレーションのススメ｜単純複利では見えない真実｜複利コンパス</title>
+<meta name="description" content="単純な複利計算では見えない「リスク」を可視化するモンテカルロ法。プロのFPやヘッジファンドが使う手法を、個人投資家向けにわかりやすく解説。">
+<meta name="keywords" content="モンテカルロ法,投資,シミュレーション,リスク,複利">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FFFFFF' stroke='%231E3A5F' stroke-width='2'/%3E%3Cpolygon points='22,10 18,18 10,22 14,14' fill='%23C56A4E'/%3E%3Cpolygon points='22,10 16,16 18,18' fill='%231E3A5F'/%3E%3Ccircle cx='16' cy='16' r='1.8' fill='%231E3A5F'/%3E%3C/svg%3E">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="モンテカルロ法を使った投資シミュレーションのススメ">
+<meta property="og:description" content="単純複利では見えない「投資のリスク」を、1,000通りの未来として可視化。プロのFPが使う手法を解説。">
+<meta property="og:image" content="og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
+    color: #1E2A38; background: #F7F3EC;
+    line-height: 1.9; font-size: 16px;
+  }
+  .page { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+  header.hero { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #E2D9C7; }
+  header.hero a { text-decoration: none; color: #1E3A5F; font-size: 14px; font-weight: 600; }
+  .article-tag {
+    display: inline-block; background: #C56A4E; color: white;
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+    margin-bottom: 14px;
+  }
+  h1 { font-size: 28px; font-weight: 800; margin: 8px 0 14px; line-height: 1.4; letter-spacing: 0.01em; }
+  .meta { font-size: 12px; color: #8E97A3; }
+  .card {
+    background: white; border: 1px solid #E2D9C7; border-radius: 16px;
+    padding: 32px; margin-bottom: 18px;
+    box-shadow: 0 4px 12px rgba(30,42,56,.06);
+  }
+  h2 {
+    font-size: 22px; font-weight: 700; margin: 32px 0 14px;
+    padding-left: 14px; border-left: 4px solid #C56A4E;
+    color: #1E3A5F;
+  }
+  h2:first-child { margin-top: 0; }
+  h3 { font-size: 18px; font-weight: 700; margin: 24px 0 10px; color: #1E3A5F; }
+  p { margin: 0 0 16px; color: #1E2A38; font-size: 15px; }
+  a { color: #C56A4E; }
+  blockquote {
+    background: #FBF8F1; border-left: 4px solid #1E3A5F;
+    padding: 14px 20px; margin: 16px 0;
+    color: #4A5568; font-size: 14px; border-radius: 4px;
+  }
+  table.calc {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    font-size: 14px;
+  }
+  table.calc th, table.calc td {
+    padding: 10px 12px; text-align: left;
+    border-bottom: 1px solid #EFE9DD;
+  }
+  table.calc thead th {
+    background: #1E3A5F; color: white;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
+  }
+  table.calc td.num { text-align: right; font-weight: 600; }
+  table.calc tbody tr:hover { background: #FBF8F1; }
+  .highlight { background: linear-gradient(transparent 60%, #FDE68A 60%); font-weight: 700; }
+  .cta-box {
+    background: linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%);
+    color: white; padding: 28px 32px; border-radius: 16px;
+    margin: 24px 0; text-align: center;
+  }
+  .cta-box h3 { color: #FBC97A; margin: 0 0 10px; font-size: 18px; }
+  .cta-box p { color: rgba(255,255,255,0.9); margin: 0 0 16px; font-size: 14px; }
+  .cta-btn {
+    display: inline-block; background: #FBC97A; color: #1E3A5F;
+    padding: 12px 28px; border-radius: 10px;
+    text-decoration: none; font-weight: 700; font-size: 15px;
+    transition: all 0.18s;
+  }
+  .cta-btn:hover { background: #FFD89A; transform: translateY(-2px); color: #1E3A5F; }
+  ul, ol { padding-left: 24px; margin: 12px 0 16px; }
+  li { margin-bottom: 8px; color: #1E2A38; font-size: 15px; }
+  strong { color: #1E3A5F; }
+  footer { text-align: center; margin-top: 36px; font-size: 12px; color: #8E97A3; }
+  footer a { color: #4A5568; text-decoration: none; margin: 0 8px; }
+  footer a:hover { color: #1E3A5F; text-decoration: underline; }
+  .related {
+    background: #FBF8F1; border-radius: 12px; padding: 20px 24px; margin: 20px 0;
+  }
+  .related h4 { margin: 0 0 12px; font-size: 14px; color: #1E3A5F; }
+  .related ul { margin: 0; padding-left: 20px; }
+  .related li { font-size: 14px; }
+  .visual {
+    background: #FBF8F1; padding: 16px 20px;
+    border-radius: 10px; margin: 14px 0;
+    font-family: monospace; font-size: 13px;
+    color: #4A5568; line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <a href="./">🧭 計算ツールに戻る</a> ・ <a href="blog.html">📚 記事一覧</a>
+    <span class="article-tag">手法解説</span>
+    <h1>モンテカルロ法を使った投資シミュレーションのススメ｜単純複利では見えない真実</h1>
+    <p class="meta">2026年5月5日 ・ 複利コンパス編集部</p>
+  </header>
+
+  <div class="card">
+    <p>「年利5%で30年運用したら○○円になる」――そんな単純な複利計算で資産プランを立てていませんか？</p>
+    <p>実はその計算、<strong>大事な情報を隠しています</strong>。それは「リスク」、つまり「悪いシナリオで資産がいくらになるか」という視点です。</p>
+    <p>本記事では、プロのファイナンシャル・プランナーやヘッジファンドが使う「<strong>モンテカルロ法</strong>」を、個人投資家向けにわかりやすく解説します。</p>
+
+    <h2>1. 単純複利計算の限界</h2>
+    <p>「月3万円を年利5%で20年運用する」という単純計算をすると、答えは<strong>約1,233万円</strong>です。</p>
+    <p>でも、これは「<strong>毎年きっちり5%増える</strong>」という非現実的な前提に基づいています。</p>
+    <div class="visual">
+1年目: +5% ✓<br>
+2年目: +5% ✓<br>
+3年目: +5% ✓<br>
+...<br>
+20年目: +5% ✓<br>
+→ 1,233万円
+    </div>
+    <p>現実の市場はこんな風に動きません。ある年は+30%、別の年は-25%といったように、<strong>大きく揺れます</strong>。</p>
+  </div>
+
+  <div class="card">
+    <h2>2. モンテカルロ法とは？</h2>
+    <p>モンテカルロ法とは、<strong>「サイコロを振って未来を1,000通り作り、その分布から確率を導き出す」</strong>計算手法です。</p>
+    <p>名前の由来は、ギャンブルの街「モナコ公国モンテカルロ」。ランダム性を扱う計算手法であることから、こう名付けられました。</p>
+
+    <h3>具体的な仕組み</h3>
+    <ol>
+      <li>「平均5%・標準偏差12%の正規分布」のような確率分布を設定</li>
+      <li>毎年のリターンをこの分布から<strong>ランダムに抽選</strong>（サイコロを振る感覚）</li>
+      <li>20年分繰り返して1パターンの未来を作る</li>
+      <li>これを<strong>1,000回繰り返し</strong>、1,000通りの未来を集める</li>
+      <li>結果を「悲観10%／中央50%／楽観90%」で分類して可視化</li>
+    </ol>
+    <div class="visual">
+パターン1: 1年目+30%, 2年目-15%, ... → 980万円<br>
+パターン2: 1年目-10%, 2年目+25%, ... → 1,420万円<br>
+パターン3: 1年目+5%, 2年目+8%, ... → 1,180万円<br>
+...<br>
+パターン1000: 1年目+12%, 2年目-3%, ... → 1,310万円<br>
+<br>
+→ 中央値: 1,233万円<br>
+→ 悲観(10%): 720万円<br>
+→ 楽観(90%): 2,050万円
+    </div>
+
+    <!-- 📊 図解1: モンテカルロのパス分布 -->
+    <figure style="margin: 24px 0; text-align: center;">
+      <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; max-width:600px;" role="img" aria-label="モンテカルロ法による10本のサンプルパスの分布">
+        <rect width="600" height="320" fill="#FBF8F1"/>
+        <text x="300" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#1E3A5F">モンテカルロ法の「1,000通りの未来」</text>
+        <text x="300" y="46" text-anchor="middle" font-size="11" fill="#8E97A3">月3万・20年・期待5%・ボラ12% / うち10本のサンプルパス</text>
+
+        <!-- グリッド -->
+        <line x1="60" y1="65" x2="580" y2="65" stroke="#EFE9DD"/>
+        <line x1="60" y1="125" x2="580" y2="125" stroke="#EFE9DD"/>
+        <line x1="60" y1="185" x2="580" y2="185" stroke="#EFE9DD"/>
+        <line x1="60" y1="245" x2="580" y2="245" stroke="#EFE9DD"/>
+
+        <!-- Y軸 -->
+        <text x="55" y="69" text-anchor="end" font-size="10" fill="#8E97A3">2,000万</text>
+        <text x="55" y="129" text-anchor="end" font-size="10" fill="#8E97A3">1,500万</text>
+        <text x="55" y="189" text-anchor="end" font-size="10" fill="#8E97A3">1,000万</text>
+        <text x="55" y="249" text-anchor="end" font-size="10" fill="#8E97A3">500万</text>
+
+        <!-- X軸 -->
+        <line x1="60" y1="280" x2="580" y2="280" stroke="#1E2A38" stroke-width="1.5"/>
+        <text x="60" y="298" text-anchor="middle" font-size="10" fill="#8E97A3">0年</text>
+        <text x="320" y="298" text-anchor="middle" font-size="10" fill="#8E97A3">10年</text>
+        <text x="580" y="298" text-anchor="middle" font-size="10" fill="#8E97A3">20年</text>
+
+        <!-- 10本のサンプルパス -->
+        <polyline points="60,280 164,270 268,265 372,255 476,250 580,219" stroke="#94A3B8" stroke-width="1.2" fill="none" opacity="0.55"/>
+        <polyline points="60,280 164,272 268,258 372,250 476,225 580,205" stroke="#94A3B8" stroke-width="1.2" fill="none" opacity="0.55"/>
+        <polyline points="60,280 164,266 268,250 372,240 476,210 580,189" stroke="#94A3B8" stroke-width="1.2" fill="none" opacity="0.55"/>
+        <polyline points="60,280 164,268 268,256 372,225 476,200 580,180" stroke="#94A3B8" stroke-width="1.2" fill="none" opacity="0.55"/>
+        <polyline points="60,280 164,260 268,240 372,215 476,180 580,165" stroke="#94A3B8" stroke-width="1.2" fill="none" opacity="0.55"/>
+        <polyline points="60,280 164,260 268,232 372,210 476,170 580,144" stroke="#94A3B8" stroke-width="1.2" fill="none" opacity="0.55"/>
+        <polyline points="60,280 164,258 268,228 372,195 476,150 580,123" stroke="#94A3B8" stroke-width="1.2" fill="none" opacity="0.55"/>
+        <polyline points="60,280 164,255 268,220 372,180 476,130 580,97" stroke="#94A3B8" stroke-width="1.2" fill="none" opacity="0.55"/>
+        <polyline points="60,280 164,253 268,215 372,170 476,110 580,66" stroke="#94A3B8" stroke-width="1.2" fill="none" opacity="0.55"/>
+
+        <!-- 中央値パス（強調） -->
+        <polyline points="60,280 164,265 268,237 372,205 476,175 580,151" stroke="#C56A4E" stroke-width="2.8" fill="none"/>
+        <circle cx="580" cy="151" r="4" fill="#C56A4E"/>
+        <text x="575" y="146" text-anchor="end" font-size="11" font-weight="700" fill="#C56A4E">中央値 1,233万</text>
+
+        <text x="300" y="318" text-anchor="middle" font-size="10" fill="#8E97A3">同じ条件でも結果はバラつく → これがリスクの正体</text>
+      </svg>
+      <figcaption style="font-size: 12px; color: #8E97A3; margin-top: 8px;">図1: 同じ条件・同じ期間でも、運次第で資産は大きくバラつく</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h2>3. 単純計算とモンテカルロの違い（具体例）</h2>
+    <p>同じ条件（月3万・20年・期待リターン5%・ボラティリティ12%）で計算した場合：</p>
+
+    <table class="calc">
+      <thead>
+        <tr>
+          <th>計算方法</th>
+          <th class="num">資産額</th>
+          <th>解釈</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>単純複利</td>
+          <td class="num">1,233万円</td>
+          <td>1本の線で予測</td>
+        </tr>
+        <tr>
+          <td>モンテカルロ：中央値</td>
+          <td class="num">1,233万円</td>
+          <td>最も起こりやすい結果</td>
+        </tr>
+        <tr style="background: #FAF0EE;">
+          <td>モンテカルロ：悲観10%</td>
+          <td class="num">720万円</td>
+          <td>不景気が続いた最悪に近いケース</td>
+        </tr>
+        <tr style="background: #F4FAF4;">
+          <td>モンテカルロ：楽観90%</td>
+          <td class="num"><span class="highlight">2,050万円</span></td>
+          <td>幸運なケース</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>単純計算では「1,233万円」しか見えませんが、モンテカルロでは「<strong>720万円〜2,050万円という幅</strong>」が見えます。これが「リスクの可視化」です。</p>
+
+    <!-- 📊 図解2: 信頼区間バンド -->
+    <figure style="margin: 24px 0; text-align: center;">
+      <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; max-width:600px;" role="img" aria-label="モンテカルロ法のp10〜p90信頼区間バンドと中央値の推移">
+        <rect width="600" height="320" fill="#FBF8F1"/>
+        <text x="300" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#1E3A5F">確率の「幅」で結果を表す</text>
+        <text x="300" y="46" text-anchor="middle" font-size="11" fill="#8E97A3">悲観p10〜楽観p90 帯（1,000通り中80%がこの範囲に着地）</text>
+
+        <!-- グリッド -->
+        <line x1="60" y1="65" x2="580" y2="65" stroke="#EFE9DD"/>
+        <line x1="60" y1="125" x2="580" y2="125" stroke="#EFE9DD"/>
+        <line x1="60" y1="185" x2="580" y2="185" stroke="#EFE9DD"/>
+        <line x1="60" y1="245" x2="580" y2="245" stroke="#EFE9DD"/>
+
+        <!-- Y軸 -->
+        <text x="55" y="69" text-anchor="end" font-size="10" fill="#8E97A3">2,000万</text>
+        <text x="55" y="129" text-anchor="end" font-size="10" fill="#8E97A3">1,500万</text>
+        <text x="55" y="189" text-anchor="end" font-size="10" fill="#8E97A3">1,000万</text>
+        <text x="55" y="249" text-anchor="end" font-size="10" fill="#8E97A3">500万</text>
+
+        <!-- X軸 -->
+        <line x1="60" y1="280" x2="580" y2="280" stroke="#1E2A38" stroke-width="1.5"/>
+        <text x="60" y="298" text-anchor="middle" font-size="10" fill="#8E97A3">0年</text>
+        <text x="320" y="298" text-anchor="middle" font-size="10" fill="#8E97A3">10年</text>
+        <text x="580" y="298" text-anchor="middle" font-size="10" fill="#8E97A3">20年</text>
+
+        <!-- p10〜p90帯 -->
+        <path d="M 60,280 L 112,272 L 164,262 L 216,249 L 268,234 L 320,215 L 372,191 L 424,164 L 476,131 L 528,100 L 580,66 L 580,205 L 528,210 L 476,216 L 424,223 L 372,230 L 320,239 L 268,248 L 216,257 L 164,266 L 112,273 Z" fill="#FBC97A" opacity="0.35"/>
+
+        <!-- 単純複利の直線（参照） -->
+        <polyline points="60,280 580,151" stroke="#94A3B8" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+        <text x="370" y="218" font-size="10" fill="#94A3B8">← 単純複利は1本の線でしか見えない</text>
+
+        <!-- 中央値 -->
+        <polyline points="60,280 112,272 164,263 216,253 268,240 320,226 372,209 424,191 476,175 528,162 580,151" stroke="#1E3A5F" stroke-width="3" fill="none"/>
+
+        <!-- 終端ラベル -->
+        <circle cx="580" cy="66" r="4" fill="#C56A4E"/>
+        <text x="575" y="60" text-anchor="end" font-size="11" font-weight="700" fill="#C56A4E">楽観 2,050万 (p90)</text>
+
+        <circle cx="580" cy="151" r="4" fill="#1E3A5F"/>
+        <text x="575" y="172" text-anchor="end" font-size="11" font-weight="700" fill="#1E3A5F">中央値 1,233万 (p50)</text>
+
+        <circle cx="580" cy="205" r="4" fill="#C56A4E"/>
+        <text x="575" y="222" text-anchor="end" font-size="11" font-weight="700" fill="#C56A4E">悲観 720万 (p10)</text>
+
+        <text x="300" y="318" text-anchor="middle" font-size="10" fill="#8E97A3">同じ月3万円の積立でも、運次第で2.8倍の差が出る</text>
+      </svg>
+      <figcaption style="font-size: 12px; color: #8E97A3; margin-top: 8px;">図2: モンテカルロの真価＝1本の線ではなく「幅」で未来を語れる</figcaption>
+    </figure>
+  </div>
+
+  <div class="cta-box">
+    <h3>1,000通りの未来を3秒で可視化</h3>
+    <p>複利コンパスのモンテカルロ計算は、トグル一つでON可能。あなたのリスクシナリオを今すぐ確認できます。</p>
+    <a href="./" class="cta-btn">モンテカルロを試す</a>
+  </div>
+
+  <div class="card">
+    <h2>4. なぜモンテカルロを使うべきか？</h2>
+
+    <h3>理由①：リスクが可視化される</h3>
+    <p>単純計算では「1,233万円」しか見えないため、想定外の不景気が来た時に大きく動揺します。モンテカルロなら<strong>「最悪でも720万円は残る確率が高い」</strong>と事前にわかるため、心の準備ができます。</p>
+
+    <h3>理由②：FIRE達成確率を計算できる</h3>
+    <p>「FIRE目標額に到達する確率は何%？」を数字で知ることができます。確率80%なら堅実、50%なら危ういと、客観的な指標で判断可能。</p>
+
+    <h3>理由③：プランの強度をテストできる</h3>
+    <p>「リーマンショック級の暴落が来ても破綻しないか」「インフレ率が上がっても大丈夫か」を、シナリオごとに計算できます。これを<strong>ストレステスト</strong>と呼びます。</p>
+
+    <blockquote>
+      プロのFP（ファイナンシャルプランナー）は、有料相談でこのモンテカルロを使った試算を提供しています。複利コンパスはこの手法を無料で公開しています。
+    </blockquote>
+  </div>
+
+  <div class="card">
+    <h2>5. モンテカルロの注意点</h2>
+
+    <h3>注意①：あくまで確率論</h3>
+    <p>「90%の確率で○○以上」は「100%確実」ではありません。10%の確率で外れる可能性は常にあります。</p>
+
+    <h3>注意②：過去データが基準</h3>
+    <p>計算に使う「平均リターン」「ボラティリティ」は過去データに基づいています。未来も同じとは限りません（金融危機・戦争・パンデミック等）。</p>
+
+    <h3>注意③：ボラティリティ設定の重要性</h3>
+    <p>同じ期待リターン5%でも、ボラティリティ6%（保守）と18%（積極）では結果分布が全く違います。<strong>自分のポートフォリオに合った値を使う</strong>ことが大切です。</p>
+
+    <table class="calc">
+      <thead><tr><th>運用スタイル</th><th class="num">期待リターン</th><th class="num">ボラティリティ</th></tr></thead>
+      <tbody>
+        <tr><td>債券中心（保守）</td><td class="num">3%</td><td class="num">6%</td></tr>
+        <tr><td>株+債券バランス（標準）</td><td class="num">5%</td><td class="num">12%</td></tr>
+        <tr><td>全世界株100%（積極）</td><td class="num">7%</td><td class="num">18%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>6. まとめ</h2>
+    <ol>
+      <li>単純複利計算は「1本の線」しか描けないため、リスクが見えない</li>
+      <li>モンテカルロ法は「1,000通りの未来」を確率で示す</li>
+      <li>FIRE達成確率・破綻リスク・楽観/悲観シナリオが数字でわかる</li>
+      <li>無料で使えるツール（複利コンパス等）で簡単に試せる</li>
+    </ol>
+    <p>「年利5%で○○万円」という単純予測の時代は終わりつつあります。これからは「<strong>確率で資産形成を語る</strong>」時代。一度モンテカルロを使うと、もう単純計算には戻れません。</p>
+
+    <div class="related">
+      <h4>関連ページ</h4>
+      <ul>
+        <li><a href="./">複利コンパス（モンテカルロ計算ツール）</a></li>
+        <li><a href="blog-fukuri-no-chikara.html">複利の力とは？月1万円が30年でいくらになるか</a></li>
+        <li><a href="blog-4percent-rule.html">4%ルールとは？FIRE達成の必要資産</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background: #FBF8F1; border: 1px solid #E2D9C7; border-radius: 12px; padding: 20px 24px; margin: 24px 0;">
+    <h4 style="margin: 0 0 12px; font-size: 14px; color: #1E3A5F;">📚 次に読む</h4>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-4percent-rule.html" style="color: #C56A4E; font-weight: 600;">4%ルールとは？FIRE達成に必要な資産の計算方法</a></li>
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-dollar-cost.html" style="color: #C56A4E; font-weight: 600;">ドルコスト平均法は本当に有効？モンテカルロで検証</a></li>
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-sp500-vs-allcountry.html" style="color: #C56A4E; font-weight: 600;">S&P500 vs 全世界株式（オルカン）どっちを選ぶ？</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <p>
+      <a href="./">トップ</a> ・
+      <a href="about.html">運営者情報</a> ・
+      <a href="contact.html">お問い合わせ</a> ・
+      <a href="privacy.html">プライバシー</a>
+    </p>
+    <p>© 2026 複利コンパス編集部</p>
+  </footer>
+</div>
+</body>
+</html>

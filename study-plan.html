@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学習計画コンパス｜資格試験の合格確率をMonte Carloで可視化</title>
+<meta name="description" content="FP3級・宅建・簿記2級・TOEICなど主要資格の学習時間データと合格確率をMonte Carlo 1,000本でシミュレーション。週X時間勉強したらいつ合格できる？">
+<meta name="keywords" content="学習計画,FP3級,宅建,簿記,TOEIC,勉強時間,合格,確率,Monte Carlo">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FFFFFF' stroke='%231E3A5F' stroke-width='2'/%3E%3Crect x='8' y='10' width='16' height='14' rx='1' fill='%23C56A4E'/%3E%3Cline x1='8' y1='13' x2='24' y2='13' stroke='%23FFFFFF' stroke-width='1'/%3E%3Crect x='10' y='8' width='12' height='3' rx='1' fill='%231E3A5F'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="学習計画コンパス｜資格試験の合格確率をMonte Carloで可視化">
+<meta property="og:description" content="FP3級・宅建・簿記2級など。週X時間勉強したらいつ合格できる？確率分布で可視化。">
+<meta property="og:image" content="og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root { --bg:#F7F3EC; --primary:#1E3A5F; --accent:#C56A4E; --soft:#FBC97A; --text:#1E2A38; --muted:#8E97A3; --border:#E2D9C7; --card:#FFFFFF; }
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', sans-serif; color: var(--text); background: var(--bg); line-height: 1.7; font-size: 16px; }
+.page { max-width: 720px; margin: 0 auto; padding: 36px 20px 80px; }
+header.hero { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+header.hero a { text-decoration: none; color: var(--primary); font-size: 13px; font-weight: 600; }
+.beta-tag { display: inline-block; background: var(--soft); color: var(--primary); padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; margin-left: 8px; }
+h1 { font-size: 28px; font-weight: 800; margin: 10px 0 6px; line-height: 1.4; color: var(--primary); }
+.subtitle { font-size: 14px; color: var(--muted); margin: 0; }
+.tab-nav { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+.tab-btn { padding: 10px 14px; border-radius: 10px 10px 0 0; background: transparent; color: var(--muted); border: none; font-size: 13px; font-weight: 700; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.15s; }
+.tab-btn:hover { color: var(--primary); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(30,42,56,.06); }
+.card h2 { font-size: 20px; font-weight: 700; margin: 0 0 14px; padding-left: 12px; border-left: 4px solid var(--accent); color: var(--primary); }
+.card h3 { font-size: 16px; font-weight: 700; margin: 18px 0 8px; color: var(--primary); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0 18px; }
+@media (max-width: 580px) { .form-grid { grid-template-columns: 1fr; } }
+.form-grid label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); font-weight: 600; }
+.form-grid input, .form-grid select { padding: 10px 12px; font-size: 15px; border: 1px solid var(--border); border-radius: 8px; background: #FAF6EE; color: var(--text); }
+.form-grid input:focus, .form-grid select:focus { outline: none; border-color: var(--accent); background: white; }
+.calc-btn { display: inline-block; padding: 12px 28px; border-radius: 10px; background: var(--primary); color: white; border: none; cursor: pointer; font-size: 15px; font-weight: 700; transition: all 0.15s; }
+.calc-btn:hover { background: #2C4A75; transform: translateY(-1px); }
+.result-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 18px; }
+@media (max-width: 580px) { .result-grid { grid-template-columns: 1fr; } }
+.result-card { background: linear-gradient(135deg, #FBF8F1, #F4DDD2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+.result-label { font-size: 11px; color: var(--muted); font-weight: 600; }
+.result-value { font-size: 22px; font-weight: 800; color: var(--accent); margin-top: 4px; }
+.result-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.pass-bar { background: #F5F0E8; height: 24px; border-radius: 6px; overflow: hidden; margin: 6px 0; position: relative; }
+.pass-bar-fill { height: 100%; background: linear-gradient(90deg, #4ADE80, #16A34A); transition: width 0.5s; }
+.pass-bar-low { background: linear-gradient(90deg, #FBC97A, #C56A4E); }
+.pass-bar-very-low { background: linear-gradient(90deg, #FCA5A5, #B91C1C); }
+table.exams { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+table.exams th, table.exams td { padding: 10px; text-align: left; border-bottom: 1px solid #EFE9DD; }
+table.exams thead th { background: var(--primary); color: white; font-size: 12px; font-weight: 700; }
+table.exams td.num { text-align: right; font-weight: 600; }
+.coming-soon { background: linear-gradient(135deg, #FBF8F1 0%, #F4DDD2 100%); border: 1px dashed var(--accent); }
+.coming-soon-tag { display: inline-block; background: var(--accent); color: white; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; margin-bottom: 10px; }
+.cross-promo { background: linear-gradient(135deg, var(--primary), #2C5282); color: white; padding: 24px; border-radius: 16px; margin: 20px 0; text-align: center; }
+.cross-promo h3 { color: var(--soft); margin: 0 0 8px; font-size: 16px; }
+.cross-promo p { color: rgba(255,255,255,0.9); margin: 0 0 12px; font-size: 13px; }
+.cross-promo a { display: inline-block; background: var(--soft); color: var(--primary); padding: 10px 24px; border-radius: 10px; text-decoration: none; font-weight: 700; margin: 6px 4px; }
+footer { text-align: center; margin-top: 32px; font-size: 12px; color: var(--muted); }
+footer a { color: #4A5568; text-decoration: none; margin: 0 8px; }
+.disclaimer { background: #FBF8F1; border-left: 4px solid var(--primary); padding: 12px 16px; margin: 14px 0; font-size: 12px; color: #4A5568; border-radius: 4px; }
+ul, ol { padding-left: 22px; }
+li { margin-bottom: 4px; font-size: 14px; }
+strong { color: var(--primary); }
+.feature-list { font-size: 14px; color: var(--text); padding-left: 20px; }
+.feature-list li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <a href="./">🧭 複利コンパス</a> ・ <a href="home-loan.html">🏠 住宅ローン</a> ・ <a href="diet.html">🥗 ダイエット</a> ・ <a href="blog.html">📚 記事</a>
+    <h1>📚 学習計画コンパス<span class="beta-tag">β版</span></h1>
+    <p class="subtitle">資格試験の合格確率をMonte Carlo 1,000本で可視化</p>
+  </header>
+
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="sim" onclick="setStudyTab(this, 'sim')">📊 合格確率シミュ</button>
+    <button class="tab-btn" data-tab="db" onclick="setStudyTab(this, 'db')">📋 試験データ</button>
+    <button class="tab-btn" data-tab="eff" onclick="setStudyTab(this, 'eff')">⏱ 効率化</button>
+    <button class="tab-btn" data-tab="moti" onclick="setStudyTab(this, 'moti')">💪 モチベ診断</button>
+  </div>
+
+  <!-- ===== TAB 1: 合格確率シミュ ===== -->
+  <div class="tab-panel active" data-panel="sim">
+    <div class="card">
+      <h2>合格確率シミュレーター <span style="font-size:11px;color:var(--accent);font-weight:700;background:#FBE9D2;padding:2px 8px;border-radius:999px;">★ メイン機能</span></h2>
+      <p style="font-size:14px; color:var(--muted); margin:0 0 14px;">「週X時間勉強したら、試験日までに合格できるか？」をMonte Carlo 1,000本でシミュレーションします。</p>
+
+      <div class="form-grid">
+        <label>受験する試験<select id="examSelect">
+          <option value="fp3" data-median="80" data-p10="50" data-p90="150">FP3級（中央値80h）</option>
+          <option value="fp2" data-median="200" data-p10="150" data-p90="350">FP2級（中央値200h）</option>
+          <option value="boki3" data-median="120" data-p10="80" data-p90="200">簿記3級（中央値120h）</option>
+          <option value="boki2" data-median="350" data-p10="250" data-p90="500" selected>簿記2級（中央値350h）</option>
+          <option value="takken" data-median="300" data-p10="200" data-p90="500">宅建士（中央値300h）</option>
+          <option value="gyosei" data-median="700" data-p10="500" data-p90="1000">行政書士（中央値700h）</option>
+          <option value="sharoshi" data-median="1000" data-p10="800" data-p90="1500">社労士（中央値1,000h）</option>
+          <option value="shindan" data-median="1200" data-p10="1000" data-p90="2000">中小企業診断士（中央値1,200h）</option>
+          <option value="toeic600" data-median="200" data-p10="100" data-p90="400">TOEIC 600（中央値200h）</option>
+          <option value="toeic800" data-median="700" data-p10="500" data-p90="1200">TOEIC 800（中央値700h）</option>
+          <option value="toeic900" data-median="1500" data-p10="1200" data-p90="2500">TOEIC 900（中央値1,500h）</option>
+        </select></label>
+        <label>現状の知識レベル<select id="levelSelect">
+          <option value="0.7">初心者（多めに見積もる）</option>
+          <option value="1.0" selected>標準（中央値そのまま）</option>
+          <option value="1.3">関連知識あり（少なめでOK）</option>
+          <option value="1.6">経験者（半分程度）</option>
+        </select></label>
+        <label>週あたり学習時間（時間）<input id="weeklyHours" type="number" value="10" min="1" max="80"></label>
+        <label>試験までの期間（週）<input id="weeksAvailable" type="number" value="30" min="1" max="200"></label>
+      </div>
+
+      <button class="calc-btn" onclick="calcStudy()">合格確率を算出する</button>
+
+      <div id="studyResult" style="display:none; margin-top:18px;">
+        <div class="result-grid">
+          <div class="result-card">
+            <div class="result-label">合格確率</div>
+            <div class="result-value" id="passRate">—</div>
+            <div class="pass-bar"><div id="passBar" class="pass-bar-fill" style="width:0%;"></div></div>
+            <div class="result-sub" id="passVerdict">—</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">あなたが必要な学習時間</div>
+            <div class="result-value" id="neededHours">—</div>
+            <div class="result-sub" id="neededRange">—</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">確保可能な学習時間</div>
+            <div class="result-value" id="availableHours">—</div>
+            <div class="result-sub" id="availableSub">—</div>
+          </div>
+        </div>
+
+        <div id="studyChart" style="margin-top:18px;"></div>
+
+        <div id="advice" style="background:#FBF8F1;border-radius:10px;padding:14px 18px;margin-top:14px;font-size:13px;line-height:1.7;"></div>
+
+        <div class="disclaimer">
+          ※ 過去の合格者データに基づく推定。学習効率は個人差が大きいため、参考値として。実際の試験は問題運や体調にも影響されます。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 2: 試験データベース ===== -->
+  <div class="tab-panel" data-panel="db">
+    <div class="card">
+      <h2>主要資格の学習時間データ</h2>
+      <p style="font-size:14px; color:var(--muted); margin:0 0 12px;">独学・社会人を想定した推定値。中央値（p50）と幅（p10〜p90）で記載。</p>
+
+      <table class="exams">
+        <thead>
+          <tr>
+            <th>試験名</th>
+            <th class="num">中央値</th>
+            <th class="num">幅 (p10〜p90)</th>
+            <th class="num">合格率</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>FP3級</strong></td><td class="num">80時間</td><td class="num">50〜150時間</td><td class="num">約80%</td></tr>
+          <tr style="background:#FBF8F1;"><td><strong>FP2級</strong></td><td class="num">200時間</td><td class="num">150〜350時間</td><td class="num">約45%</td></tr>
+          <tr><td><strong>簿記3級</strong></td><td class="num">120時間</td><td class="num">80〜200時間</td><td class="num">約45%</td></tr>
+          <tr style="background:#FBF8F1;"><td><strong>簿記2級</strong></td><td class="num">350時間</td><td class="num">250〜500時間</td><td class="num">約25%</td></tr>
+          <tr><td><strong>宅建士</strong></td><td class="num">300時間</td><td class="num">200〜500時間</td><td class="num">約17%</td></tr>
+          <tr style="background:#FBF8F1;"><td><strong>行政書士</strong></td><td class="num">700時間</td><td class="num">500〜1,000時間</td><td class="num">約11%</td></tr>
+          <tr><td><strong>社労士</strong></td><td class="num">1,000時間</td><td class="num">800〜1,500時間</td><td class="num">約7%</td></tr>
+          <tr style="background:#FBF8F1;"><td><strong>中小企業診断士</strong></td><td class="num">1,200時間</td><td class="num">1,000〜2,000時間</td><td class="num">約5%</td></tr>
+          <tr><td><strong>TOEIC 600</strong></td><td class="num">200時間</td><td class="num">100〜400時間</td><td class="num">—</td></tr>
+          <tr style="background:#FBF8F1;"><td><strong>TOEIC 800</strong></td><td class="num">700時間</td><td class="num">500〜1,200時間</td><td class="num">—</td></tr>
+          <tr><td><strong>TOEIC 900</strong></td><td class="num">1,500時間</td><td class="num">1,200〜2,500時間</td><td class="num">—</td></tr>
+        </tbody>
+      </table>
+
+      <div class="disclaimer">
+        ※ 過去の合格者調査・教材ガイダンスの集計値です。現状の知識レベル・学習効率により大きく変動します。
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 3: 効率化シミュレーター ===== -->
+  <div class="tab-panel" data-panel="eff">
+    <div class="card">
+      <h2>学習効率化シミュレーター <span style="font-size:11px;color:var(--accent);font-weight:700;background:#FBE9D2;padding:2px 8px;border-radius:999px;">忘却曲線モデル</span></h2>
+      <p style="font-size:14px; color:var(--muted); margin:0 0 14px;">「同じ総学習時間でも、毎日少しずつ vs 週末まとめて」のどちらが定着するかを、Ebbinghaus忘却曲線モデルでシミュレーション。</p>
+
+      <div class="form-grid">
+        <label>総学習時間（時間）<input id="effTotal" type="number" value="30" min="5" max="500"></label>
+        <label>シミュ期間（日）<input id="effDays" type="number" value="60" min="14" max="365"></label>
+      </div>
+
+      <button class="calc-btn" onclick="calcEff()">3パターン比較</button>
+
+      <div id="effResult" style="display:none; margin-top:18px;">
+        <h3 style="margin-top:0;">学習パターン別 知識定着推移</h3>
+        <div id="effChart"></div>
+        <div class="result-grid" id="effGrid" style="margin-top:14px;"></div>
+        <div style="background:#FBF8F1;border-radius:10px;padding:14px 18px;margin-top:14px;font-size:13px;line-height:1.7;">
+          <strong style="color:var(--primary);">📖 読み方:</strong><br>
+          ・同じ「総学習時間」を3つの分散で投入<br>
+          ・グラフは「シミュ期間 + 30日後（試験当日想定）」までの定着レベル<br>
+          ・<strong>頻度の高いパターンほど忘却曲線に強く、長期定着率が高い</strong>（spaced repetition効果）<br>
+          <span style="color:var(--muted);font-size:12px;">※ 単純化したモデル。個人差・教材難易度で実値は変動</span>
+        </div>
+        <div class="disclaimer">
+          ※ Ebbinghausの忘却曲線を簡略化したモデルです。実際の学習効果は教材・集中度・睡眠・復習タイミングなど多要素に影響されます。
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>科学的に効率的な学習法</h2>
+      <h3>① 分散学習（Spaced Repetition）</h3>
+      <p>同じ時間でも、間隔を空けて分散させた方が長期記憶に残る。1日6時間 < 6日30分。</p>
+      <h3>② 想起練習（Active Recall）</h3>
+      <p>読むだけより「思い出す」練習が効く。問題集 > 教科書通読。</p>
+      <h3>③ 朝の学習</h3>
+      <p>記憶定着には睡眠が必須。<strong>朝型学習 + 夜の復習10分</strong>が最強パターン。</p>
+      <h3>④ 適度な疲労</h3>
+      <p>2時間連続より、45分×2セット（休憩あり）。集中力は45分が限界。</p>
+    </div>
+  </div>
+
+  <!-- ===== TAB 4: モチベ診断 ===== -->
+  <div class="tab-panel" data-panel="moti">
+    <div class="card">
+      <h2>計画達成リスク診断 <span style="font-size:11px;color:var(--accent);font-weight:700;background:#FBE9D2;padding:2px 8px;border-radius:999px;">10問・1分で完了</span></h2>
+      <p style="font-size:14px; color:var(--muted); margin:0 0 14px;">「あなたの計画は破綻しそうか」を10問で診断。挫折パターンと対策を提示。</p>
+
+      <div id="quizArea">
+        <div id="quizForm" style="display: grid; gap: 14px;"></div>
+        <button class="calc-btn" onclick="calcMoti()" style="margin-top: 16px;">診断する</button>
+      </div>
+
+      <div id="motiResult" style="display:none; margin-top:18px;">
+        <div style="text-align:center;">
+          <div id="motiVerdictTag" style="display:inline-block; padding:6px 14px; border-radius:999px; font-size:13px; font-weight:800;"></div>
+          <div id="motiScore" style="font-size:32px; font-weight:800; margin:12px 0 4px;">—</div>
+          <div style="font-size:11px; color:var(--muted);">スコア (満点20)</div>
+        </div>
+        <div id="motiAdvice" style="background:#FBF8F1;border-radius:10px;padding:14px 18px;margin-top:14px;font-size:13px;line-height:1.8;"></div>
+        <div class="disclaimer">
+          ※ 過去の挫折パターン研究に基づく簡易診断です。実際の達成は環境・健康・モチベの変動で変わります。
+        </div>
+        <button class="calc-btn" onclick="resetMoti()" style="margin-top: 12px; background: #94A3B8;">もう一度診断する</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cross-promo">
+    <h3>姉妹ツール（Monte Carlo計画ツール）</h3>
+    <p>資産形成・住宅ローン・ダイエットも同じシミュレーション方式</p>
+    <a href="./">複利コンパス</a>
+    <a href="home-loan.html">住宅ローンコンパス</a>
+    <a href="diet.html">ダイエット予測コンパス</a>
+  </div>
+
+  <footer>
+    <p>
+      <a href="./">トップ</a> ・
+      <a href="blog.html">記事一覧</a> ・
+      <a href="about.html">運営者情報</a> ・
+      <a href="contact.html">お問い合わせ</a> ・
+      <a href="privacy.html">プライバシー</a>
+    </p>
+    <p style="margin-top:8px; font-size:11px;">© 2026 複利コンパス編集部 ／ 学習時間は個人差が大きいため、参考値としてご利用ください。</p>
+  </footer>
+</div>
+
+<script>
+function setStudyTab(btn, name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('[data-panel="' + name + '"]').classList.add('active');
+}
+
+function gaussian() {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+function percentile(arr, p) {
+  const sorted = [...arr].sort((a, b) => a - b);
+  return sorted[Math.floor(sorted.length * p)];
+}
+
+function fmtH(n) { return Math.round(n) + 'h'; }
+function fmtPct(n) { return (n * 100).toFixed(1) + '%'; }
+
+function calcStudy() {
+  const sel = document.getElementById('examSelect');
+  const opt = sel.options[sel.selectedIndex];
+  const median = parseFloat(opt.dataset.median);
+  const p10 = parseFloat(opt.dataset.p10);
+  const p90 = parseFloat(opt.dataset.p90);
+  const examName = opt.text.replace(/（.*$/, '');
+  const levelMul = parseFloat(document.getElementById('levelSelect').value);
+  const weekly = parseFloat(document.getElementById('weeklyHours').value);
+  const weeks = parseFloat(document.getElementById('weeksAvailable').value);
+
+  // σ from p90 (assuming normal): σ ≈ (p90 − p50) / 1.28
+  const sigma = (p90 - median) / 1.28;
+  const adjustedMedian = median / levelMul;
+  const adjustedSigma = sigma / levelMul;
+
+  // Available hours
+  const availableTotal = weekly * weeks;
+
+  // Monte Carlo 1000
+  const MC = 1000;
+  const neededList = [];
+  let passes = 0;
+  for (let i = 0; i < MC; i++) {
+    // Each student needs N(adjustedMedian, adjustedSigma) hours
+    let needed = adjustedMedian + adjustedSigma * gaussian();
+    needed = Math.max(needed, adjustedMedian * 0.3); // 下限保護
+    neededList.push(needed);
+    if (needed <= availableTotal) passes++;
+  }
+  const passRate = passes / MC;
+  const nP10 = percentile(neededList, 0.1);
+  const nP50 = percentile(neededList, 0.5);
+  const nP90 = percentile(neededList, 0.9);
+
+  // UI
+  document.getElementById('passRate').textContent = fmtPct(passRate);
+  const bar = document.getElementById('passBar');
+  bar.style.width = (passRate * 100) + '%';
+  bar.className = 'pass-bar-fill';
+  if (passRate < 0.3) bar.classList.add('pass-bar-very-low');
+  else if (passRate < 0.7) bar.classList.add('pass-bar-low');
+
+  let verdict = '';
+  if (passRate >= 0.85) verdict = '✅ 高確率で合格圏内';
+  else if (passRate >= 0.6) verdict = '🟡 もう少し時間確保したい';
+  else if (passRate >= 0.3) verdict = '🟠 計画変更を推奨';
+  else verdict = '🔴 大幅な見直しが必要';
+  document.getElementById('passVerdict').textContent = verdict;
+
+  document.getElementById('neededHours').textContent = fmtH(nP50);
+  document.getElementById('neededRange').textContent = `悲観 ${fmtH(nP90)} / 楽観 ${fmtH(nP10)}`;
+
+  document.getElementById('availableHours').textContent = fmtH(availableTotal);
+  document.getElementById('availableSub').textContent = `週${weekly}h × ${weeks}週`;
+
+  document.getElementById('studyResult').style.display = 'block';
+
+  // アドバイス
+  let advice = '<strong style="color:var(--primary);">💡 アドバイス:</strong><br>';
+  if (passRate >= 0.85) {
+    advice += `現プランで十分余裕。挫折リスクの方が高いので、<strong>無理せず継続することが鍵</strong>。<br>`;
+    advice += `週${weekly}時間を維持できれば、${examName}の合格確率は <strong>${fmtPct(passRate)}</strong> です。`;
+  } else if (passRate >= 0.6) {
+    const additional = Math.ceil((nP50 - availableTotal) / weeks * 1.2);
+    advice += `あと一押し。週${additional > 0 ? additional + '時間程度' : '1〜2時間'}増やせば合格確率がグッと上がります。<br>`;
+    advice += `または<strong>試験日を ${Math.ceil((nP50 / weekly) - weeks)}週ほど後ろ倒し</strong>できれば余裕。`;
+  } else if (passRate >= 0.3) {
+    advice += `現プランでは<strong>運次第</strong>のレベル。以下のいずれか必須:<br>`;
+    advice += `① 週学習時間を ${Math.ceil(weekly * 1.5)}h 程度に増やす<br>`;
+    advice += `② 試験を ${Math.ceil(nP50 / weekly)}週後（約${Math.ceil(nP50 / weekly / 4)}ヶ月後）に変更<br>`;
+    advice += `③ 通信講座などで<strong>学習効率を上げる</strong>（必要時間が3割減）`;
+  } else {
+    advice += `<strong style="color:#B91C1C;">現プランでは合格は困難</strong>。下記のいずれかが必要:<br>`;
+    advice += `① 週学習時間を <strong>${Math.ceil(nP50 / weeks)}h</strong> 以上確保<br>`;
+    advice += `② 受験時期を <strong>${Math.ceil(nP50 / weekly)}週後</strong> 以降にずらす<br>`;
+    advice += `③ 1段階下の試験から始める（FP2級 → FP3級など）`;
+  }
+  document.getElementById('advice').innerHTML = advice;
+
+  renderStudyChart(neededList, availableTotal);
+}
+
+function renderStudyChart(neededList, available) {
+  const W = 600, H = 220, padL = 60, padR = 30, padT = 30, padB = 40;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const sorted = [...neededList].sort((a, b) => a - b);
+  const minVal = Math.min(sorted[0], available) * 0.8;
+  const maxVal = Math.max(sorted[sorted.length - 1], available) * 1.05;
+  const niceMax = Math.ceil(maxVal / 100) * 100;
+  const niceMin = Math.floor(minVal / 100) * 100;
+
+  // Histogram (20 bins)
+  const bins = 20;
+  const binWidth = (niceMax - niceMin) / bins;
+  const binCounts = new Array(bins).fill(0);
+  sorted.forEach(v => {
+    const b = Math.min(bins - 1, Math.floor((v - niceMin) / binWidth));
+    if (b >= 0) binCounts[b]++;
+  });
+  const maxCount = Math.max(...binCounts);
+
+  const sx = v => padL + ((v - niceMin) / (niceMax - niceMin)) * plotW;
+  const availX = sx(available);
+
+  let bars = '';
+  binCounts.forEach((c, i) => {
+    const x = sx(niceMin + i * binWidth);
+    const w = (plotW / bins) - 1;
+    const h = (c / maxCount) * (plotH - 20);
+    const y = padT + plotH - 20 - h;
+    const xCenter = x + w / 2;
+    const isPass = (niceMin + (i + 0.5) * binWidth) <= available;
+    const color = isPass ? '#4ADE80' : '#FCA5A5';
+    bars += `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${color}" opacity="0.85"/>`;
+  });
+
+  // Available line
+  const availLine = `<line x1="${availX}" y1="${padT}" x2="${availX}" y2="${padT + plotH}" stroke="#1E3A5F" stroke-width="2.5" stroke-dasharray="6 3"/>
+                     <text x="${availX}" y="${padT - 8}" text-anchor="middle" font-size="11" font-weight="700" fill="#1E3A5F">あなたの確保時間 ${fmtH(available)}</text>`;
+
+  // X axis labels
+  let xLabels = '';
+  for (let i = 0; i <= 4; i++) {
+    const v = niceMin + (niceMax - niceMin) * i / 4;
+    const x = sx(v);
+    xLabels += `<text x="${x}" y="${H - padB + 18}" text-anchor="middle" font-size="10" fill="#8E97A3">${fmtH(v)}</text>`;
+  }
+
+  const svg = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto;" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="必要学習時間の分布と合格ライン">
+    <rect width="${W}" height="${H}" fill="#FBF8F1" rx="8"/>
+    <text x="${W/2}" y="20" text-anchor="middle" font-size="12" font-weight="700" fill="#1E3A5F">必要学習時間の分布（Monte Carlo 1,000本）</text>
+    ${bars}
+    <line x1="${padL}" y1="${padT + plotH - 20}" x2="${W - padR}" y2="${padT + plotH - 20}" stroke="#1E2A38" stroke-width="1.5"/>
+    ${xLabels}
+    ${availLine}
+    <rect x="${padL}" y="${H - 20}" width="10" height="10" fill="#4ADE80" opacity="0.85"/>
+    <text x="${padL + 14}" y="${H - 11}" font-size="10" fill="#1E2A38">合格圏内</text>
+    <rect x="${padL + 80}" y="${H - 20}" width="10" height="10" fill="#FCA5A5" opacity="0.85"/>
+    <text x="${padL + 94}" y="${H - 11}" font-size="10" fill="#1E2A38">時間不足</text>
+  </svg>
+  <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px;">図: 必要学習時間の分布と「あなたの確保時間ライン」</p>`;
+
+  document.getElementById('studyChart').innerHTML = svg;
+}
+
+// ===== Tab 3: 効率化シミュ（忘却曲線） =====
+
+function simulatePattern(totalHours, totalDays, sessionsCount, label, color) {
+  const sessionHrs = totalHours / sessionsCount;
+  const interval = totalDays / sessionsCount;
+
+  const futureBuffer = 30; // 試験当日想定として最終学習後30日まで観察
+  const lookahead = totalDays + futureBuffer;
+
+  let knowledge = 0;
+  let strength = 0; // 累積定着強度
+  const series = [];
+
+  let nextSessionDay = 0;
+  let sessionIdx = 0;
+
+  for (let day = 0; day <= lookahead; day++) {
+    if (sessionIdx < sessionsCount && day >= nextSessionDay) {
+      // セッション実行: 強度ボーナス（spaced repetition効果）
+      const spacingBonus = Math.min(2.0, 1 + 0.08 * Math.log(strength + 1));
+      knowledge += sessionHrs * spacingBonus;
+      strength += sessionHrs;
+      sessionIdx++;
+      nextSessionDay += interval;
+    }
+    // 忘却（strengthが高いほど減衰が遅くなる）
+    const decay = 0.025 / (1 + 0.06 * strength);
+    knowledge *= (1 - decay);
+    series.push(knowledge);
+  }
+  return { series, label, color, finalRetention: series[series.length - 1] };
+}
+
+function calcEff() {
+  const totalHrs = parseFloat(document.getElementById('effTotal').value);
+  const totalDays = parseInt(document.getElementById('effDays').value);
+
+  // 3パターン: 同じ総時間を異なる頻度で投入
+  const sessionsA = totalDays;       // 毎日
+  const sessionsB = Math.ceil(totalDays / 2); // 隔日
+  const sessionsC = Math.ceil(totalDays / 6); // 週1〜2回
+
+  const a = simulatePattern(totalHrs, totalDays, sessionsA, 'A: 毎日少しずつ', '#16A34A');
+  const b = simulatePattern(totalHrs, totalDays, sessionsB, 'B: 隔日まとめて', '#1E3A5F');
+  const c = simulatePattern(totalHrs, totalDays, sessionsC, 'C: 週末まとめて', '#C56A4E');
+
+  // 結果表示
+  const cards = [a, b, c].map((p, i) => {
+    const isWinner = p.finalRetention === Math.max(a.finalRetention, b.finalRetention, c.finalRetention);
+    const sessions = [sessionsA, sessionsB, sessionsC][i];
+    const sessionLen = (totalHrs / sessions).toFixed(1);
+    return `
+      <div class="result-card" style="background: linear-gradient(135deg, #FBF8F1, ${p.color}22); border-left: 4px solid ${p.color};">
+        ${isWinner ? '<div style="display:inline-block; background:#FBC97A; color:#1E3A5F; font-size:10px; font-weight:800; padding:2px 8px; border-radius:999px; margin-bottom:4px;">★ 最高定着</div>' : ''}
+        <div class="result-label" style="color:${p.color};">${p.label}</div>
+        <div class="result-value" style="color:${p.color}; font-size:18px;">定着 ${p.finalRetention.toFixed(1)}</div>
+        <div class="result-sub">${sessions}回 × 約${sessionLen}h</div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('effGrid').innerHTML = cards;
+
+  // チャート描画
+  renderEffChart([a, b, c], totalDays);
+  document.getElementById('effResult').style.display = 'block';
+}
+
+function renderEffChart(patterns, totalDays) {
+  const W = 600, H = 280, padL = 50, padR = 80, padT = 30, padB = 40;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const lookahead = patterns[0].series.length - 1;
+  const maxY = Math.max(...patterns.flatMap(p => p.series)) * 1.05;
+
+  const sx = d => padL + (d / lookahead) * plotW;
+  const sy = v => padT + plotH - (v / maxY) * plotH;
+
+  // グリッド & 軸
+  let grid = '';
+  for (let i = 0; i <= 4; i++) {
+    const y = padT + plotH * i / 4;
+    grid += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#EFE9DD"/>`;
+  }
+  // X軸ラベル
+  let xLabels = '';
+  for (let i = 0; i <= 4; i++) {
+    const d = lookahead * i / 4;
+    const x = sx(d);
+    xLabels += `<text x="${x}" y="${H - padB + 18}" text-anchor="middle" font-size="10" fill="#8E97A3">${Math.round(d)}日</text>`;
+  }
+  // 学習期間と「観察期間」境界
+  const totalDayX = sx(totalDays);
+  const examLine = `<line x1="${totalDayX}" y1="${padT}" x2="${totalDayX}" y2="${padT + plotH}" stroke="#8E97A3" stroke-width="1" stroke-dasharray="4 3"/>
+                    <text x="${totalDayX}" y="${padT - 6}" text-anchor="middle" font-size="10" fill="#8E97A3">学習終了 ${totalDays}日</text>`;
+
+  // ライン描画
+  let lines = '';
+  let labels = '';
+  patterns.forEach((p, idx) => {
+    const points = p.series.map((v, i) => `${sx(i)},${sy(v)}`).join(' ');
+    lines += `<polyline points="${points}" stroke="${p.color}" stroke-width="2.5" fill="none"/>`;
+    const lastY = sy(p.series[p.series.length - 1]);
+    const ny = lastY; // raw position
+    labels += `<circle cx="${sx(lookahead)}" cy="${lastY}" r="4" fill="${p.color}"/>
+               <text x="${sx(lookahead) + 6}" y="${lastY + 4}" font-size="11" font-weight="700" fill="${p.color}">${p.label.replace(/^[A-C]:\s*/, '')}</text>`;
+  });
+
+  const svg = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto;" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="3つの学習パターンの知識定着推移">
+    <rect width="${W}" height="${H}" fill="#FBF8F1" rx="8"/>
+    ${grid}
+    ${examLine}
+    ${lines}
+    ${labels}
+    <line x1="${padL}" y1="${padT + plotH}" x2="${W - padR}" y2="${padT + plotH}" stroke="#1E2A38" stroke-width="1.5"/>
+    ${xLabels}
+    <text x="${padL - 6}" y="${padT + 4}" text-anchor="end" font-size="10" fill="#8E97A3">高</text>
+    <text x="${padL - 6}" y="${padT + plotH + 4}" text-anchor="end" font-size="10" fill="#8E97A3">低</text>
+  </svg>
+  <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px;">図: 学習パターン別の知識定着推移（縦軸=定着レベル、横軸=日数）</p>`;
+  document.getElementById('effChart').innerHTML = svg;
+}
+
+// ===== Tab 4: モチベ診断 =====
+
+const QUIZ = [
+  { q: '立てた計画の達成率は？', opts: [['ほぼ常に達成', 2], ['半分くらい', 1], ['ほとんど達成しない', 0]] },
+  { q: '新しい習慣を始めたら何日続く？', opts: [['1ヶ月以上', 2], ['2週間程度', 1], ['3〜7日で終わる', 0]] },
+  { q: 'SNS・ゲーム・動画の誘惑は？', opts: [['コントロールできる', 2], ['時々負ける', 1], ['しょっちゅう負ける', 0]] },
+  { q: '日々の学習時間のばらつきは？', opts: [['ほぼ一定', 2], ['週末に増える', 1], ['予定が立たない', 0]] },
+  { q: '過去の資格・勉強での挫折経験', opts: [['なし、ほぼ達成', 2], ['1〜2回挫折', 1], ['3回以上挫折', 0]] },
+  { q: '目標の立て方は？', opts: [['小さく分割し具体的', 2], ['ざっくり目標のみ', 1], ['なんとなく頑張る', 0]] },
+  { q: '進捗を共有する人は？', opts: [['いる（家族・友人・SNS）', 2], ['ときどき話す', 1], ['基本ひとり', 0]] },
+  { q: '学習記録のつけ方は？', opts: [['毎日記録（アプリ等）', 2], ['週次でまとめる', 1], ['記録しない', 0]] },
+  { q: '学習場所は？', opts: [['毎回同じ場所', 2], ['複数の場所を使う', 1], ['集中できる場所がない', 0]] },
+  { q: 'ご褒美・楽しみは？', opts: [['節目ごとに設定', 2], ['気が向いたとき', 1], ['特になし', 0]] }
+];
+
+function buildQuiz() {
+  const form = document.getElementById('quizForm');
+  if (!form) return;
+  form.innerHTML = QUIZ.map((item, i) => {
+    return `<div style="background:#FBF8F1; border-radius:8px; padding:12px 16px;">
+      <div style="font-size:13px; font-weight:700; color:#1E3A5F; margin-bottom:8px;">Q${i+1}. ${item.q}</div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        ${item.opts.map((opt, j) =>
+          `<label style="flex:1; min-width:100px; padding:8px 10px; background:white; border:1px solid #E2D9C7; border-radius:6px; cursor:pointer; font-size:12px;">
+            <input type="radio" name="q${i}" value="${opt[1]}" ${j===0?'checked':''} style="margin-right:6px;"> ${opt[0]}
+          </label>`
+        ).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function calcMoti() {
+  let score = 0;
+  for (let i = 0; i < QUIZ.length; i++) {
+    const sel = document.querySelector(`input[name="q${i}"]:checked`);
+    if (sel) score += parseInt(sel.value);
+  }
+
+  document.getElementById('motiScore').textContent = score + ' / 20';
+
+  let verdict = '', tagBg = '', tagColor = '', advice = '';
+  if (score >= 16) {
+    verdict = '🟢 達成リスク低（達成型）';
+    tagBg = '#D1FAE5'; tagColor = '#059669';
+    advice = `<strong style="color:#059669;">あなたは計画達成タイプ</strong><br><br>
+      ・現状の習慣をそのまま継続でOK<br>
+      ・むしろ「目標を高めに設定」して上限を伸ばすチャンス<br>
+      ・落とし穴: 完璧主義による燃え尽き → 適度な休憩を意識して<br>
+      ・推奨: スケジュール管理アプリで進捗可視化、達成したら自分にご褒美`;
+  } else if (score >= 11) {
+    verdict = '🟡 中リスク（要工夫型）';
+    tagBg = '#FEF3C7'; tagColor = '#B45309';
+    advice = `<strong style="color:#B45309;">あなたは「やる気はあるが続かない」タイプ</strong><br><br>
+      ・<strong>小さな目標分割</strong>を徹底（1週間×何回でクリアするか）<br>
+      ・SNS制限アプリ（Forest, Cold Turkey）導入推奨<br>
+      ・進捗共有相手を作る（友人・SNS・スタディルーム）<br>
+      ・最初の<strong>3週間が勝負</strong>。乗り越えたら習慣化される<br>
+      ・推奨: 学習記録アプリで毎日の達成をビジュアル化（StudyPlus等）`;
+  } else if (score >= 6) {
+    verdict = '🟠 高リスク（挫折注意型）';
+    tagBg = '#FEE2E2'; tagColor = '#B91C1C';
+    advice = `<strong style="color:#B91C1C;">挫折リスクが高め</strong><br><br>
+      ・現状のままでは<strong>計画の見直し</strong>を強く推奨<br>
+      ・1日10分から始める（最初は質より「続ける習慣」優先）<br>
+      ・通信講座やコーチングを検討（外部から強制力）<br>
+      ・<strong>大きな目標は1段下げる</strong>（FP2級 → 3級から、宅建 → 簿記から等）<br>
+      ・進捗共有は必須。誰か巻き込まないと続かないタイプ<br>
+      ・推奨: 短期集中型（1ヶ月単発）が向いている`;
+  } else {
+    verdict = '🔴 超高リスク（環境変革型）';
+    tagBg = '#FEE2E2'; tagColor = '#7F1D1D';
+    advice = `<strong style="color:#7F1D1D;">独学は極めて困難</strong><br><br>
+      ・<strong>強制力のある環境</strong>必須（通学・通信講座・コーチ・コミュニティ）<br>
+      ・最初の目標は「合格」ではなく「<strong>1週間続ける</strong>」<br>
+      ・スマホを物理的に遠ざける（タイムロッキングコンテナ等）<br>
+      ・受験は1段、できれば2段下のレベルから始める<br>
+      ・推奨: スタディング・ユーキャンなど「コーチ機能」がある教材<br>
+      ・モチベに頼らない仕組み作りが先決`;
+  }
+
+  const tag = document.getElementById('motiVerdictTag');
+  tag.textContent = verdict;
+  tag.style.background = tagBg;
+  tag.style.color = tagColor;
+
+  document.getElementById('motiAdvice').innerHTML = advice;
+  document.getElementById('motiResult').style.display = 'block';
+  document.getElementById('quizArea').style.display = 'none';
+}
+
+function resetMoti() {
+  document.getElementById('motiResult').style.display = 'none';
+  document.getElementById('quizArea').style.display = 'block';
+  buildQuiz();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  calcStudy();
+  buildQuiz();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ダイエット予測コンパス｜目標体重までの期間と成功確率を可視化（β版）</title>
+<meta name="description" content="現体重・身長・年齢・運動量から、目標体重までの期間と成功確率をシミュレーション。BMI・基礎代謝・必要カロリーも自動計算。健康的な減量速度ガイド付き。">
+<meta name="keywords" content="ダイエット,BMI,基礎代謝,減量,何ヶ月,シミュレーション,カロリー">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FFFFFF' stroke='%231E3A5F' stroke-width='2'/%3E%3Crect x='10' y='12' width='12' height='8' rx='2' fill='%23C56A4E'/%3E%3Crect x='8' y='14' width='2' height='4' fill='%231E3A5F'/%3E%3Crect x='22' y='14' width='2' height='4' fill='%231E3A5F'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ダイエット予測コンパス｜目標体重までの期間と成功確率">
+<meta property="og:description" content="BMI・基礎代謝・必要カロリーも自動計算。健康的な減量速度ガイド付き。">
+<meta property="og:image" content="og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root { --bg:#F7F3EC; --primary:#1E3A5F; --accent:#C56A4E; --soft:#FBC97A; --text:#1E2A38; --muted:#8E97A3; --border:#E2D9C7; --card:#FFFFFF; }
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', sans-serif; color: var(--text); background: var(--bg); line-height: 1.7; font-size: 16px; }
+.page { max-width: 720px; margin: 0 auto; padding: 36px 20px 80px; }
+header.hero { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+header.hero a { text-decoration: none; color: var(--primary); font-size: 13px; font-weight: 600; }
+.beta-tag { display: inline-block; background: var(--soft); color: var(--primary); padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; margin-left: 8px; }
+h1 { font-size: 28px; font-weight: 800; margin: 10px 0 6px; line-height: 1.4; color: var(--primary); }
+.subtitle { font-size: 14px; color: var(--muted); margin: 0; }
+.tab-nav { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+.tab-btn { padding: 10px 14px; border-radius: 10px 10px 0 0; background: transparent; color: var(--muted); border: none; font-size: 13px; font-weight: 700; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.15s; }
+.tab-btn:hover { color: var(--primary); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(30,42,56,.06); }
+.card h2 { font-size: 20px; font-weight: 700; margin: 0 0 14px; padding-left: 12px; border-left: 4px solid var(--accent); color: var(--primary); }
+.card h3 { font-size: 16px; font-weight: 700; margin: 18px 0 8px; color: var(--primary); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0 18px; }
+@media (max-width: 580px) { .form-grid { grid-template-columns: 1fr; } }
+.form-grid label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); font-weight: 600; }
+.form-grid input, .form-grid select { padding: 10px 12px; font-size: 15px; border: 1px solid var(--border); border-radius: 8px; background: #FAF6EE; color: var(--text); }
+.form-grid input:focus, .form-grid select:focus { outline: none; border-color: var(--accent); background: white; }
+.calc-btn { display: inline-block; padding: 12px 28px; border-radius: 10px; background: var(--primary); color: white; border: none; cursor: pointer; font-size: 15px; font-weight: 700; transition: all 0.15s; }
+.calc-btn:hover { background: #2C4A75; transform: translateY(-1px); }
+.result-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 18px; }
+@media (max-width: 580px) { .result-grid { grid-template-columns: 1fr; } }
+.result-card { background: linear-gradient(135deg, #FBF8F1, #F4DDD2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+.result-label { font-size: 11px; color: var(--muted); font-weight: 600; }
+.result-value { font-size: 22px; font-weight: 800; color: var(--accent); margin-top: 4px; }
+.result-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.bmi-zone { display: flex; height: 30px; border-radius: 6px; overflow: hidden; margin: 8px 0; font-size: 11px; font-weight: 700; color: white; }
+.bmi-zone div { display: flex; align-items: center; justify-content: center; }
+.coming-soon { background: linear-gradient(135deg, #FBF8F1 0%, #F4DDD2 100%); border: 1px dashed var(--accent); }
+.coming-soon-tag { display: inline-block; background: var(--accent); color: white; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; margin-bottom: 10px; }
+.cross-promo { background: linear-gradient(135deg, var(--primary), #2C5282); color: white; padding: 24px; border-radius: 16px; margin: 20px 0; text-align: center; }
+.cross-promo h3 { color: var(--soft); margin: 0 0 8px; font-size: 16px; }
+.cross-promo p { color: rgba(255,255,255,0.9); margin: 0 0 12px; font-size: 13px; }
+.cross-promo a { display: inline-block; background: var(--soft); color: var(--primary); padding: 10px 24px; border-radius: 10px; text-decoration: none; font-weight: 700; margin: 6px 4px; }
+footer { text-align: center; margin-top: 32px; font-size: 12px; color: var(--muted); }
+footer a { color: #4A5568; text-decoration: none; margin: 0 8px; }
+.disclaimer { background: #FBF8F1; border-left: 4px solid var(--primary); padding: 12px 16px; margin: 14px 0; font-size: 12px; color: #4A5568; border-radius: 4px; }
+.warn { background: #FEE2E2; border-left: 4px solid #B91C1C; padding: 12px 16px; margin: 14px 0; font-size: 12px; color: #7F1D1D; border-radius: 4px; }
+ul, ol { padding-left: 22px; }
+li { margin-bottom: 4px; font-size: 14px; }
+strong { color: var(--primary); }
+.feature-list li { margin-bottom: 6px; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <a href="./">🧭 複利コンパスへ戻る</a> ・ <a href="study-plan.html">📒 学習計画</a> ・ <a href="blog.html">📚 記事一覧</a>
+    <h1>🥗 ダイエット予測コンパス<span class="beta-tag">β版</span></h1>
+    <p class="subtitle">目標体重までの期間と成功確率をシミュレーション</p>
+  </header>
+
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="sim" onclick="setDietTab(this, 'sim')">📉 減量シミュ</button>
+    <button class="tab-btn" data-tab="bmi" onclick="setDietTab(this, 'bmi')">📊 BMI・基礎代謝</button>
+    <button class="tab-btn" data-tab="risk" onclick="setDietTab(this, 'risk')">⚠ 失敗パターン</button>
+    <button class="tab-btn" data-tab="food" onclick="setDietTab(this, 'food')">🍱 食品DB</button>
+  </div>
+
+  <!-- ===== TAB 1: 減量シミュ ===== -->
+  <div class="tab-panel active" data-panel="sim">
+    <div class="card">
+      <h2>減量シミュレーター <span style="font-size:11px;color:var(--accent);font-weight:700;background:#FBE9D2;padding:2px 8px;border-radius:999px;">★ メイン機能</span></h2>
+      <p style="font-size:14px; color:var(--muted); margin:0 0 14px;">目標体重まで何ヶ月かかるか、健康的なペースかを試算します。</p>
+
+      <div class="form-grid">
+        <label>現在の体重（kg）<input id="dWeight" type="number" value="70" min="30" max="200" step="0.1"></label>
+        <label>身長（cm）<input id="dHeight" type="number" value="170" min="120" max="220"></label>
+        <label>性別<select id="dGender">
+          <option value="m">男性</option>
+          <option value="f" selected>女性</option>
+        </select></label>
+        <label>年齢<input id="dAge" type="number" value="35" min="15" max="80"></label>
+        <label>目標体重（kg）<input id="dTarget" type="number" value="60" min="30" max="200" step="0.1"></label>
+        <label>目標期間（ヶ月）<input id="dMonths" type="number" value="6" min="1" max="24"></label>
+        <label>運動レベル<select id="dActivity">
+          <option value="1.2">座り仕事中心</option>
+          <option value="1.375" selected>軽い運動（週1〜3回）</option>
+          <option value="1.55">中程度の運動（週3〜5回）</option>
+          <option value="1.725">激しい運動（週6回以上）</option>
+        </select></label>
+      </div>
+
+      <button class="calc-btn" onclick="calcDiet()">減量計画を試算</button>
+
+      <div id="dietResult" style="display:none; margin-top:18px;">
+        <div class="result-grid" id="dietGrid"></div>
+        <div id="dietWarn"></div>
+        <div id="dietChart" style="margin-top:18px;"></div>
+        <div id="dietAdvice" style="background:#FBF8F1;border-radius:10px;padding:14px 18px;margin-top:14px;font-size:13px;line-height:1.7;"></div>
+        <div class="disclaimer">
+          ※ ハリス・ベネディクト式（改訂版）に基づく概算。実際の減量には食事内容・睡眠・遺伝・代謝の個人差が影響します。WHO推奨は週0.5〜1kg減（月2〜4kg）まで。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 2: BMI・基礎代謝 ===== -->
+  <div class="tab-panel" data-panel="bmi">
+    <div class="card">
+      <h2>BMI・基礎代謝・TDEE 計算</h2>
+      <p style="font-size:14px;color:var(--muted);margin:0 0 12px;">入力した情報からBMI・基礎代謝・1日の消費カロリー（TDEE）を計算します。「減量シミュ」タブと共通入力。</p>
+
+      <div id="bmiResult"></div>
+
+      <h3>BMIの目安</h3>
+      <div class="bmi-zone">
+        <div style="background:#94A3B8; flex:18.5;">低体重<br>〜18.5</div>
+        <div style="background:#16A34A; flex:6.5;">標準<br>18.5〜25</div>
+        <div style="background:#FBC97A; flex:5; color:#1E3A5F;">肥満1<br>25〜30</div>
+        <div style="background:#C56A4E; flex:5;">肥満2<br>30〜35</div>
+        <div style="background:#B91C1C; flex:10;">肥満3〜<br>35〜</div>
+      </div>
+
+      <h3>基礎代謝の式（ハリス・ベネディクト改訂版）</h3>
+      <p style="font-size:13px; background:#FBF8F1; padding:10px 14px; border-radius:8px;">
+        <strong>男性:</strong> 88.362 + 13.397×体重 + 4.799×身長 − 5.677×年齢<br>
+        <strong>女性:</strong> 447.593 + 9.247×体重 + 3.098×身長 − 4.330×年齢
+      </p>
+
+      <h3>TDEE（1日消費カロリー）= 基礎代謝 × 活動係数</h3>
+      <ul style="font-size:13px;">
+        <li>座り仕事中心: ×1.2</li>
+        <li>軽い運動（週1〜3）: ×1.375</li>
+        <li>中程度（週3〜5）: ×1.55</li>
+        <li>激しい運動（週6+）: ×1.725</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== TAB 3: 失敗パターン ===== -->
+  <div class="tab-panel" data-panel="risk">
+    <div class="card coming-soon">
+      <span class="coming-soon-tag">近日公開</span>
+      <h2>ダイエット失敗パターン診断</h2>
+      <p>10問の質問で、あなたのダイエット挫折リスクを診断します。</p>
+      <h3>実装予定</h3>
+      <ul class="feature-list">
+        <li>過去のリバウンドパターン分析</li>
+        <li>性格タイプ別の最適アプローチ</li>
+        <li>停滞期の乗り越え方</li>
+        <li>モチベ維持の科学的アプローチ</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== TAB 4: 食品DB ===== -->
+  <div class="tab-panel" data-panel="food">
+    <div class="card coming-soon">
+      <span class="coming-soon-tag">近日公開</span>
+      <h2>食品カロリーデータベース</h2>
+      <p>日常的によく食べる食品のカロリー一覧と、健康的な代替案。</p>
+      <h3>実装予定</h3>
+      <ul class="feature-list">
+        <li>主要食品100種のカロリー一覧</li>
+        <li>「実は高カロリー」食品の警告</li>
+        <li>健康的な代替案の提案（マヨ→ヨーグルト等）</li>
+        <li>外食メニューの推定カロリー</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="cross-promo">
+    <h3>姉妹ツール（Monte Carlo計画ツール）</h3>
+    <p>資産・住宅ローン・学習計画も同じシミュレーション方式</p>
+    <a href="./">複利コンパス</a>
+    <a href="home-loan.html">住宅ローンコンパス</a>
+    <a href="study-plan.html">学習計画コンパス</a>
+  </div>
+
+  <footer>
+    <p>
+      <a href="./">トップ</a> ・
+      <a href="blog.html">記事一覧</a> ・
+      <a href="about.html">運営者情報</a> ・
+      <a href="contact.html">お問い合わせ</a> ・
+      <a href="privacy.html">プライバシー</a>
+    </p>
+    <p style="margin-top:8px; font-size:11px;">© 2026 複利コンパス編集部 ／ 健康に関する判断は医師など専門家にご相談ください。</p>
+  </footer>
+</div>
+
+<script>
+function setDietTab(btn, name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('[data-panel="' + name + '"]').classList.add('active');
+  if (name === 'bmi') updateBmi();
+}
+
+function basal(W, H, age, gender) {
+  if (gender === 'm') return 88.362 + 13.397 * W + 4.799 * H - 5.677 * age;
+  return 447.593 + 9.247 * W + 3.098 * H - 4.330 * age;
+}
+
+function fmtKcal(n) { return Math.round(n).toLocaleString() + ' kcal'; }
+function fmtKg(n) { return n.toFixed(1) + ' kg'; }
+
+function calcDiet() {
+  const W = parseFloat(document.getElementById('dWeight').value);
+  const H = parseFloat(document.getElementById('dHeight').value);
+  const age = parseInt(document.getElementById('dAge').value);
+  const gender = document.getElementById('dGender').value;
+  const target = parseFloat(document.getElementById('dTarget').value);
+  const months = parseInt(document.getElementById('dMonths').value);
+  const activity = parseFloat(document.getElementById('dActivity').value);
+
+  const bmr = basal(W, H, age, gender);
+  const tdee = bmr * activity;
+
+  const lossKg = W - target;
+  const days = months * 30;
+  const totalKcalNeeded = lossKg * 7200; // 1kg ≈ 7200kcal
+  const dailyDeficit = totalKcalNeeded / days;
+  const recommendedIntake = tdee - dailyDeficit;
+
+  const lossPerMonth = lossKg / months;
+  const lossPerWeek = lossPerMonth / 4.33;
+
+  // 健康判定
+  let healthVerdict = '', healthColor = '';
+  let warnHtml = '';
+  if (lossPerWeek > 1.0) {
+    healthVerdict = '🔴 過度な減量ペース';
+    healthColor = '#B91C1C';
+    warnHtml = `<div class="warn">⚠ 週${lossPerWeek.toFixed(2)}kg減はWHO推奨上限（週1kg）を超えています。健康リスクが高く、リバウンド確率も上昇。期間を ${Math.ceil(lossKg / 4)}ヶ月以上に伸ばすことを強く推奨。</div>`;
+  } else if (lossPerWeek > 0.5) {
+    healthVerdict = '🟡 やや積極的';
+    healthColor = '#B45309';
+    warnHtml = `<div style="background:#FEF3C7;border-left:4px solid #B45309;padding:12px 16px;margin:14px 0;font-size:12px;color:#7C2D12;border-radius:4px;">週${lossPerWeek.toFixed(2)}kg減は健康的な範囲内ですが、やや積極的。停滞期を見越して ${Math.ceil(months * 1.2)}ヶ月の余裕を持っておくと安心。</div>`;
+  } else if (lossPerWeek > 0) {
+    healthVerdict = '🟢 健康的なペース';
+    healthColor = '#059669';
+  } else {
+    healthVerdict = '⚠ 計算エラー';
+    healthColor = '#94A3B8';
+  }
+
+  // 推奨摂取が低すぎないか
+  const minIntake = (gender === 'm') ? 1500 : 1200;
+  if (recommendedIntake < minIntake) {
+    warnHtml += `<div class="warn">⚠ 推奨摂取カロリー (${fmtKcal(recommendedIntake)}) が${gender === 'm' ? '男性' : '女性'}の最低安全摂取量（${minIntake}kcal）を下回っています。極端な食事制限は健康リスク大。期間延長 or 運動量増加を推奨。</div>`;
+  }
+
+  document.getElementById('dietGrid').innerHTML = `
+    <div class="result-card">
+      <div class="result-label">基礎代謝</div>
+      <div class="result-value">${fmtKcal(bmr)}</div>
+      <div class="result-sub">何もせず消費</div>
+    </div>
+    <div class="result-card">
+      <div class="result-label">1日の消費（TDEE）</div>
+      <div class="result-value">${fmtKcal(tdee)}</div>
+      <div class="result-sub">運動込み</div>
+    </div>
+    <div class="result-card">
+      <div class="result-label">推奨摂取カロリー</div>
+      <div class="result-value">${fmtKcal(recommendedIntake)}</div>
+      <div class="result-sub">これで目標達成</div>
+    </div>
+    <div class="result-card">
+      <div class="result-label">減量ペース</div>
+      <div class="result-value" style="color:${healthColor};">${fmtKg(lossPerWeek)}/週</div>
+      <div class="result-sub" style="color:${healthColor}; font-weight:700;">${healthVerdict}</div>
+    </div>
+    <div class="result-card">
+      <div class="result-label">必要カロリー総量</div>
+      <div class="result-value">${fmtKcal(totalKcalNeeded)}</div>
+      <div class="result-sub">${months}ヶ月で消費</div>
+    </div>
+    <div class="result-card">
+      <div class="result-label">1日のカロリー差</div>
+      <div class="result-value">−${fmtKcal(dailyDeficit)}</div>
+      <div class="result-sub">毎日の不足量</div>
+    </div>
+  `;
+
+  document.getElementById('dietWarn').innerHTML = warnHtml;
+
+  // 減量曲線
+  renderDietChart(W, target, months);
+
+  // アドバイス
+  let adv = '<strong style="color:var(--primary);">💡 アドバイス:</strong><br>';
+  if (lossPerWeek > 1.0) {
+    adv += `現プランは無理あり。期間を延ばすか、目標を見直しましょう。<br>`;
+    adv += `推奨: 月${(lossKg/Math.ceil(lossKg/3)).toFixed(1)}kg減ペース → 期間 ${Math.ceil(lossKg/3)}ヶ月`;
+  } else if (lossPerWeek > 0.5) {
+    adv += `健康的な上限ペース。継続できれば理想的。<br>`;
+    adv += `運動を週3回以上に増やせば、食事制限を緩めることも可能（精神的にラク）`;
+  } else {
+    adv += `穏やかで継続しやすいペース。長期的にはこれが正解。<br>`;
+    adv += `重要: ${months}ヶ月後もこの食事/運動を「続けられるか」が成否を分ける`;
+  }
+  document.getElementById('dietAdvice').innerHTML = adv;
+
+  document.getElementById('dietResult').style.display = 'block';
+}
+
+function renderDietChart(start, target, months) {
+  const W = 600, H = 220, padL = 60, padR = 30, padT = 30, padB = 40;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const days = months * 30;
+  const minY = target * 0.95, maxY = start * 1.02;
+
+  const sx = d => padL + (d / days) * plotW;
+  const sy = w => padT + plotH - ((w - minY) / (maxY - minY)) * plotH;
+
+  // 線形減量
+  const linePoints = [];
+  for (let d = 0; d <= days; d += days / 30) {
+    const w = start - (start - target) * (d / days);
+    linePoints.push(`${sx(d)},${sy(w)}`);
+  }
+
+  // 現実的減量（停滞期付き）
+  const realPoints = [];
+  for (let d = 0; d <= days; d += days / 30) {
+    const t = d / days;
+    let w = start - (start - target) * (1 - Math.exp(-2.5 * t)) * 1.0;
+    realPoints.push(`${sx(d)},${sy(w)}`);
+  }
+
+  // Y軸ラベル
+  let yLabels = '';
+  for (let i = 0; i <= 4; i++) {
+    const v = minY + (maxY - minY) * (4 - i) / 4;
+    const y = padT + plotH * i / 4;
+    yLabels += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#EFE9DD"/>`;
+    yLabels += `<text x="${padL - 6}" y="${y + 3}" text-anchor="end" font-size="10" fill="#8E97A3">${v.toFixed(1)}kg</text>`;
+  }
+
+  const svg = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto;" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="目標期間内の体重推移">
+    <rect width="${W}" height="${H}" fill="#FBF8F1" rx="8"/>
+    ${yLabels}
+    <line x1="${padL}" y1="${padT + plotH}" x2="${W - padR}" y2="${padT + plotH}" stroke="#1E2A38" stroke-width="1.5"/>
+    <text x="${padL}" y="${H - padB + 18}" font-size="10" fill="#8E97A3">0日</text>
+    <text x="${W - padR}" y="${H - padB + 18}" text-anchor="end" font-size="10" fill="#8E97A3">${days}日</text>
+    <polyline points="${linePoints.join(' ')}" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 3" fill="none"/>
+    <polyline points="${realPoints.join(' ')}" stroke="#C56A4E" stroke-width="2.8" fill="none"/>
+    <circle cx="${sx(0)}" cy="${sy(start)}" r="4" fill="#1E3A5F"/>
+    <text x="${sx(0)+8}" y="${sy(start) - 6}" font-size="10" font-weight="700" fill="#1E3A5F">${fmtKg(start)}</text>
+    <circle cx="${sx(days)}" cy="${sy(target)}" r="4" fill="#16A34A"/>
+    <text x="${sx(days)-8}" y="${sy(target) + 16}" text-anchor="end" font-size="10" font-weight="700" fill="#16A34A">${fmtKg(target)}</text>
+    <text x="${W - padR - 5}" y="${padT + 20}" text-anchor="end" font-size="10" fill="#94A3B8">点線=理想 / 実線=停滞期込み</text>
+  </svg>
+  <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px;">図: 目標期間内の体重推移予測（停滞期を考慮した現実的曲線）</p>`;
+  document.getElementById('dietChart').innerHTML = svg;
+}
+
+function updateBmi() {
+  const W = parseFloat(document.getElementById('dWeight').value);
+  const H = parseFloat(document.getElementById('dHeight').value);
+  const age = parseInt(document.getElementById('dAge').value);
+  const gender = document.getElementById('dGender').value;
+  const activity = parseFloat(document.getElementById('dActivity').value);
+
+  const bmi = W / Math.pow(H / 100, 2);
+  const bmr = basal(W, H, age, gender);
+  const tdee = bmr * activity;
+
+  let bmiCat = '', bmiColor = '';
+  if (bmi < 18.5) { bmiCat = '低体重'; bmiColor = '#94A3B8'; }
+  else if (bmi < 25) { bmiCat = '標準'; bmiColor = '#16A34A'; }
+  else if (bmi < 30) { bmiCat = '肥満1度'; bmiColor = '#FBC97A'; }
+  else if (bmi < 35) { bmiCat = '肥満2度'; bmiColor = '#C56A4E'; }
+  else { bmiCat = '肥満3度以上'; bmiColor = '#B91C1C'; }
+
+  document.getElementById('bmiResult').innerHTML = `
+    <div class="result-grid">
+      <div class="result-card">
+        <div class="result-label">BMI</div>
+        <div class="result-value" style="color:${bmiColor};">${bmi.toFixed(1)}</div>
+        <div class="result-sub" style="color:${bmiColor};font-weight:700;">${bmiCat}</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">基礎代謝（BMR）</div>
+        <div class="result-value">${fmtKcal(bmr)}</div>
+        <div class="result-sub">何もせず消費する量</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">TDEE（1日総消費）</div>
+        <div class="result-value">${fmtKcal(tdee)}</div>
+        <div class="result-sub">運動込み</div>
+      </div>
+    </div>
+  `;
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  calcDiet();
+  updateBmi();
+});
+</script>
+</body>
+</html>

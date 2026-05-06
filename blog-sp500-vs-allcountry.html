@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S&P500 vs 全世界株式（オルカン）どっちを選ぶ？数字で見る20年後の差｜複利コンパス</title>
+<meta name="description" content="新NISAで人気のS&P500と全世界株式（オルカン）。過去リターン・リスク・為替の3軸で徹底比較。迷う初心者向けに、シミュレーション付きで最終結論を提示します。">
+<meta name="keywords" content="S&P500,全世界株式,オルカン,新NISA,比較,eMAXIS Slim">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FFFFFF' stroke='%231E3A5F' stroke-width='2'/%3E%3Cpolygon points='22,10 18,18 10,22 14,14' fill='%23C56A4E'/%3E%3Cpolygon points='22,10 16,16 18,18' fill='%231E3A5F'/%3E%3Ccircle cx='16' cy='16' r='1.8' fill='%231E3A5F'/%3E%3C/svg%3E">
+<meta property="og:type" content="article">
+<meta property="og:title" content="S&P500 vs 全世界株式（オルカン）どっちを選ぶ？">
+<meta property="og:description" content="過去リターン・リスク・為替の3軸で徹底比較。シミュ付きで最終結論を提示。">
+<meta property="og:image" content="og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif; color: #1E2A38; background: #F7F3EC; line-height: 1.9; font-size: 16px; }
+  .page { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+  header.hero { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #E2D9C7; }
+  header.hero a { text-decoration: none; color: #1E3A5F; font-size: 14px; font-weight: 600; }
+  .article-tag { display: inline-block; background: #C56A4E; color: white; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 14px; }
+  h1 { font-size: 28px; font-weight: 800; margin: 8px 0 14px; line-height: 1.4; letter-spacing: 0.01em; }
+  .meta { font-size: 12px; color: #8E97A3; }
+  .card { background: white; border: 1px solid #E2D9C7; border-radius: 16px; padding: 32px; margin-bottom: 18px; box-shadow: 0 4px 12px rgba(30,42,56,.06); }
+  h2 { font-size: 22px; font-weight: 700; margin: 32px 0 14px; padding-left: 14px; border-left: 4px solid #C56A4E; color: #1E3A5F; }
+  h2:first-child { margin-top: 0; }
+  h3 { font-size: 18px; font-weight: 700; margin: 24px 0 10px; color: #1E3A5F; }
+  p { margin: 0 0 16px; color: #1E2A38; font-size: 15px; }
+  a { color: #C56A4E; }
+  blockquote { background: #FBF8F1; border-left: 4px solid #1E3A5F; padding: 14px 20px; margin: 16px 0; color: #4A5568; font-size: 14px; border-radius: 4px; }
+  table.calc { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  table.calc th, table.calc td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #EFE9DD; }
+  table.calc thead th { background: #1E3A5F; color: white; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; }
+  table.calc td.num { text-align: right; font-weight: 600; }
+  .highlight { background: linear-gradient(transparent 60%, #FDE68A 60%); font-weight: 700; }
+  .cta-box { background: linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%); color: white; padding: 28px 32px; border-radius: 16px; margin: 24px 0; text-align: center; }
+  .cta-box h3 { color: #FBC97A; margin: 0 0 10px; font-size: 18px; }
+  .cta-box p { color: rgba(255,255,255,0.9); margin: 0 0 16px; font-size: 14px; }
+  .cta-btn { display: inline-block; background: #FBC97A; color: #1E3A5F; padding: 12px 28px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 15px; }
+  ul, ol { padding-left: 24px; margin: 12px 0 16px; }
+  li { margin-bottom: 8px; color: #1E2A38; font-size: 15px; }
+  strong { color: #1E3A5F; }
+  footer { text-align: center; margin-top: 36px; font-size: 12px; color: #8E97A3; }
+  footer a { color: #4A5568; text-decoration: none; margin: 0 8px; }
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+  @media (max-width: 580px) { .compare { grid-template-columns: 1fr; } }
+  .compare > div { padding: 18px; border-radius: 10px; }
+  .compare .sp { background: #F4DDD2; border-left: 4px solid #C56A4E; }
+  .compare .all { background: #DCE2EC; border-left: 4px solid #1E3A5F; }
+  .compare h4 { margin: 0 0 8px; font-size: 14px; }
+  .next-read { background: #FBF8F1; border: 1px solid #E2D9C7; border-radius: 12px; padding: 20px 24px; margin: 24px 0; }
+  .next-read h4 { margin: 0 0 12px; font-size: 14px; color: #1E3A5F; }
+  .next-read ul { margin: 0; padding-left: 20px; }
+  .next-read li { font-size: 14px; margin-bottom: 6px; }
+  .next-read a { color: #C56A4E; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <a href="./">🧭 計算ツールに戻る</a> ・ <a href="blog.html">📚 記事一覧</a>
+    <span class="article-tag">商品比較</span>
+    <h1>S&P500 vs 全世界株式（オルカン）どっちを選ぶ？数字で見る20年後の差</h1>
+    <p class="meta">2026年5月6日 ・ 複利コンパス編集部</p>
+  </header>
+
+  <div class="card">
+    <p>「新NISAで積立を始めたいけど、<strong>S&P500とオルカン（全世界株式）</strong>のどっちを選べばいいの？」</p>
+    <p>これは新NISA時代に最も検索されている質問のひとつです。両者ともeMAXIS Slimシリーズの代表的銘柄で、投資初心者の人気商品。でも「どっちが正解か」は意外とシンプルに答えが出ます。</p>
+    <p>本記事では、過去30年のリターン・リスク・為替の影響を数字で比較し、<strong>「迷ったらオルカン」と言われる根拠</strong>を徹底解説します。</p>
+
+    <h2>結論：迷ったら「オルカン」が無難</h2>
+    <p>結論から言えば、<strong>初心者・分散重視なら「オルカン（全世界株式）」</strong>が無難です。理由は3つ：</p>
+    <ol>
+      <li><strong>世界全体の経済成長を取りに行ける</strong>（米国一国に依存しない）</li>
+      <li><strong>米国の覇権が揺らいでも自動でリバランスされる</strong></li>
+      <li><strong>過去20年のリターン差は意外と小さい</strong>（年率0.5〜1%程度）</li>
+    </ol>
+    <p>ただし、<strong>「米国の成長を信じる」「より高いリターンを狙いたい」</strong>と明確に判断できる人はS&P500を選ぶのも合理的です。</p>
+  </div>
+
+  <div class="card">
+    <h2>1. 両者の基本構造</h2>
+
+    <div class="compare">
+      <div class="sp">
+        <h4>📊 S&P500（米国株式）</h4>
+        <ul style="margin: 0; padding-left: 18px; font-size: 13px;">
+          <li>米国の代表500社に分散</li>
+          <li>Apple, Microsoft, Amazon等の巨大IT企業中心</li>
+          <li>米国GDPの約80%をカバー</li>
+          <li>代表銘柄: eMAXIS Slim 米国株式（S&P500）</li>
+          <li>信託報酬: 0.0814%</li>
+        </ul>
+      </div>
+      <div class="all">
+        <h4>🌏 全世界株式（オルカン）</h4>
+        <ul style="margin: 0; padding-left: 18px; font-size: 13px;">
+          <li>世界47カ国・約3,000銘柄に分散</li>
+          <li>米国比率は約60%（残りは日欧アジア等）</li>
+          <li>世界の時価総額の約85%をカバー</li>
+          <li>代表銘柄: eMAXIS Slim 全世界株式（オール・カントリー）</li>
+          <li>信託報酬: 0.05775%</li>
+        </ul>
+      </div>
+    </div>
+
+    <p>注目すべきは、<strong>オルカンの中身も6割は米国</strong>ということ。つまりオルカンを買えば、自動的にS&P500の主要部分も保有することになります。</p>
+  </div>
+
+  <div class="card">
+    <h2>2. 過去のリターン比較</h2>
+    <p>過去30年（1995〜2025年）の年平均リターンを比較すると：</p>
+
+    <table class="calc">
+      <thead>
+        <tr>
+          <th>指数</th>
+          <th class="num">年平均リターン</th>
+          <th class="num">標準偏差(リスク)</th>
+          <th class="num">最大下落</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>S&P500（円換算）</td>
+          <td class="num">約 9.5%</td>
+          <td class="num">約 18%</td>
+          <td class="num">−50%（リーマン）</td>
+        </tr>
+        <tr>
+          <td>全世界株式（円換算）</td>
+          <td class="num">約 8.3%</td>
+          <td class="num">約 17%</td>
+          <td class="num">−45%（リーマン）</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>S&P500の方が年率で<strong>約1.2%高い</strong>結果。これは主に2010年代の米国IT企業の急成長によるものです。</p>
+
+    <blockquote>
+      ※ ただし「過去のリターン」は未来を保証しない。米国の覇権が今後30年も続くとは限りません。
+    </blockquote>
+  </div>
+
+  <div class="card">
+    <h2>3. シミュレーション：月3万・20年でどれだけ差がつく？</h2>
+    <p>月3万円・20年積立・上記の年平均リターンで単純複利計算すると：</p>
+
+    <table class="calc">
+      <thead>
+        <tr>
+          <th>指数</th>
+          <th class="num">最終資産</th>
+          <th class="num">元本</th>
+          <th class="num">運用益</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>S&P500（年9.5%）</td>
+          <td class="num"><span class="highlight">約 2,066万円</span></td>
+          <td class="num">720万円</td>
+          <td class="num">+1,346万円</td>
+        </tr>
+        <tr>
+          <td>オルカン（年8.3%）</td>
+          <td class="num">約 1,793万円</td>
+          <td class="num">720万円</td>
+          <td class="num">+1,073万円</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>差は<strong>約273万円</strong>。一見大きく見えますが、これは「過去の数字が未来も続く前提」での話。リスクを忘れてはいけません。</p>
+
+    <!-- 📊 図解: S&P500 vs オルカン 20年後比較 -->
+    <figure style="margin: 24px 0; text-align: center;">
+      <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; max-width:600px;" role="img" aria-label="S&P500とオルカンの20年後の最終資産と内訳の比較">
+        <rect width="600" height="320" fill="#FBF8F1"/>
+        <text x="300" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#1E3A5F">S&P500 vs オルカン — 月3万・20年後</text>
+        <text x="300" y="48" text-anchor="middle" font-size="11" fill="#8E97A3">年平均リターンで単純複利計算（円換算）</text>
+
+        <!-- スケール: 2200万 max → 360px (160..520). 1万=0.164px -->
+
+        <!-- S&P500 (上段) -->
+        <text x="155" y="100" text-anchor="end" font-size="13" font-weight="800" fill="#C56A4E">S&P500</text>
+        <text x="155" y="115" text-anchor="end" font-size="10" fill="#8E97A3">年9.5%</text>
+
+        <!-- 元本部分 720万 = 118px -->
+        <rect x="160" y="86" width="118" height="32" fill="#94A3B8" rx="3"/>
+        <text x="219" y="106" text-anchor="middle" font-size="11" font-weight="700" fill="white">元本 720万</text>
+        <!-- 運用益部分 1346万 = 221px -->
+        <rect x="278" y="86" width="221" height="32" fill="#C56A4E" rx="3"/>
+        <text x="388" y="106" text-anchor="middle" font-size="11" font-weight="700" fill="white">運用益 +1,346万</text>
+        <text x="510" y="106" font-size="12" font-weight="800" fill="#C56A4E">2,066万 ★</text>
+
+        <!-- オルカン (下段) -->
+        <text x="155" y="180" text-anchor="end" font-size="13" font-weight="800" fill="#1E3A5F">オルカン</text>
+        <text x="155" y="195" text-anchor="end" font-size="10" fill="#8E97A3">年8.3%</text>
+
+        <!-- 元本 720万 -->
+        <rect x="160" y="166" width="118" height="32" fill="#94A3B8" rx="3"/>
+        <text x="219" y="186" text-anchor="middle" font-size="11" font-weight="700" fill="white">元本 720万</text>
+        <!-- 運用益 1073万 = 176px -->
+        <rect x="278" y="166" width="176" height="32" fill="#1E3A5F" rx="3"/>
+        <text x="366" y="186" text-anchor="middle" font-size="11" font-weight="700" fill="white">運用益 +1,073万</text>
+        <text x="465" y="186" font-size="12" font-weight="800" fill="#1E3A5F">1,793万</text>
+
+        <!-- 差額の矢印 -->
+        <line x1="499" y1="118" x2="499" y2="166" stroke="#FBC97A" stroke-width="2" stroke-dasharray="4 3"/>
+        <line x1="455" y1="166" x2="499" y2="166" stroke="#FBC97A" stroke-width="2" stroke-dasharray="4 3"/>
+        <text x="525" y="146" font-size="11" font-weight="800" fill="#B45309">差 273万</text>
+
+        <!-- 横軸 -->
+        <line x1="160" y1="220" x2="520" y2="220" stroke="#E2D9C7" stroke-width="1"/>
+        <text x="160" y="234" font-size="9" fill="#8E97A3">0</text>
+        <text x="340" y="234" text-anchor="middle" font-size="9" fill="#8E97A3">1,000万</text>
+        <text x="520" y="234" text-anchor="end" font-size="9" fill="#8E97A3">2,200万</text>
+
+        <!-- 注釈 -->
+        <text x="300" y="264" text-anchor="middle" font-size="11" fill="#1E3A5F" font-weight="700">過去20年の差は273万円。ただし「米国の覇権が続く」前提</text>
+        <text x="300" y="282" text-anchor="middle" font-size="10" fill="#8E97A3">オルカンは47カ国分散、米国比率60%なので「半オルカン半S&P」とも言える</text>
+        <text x="300" y="304" text-anchor="middle" font-size="10" fill="#8E97A3">※ 単純複利・税引前。実際は信託報酬・税金で実質リターン低下</text>
+      </svg>
+      <figcaption style="font-size: 12px; color: #8E97A3; margin-top: 8px;">図: 月3万・20年積立の比較（単純複利）</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h2>4. リスク面の比較</h2>
+
+    <h3>分散の効果</h3>
+    <p>オルカンは47カ国に分散しているため、<strong>「米国だけが沈むシナリオ」に強い</strong>です。例えば日本のバブル崩壊（1990〜2010年の20年間）では、日経平均はマイナスでしたが世界株式はプラスでした。</p>
+
+    <h3>セクター集中度</h3>
+    <p>S&P500の上位10銘柄は時価総額比率の<strong>約30%</strong>を占めます（2025年時点）。Apple・Microsoft・NVIDIAなどIT巨大企業に集中。一方オルカンは上位10銘柄でも<strong>約18%</strong>程度。</p>
+
+    <h3>為替リスク</h3>
+    <p>両者とも円建てで保有する場合は為替リスクあり。ただし<strong>S&P500は米ドル100%</strong>、オルカンは<strong>米ドル60%＋他通貨40%</strong>なので、オルカンの方が為替分散効果があります。</p>
+  </div>
+
+  <div class="card">
+    <h2>5. どんな人がどっちを選ぶべき？</h2>
+
+    <div class="compare">
+      <div class="sp">
+        <h4>📊 S&P500を選ぶべき人</h4>
+        <ul style="margin: 0; padding-left: 18px; font-size: 13px;">
+          <li>米国経済の長期成長を信じている</li>
+          <li>過去の実績重視で判断したい</li>
+          <li>多少のリスクを取って高リターンを狙いたい</li>
+          <li>シンプルさ（米国一本）を好む</li>
+        </ul>
+      </div>
+      <div class="all">
+        <h4>🌏 オルカンを選ぶべき人</h4>
+        <ul style="margin: 0; padding-left: 18px; font-size: 13px;">
+          <li>「どこが伸びるかわからない」と感じる</li>
+          <li>分散を最優先したい</li>
+          <li>初心者で「とりあえず正解に近いもの」を選びたい</li>
+          <li>30年以上の超長期で持つ予定</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>合わせ技もあり</h3>
+    <p>新NISAの非課税枠は<strong>1,800万円と十分大きい</strong>ため、以下のような組み合わせも合理的です：</p>
+    <ul>
+      <li><strong>つみたて投資枠（120万/年）</strong> → オルカンで分散</li>
+      <li><strong>成長投資枠（240万/年）</strong> → S&P500で攻め</li>
+    </ul>
+    <p>これで「分散」と「リターン狙い」を両立できます。</p>
+  </div>
+
+  <div class="cta-box">
+    <h3>あなたの積立額・期間でシミュレーション</h3>
+    <p>月の積立額・期間・想定リターンを入力するだけで、最終資産をモンテカルロ法で算出します。</p>
+    <a href="./" class="cta-btn">複利コンパスで試す</a>
+  </div>
+
+  <div class="card">
+    <h2>6. まとめ</h2>
+    <ul>
+      <li>過去リターンは<strong>S&P500 > オルカン</strong>（約1.2%差）</li>
+      <li>分散効果は<strong>オルカン > S&P500</strong>（47カ国 vs 米国一国）</li>
+      <li>新NISAなら<strong>合わせ技も有効</strong>（つみたて枠オルカン＋成長枠S&P500）</li>
+      <li>「迷ったらオルカン」が初心者には無難な答え</li>
+    </ul>
+    <p>結局のところ、両者の差は<strong>「米国の覇権が今後も続くか」という賭け</strong>に集約されます。確信が持てないなら、世界全体に賭けるオルカンが理にかなっています。</p>
+    <blockquote>
+      投資判断はご自身の責任で。本記事は概算シミュレーションと一般的な解説であり、特定銘柄の購入を推奨するものではありません。
+    </blockquote>
+  </div>
+
+  <div class="next-read">
+    <h4>📚 次に読む</h4>
+    <ul>
+      <li><a href="blog-idecovsnisa.html">iDeCo vs 新NISA、どっちを優先すべき？</a></li>
+      <li><a href="blog-monte-carlo.html">モンテカルロ法を使った投資シミュレーションのススメ</a></li>
+      <li><a href="blog-shintaku-1percent.html">信託報酬1%の差が30年でいくらになるか</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <a href="./">トップ</a> ・ <a href="blog.html">記事一覧</a> ・ <a href="about.html">運営者</a> ・ <a href="privacy.html">プライバシー</a>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4%ルールとは？FIRE達成に必要な資産の計算方法を徹底解説｜複利コンパス</title>
+<meta name="description" content="4%ルールとは何か、なぜFIRE達成の指標として使われるのか。元論文「Trinity Study」の解説から、生活費別の必要資産額、注意点まで完全網羅。">
+<meta name="keywords" content="4%ルール,FIRE,Trinity Study,必要資産,リタイア">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FFFFFF' stroke='%231E3A5F' stroke-width='2'/%3E%3Cpolygon points='22,10 18,18 10,22 14,14' fill='%23C56A4E'/%3E%3Cpolygon points='22,10 16,16 18,18' fill='%231E3A5F'/%3E%3Ccircle cx='16' cy='16' r='1.8' fill='%231E3A5F'/%3E%3C/svg%3E">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="4%ルールとは？FIRE達成に必要な資産の計算方法を徹底解説">
+<meta property="og:description" content="4%ルールの起源・計算式・注意点を徹底解説。あなたのFIRE必要額が3秒でわかる。">
+<meta property="og:image" content="og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
+    color: #1E2A38; background: #F7F3EC;
+    line-height: 1.9; font-size: 16px;
+  }
+  .page { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+  header.hero { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #E2D9C7; }
+  header.hero a { text-decoration: none; color: #1E3A5F; font-size: 14px; font-weight: 600; }
+  .article-tag {
+    display: inline-block; background: #C56A4E; color: white;
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-size: 30px; font-weight: 800; margin: 8px 0 14px;
+    line-height: 1.4; letter-spacing: 0.01em;
+  }
+  .meta { font-size: 12px; color: #8E97A3; }
+  .card {
+    background: white; border: 1px solid #E2D9C7; border-radius: 16px;
+    padding: 32px; margin-bottom: 18px;
+    box-shadow: 0 4px 12px rgba(30,42,56,.06);
+  }
+  h2 {
+    font-size: 22px; font-weight: 700; margin: 32px 0 14px;
+    padding-left: 14px; border-left: 4px solid #C56A4E;
+    color: #1E3A5F;
+  }
+  h2:first-child { margin-top: 0; }
+  h3 {
+    font-size: 18px; font-weight: 700; margin: 24px 0 10px; color: #1E3A5F;
+  }
+  p { margin: 0 0 16px; color: #1E2A38; font-size: 15px; }
+  a { color: #C56A4E; }
+  a:hover { color: #A85540; }
+  blockquote {
+    background: #FBF8F1; border-left: 4px solid #1E3A5F;
+    padding: 14px 20px; margin: 16px 0;
+    font-style: italic; color: #4A5568; font-size: 14px;
+    border-radius: 4px;
+  }
+  table.calc {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    font-size: 14px;
+  }
+  table.calc th, table.calc td {
+    padding: 10px 12px; text-align: left;
+    border-bottom: 1px solid #EFE9DD;
+  }
+  table.calc thead th {
+    background: #1E3A5F; color: white;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
+  }
+  table.calc td.num { text-align: right; font-weight: 600; }
+  table.calc tbody tr:hover { background: #FBF8F1; }
+  .highlight {
+    background: linear-gradient(transparent 60%, #FDE68A 60%);
+    font-weight: 700;
+  }
+  .cta-box {
+    background: linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%);
+    color: white; padding: 28px 32px; border-radius: 16px;
+    margin: 24px 0; text-align: center;
+  }
+  .cta-box h3 { color: #FBC97A; margin: 0 0 10px; font-size: 18px; }
+  .cta-box p { color: rgba(255,255,255,0.9); margin: 0 0 16px; font-size: 14px; }
+  .cta-btn {
+    display: inline-block; background: #FBC97A; color: #1E3A5F;
+    padding: 12px 28px; border-radius: 10px;
+    text-decoration: none; font-weight: 700; font-size: 15px;
+    transition: all 0.18s;
+  }
+  .cta-btn:hover { background: #FFD89A; transform: translateY(-2px); color: #1E3A5F; }
+  ul, ol { padding-left: 24px; margin: 12px 0 16px; }
+  li { margin-bottom: 8px; color: #1E2A38; font-size: 15px; }
+  strong { color: #1E3A5F; }
+  footer { text-align: center; margin-top: 36px; font-size: 12px; color: #8E97A3; }
+  footer a { color: #4A5568; text-decoration: none; margin: 0 8px; }
+  footer a:hover { color: #1E3A5F; text-decoration: underline; }
+  .related {
+    background: #FBF8F1; border-radius: 12px; padding: 20px 24px; margin: 20px 0;
+  }
+  .related h4 { margin: 0 0 12px; font-size: 14px; color: #1E3A5F; }
+  .related ul { margin: 0; padding-left: 20px; }
+  .related li { font-size: 14px; }
+  .formula {
+    background: #1E3A5F; color: #FBC97A;
+    padding: 18px 24px; border-radius: 10px;
+    font-size: 16px; text-align: center;
+    font-family: monospace;
+    margin: 16px 0;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <a href="./">🧭 計算ツールに戻る</a> ・ <a href="blog.html">📚 記事一覧</a>
+    <span class="article-tag">FIRE</span>
+    <h1>4%ルールとは？FIRE達成に必要な資産の計算方法を徹底解説</h1>
+    <p class="meta">2026年5月5日 ・ 複利コンパス編集部</p>
+  </header>
+
+  <div class="card">
+    <p>FIRE（Financial Independence, Retire Early＝経済的自立と早期リタイア）を語る上で必ず登場する「<strong>4%ルール</strong>」。</p>
+    <p>「年間支出の25倍の資産があれば、運用しながら生涯お金は尽きない」――この一見シンプルなルールには、実は数十年に渡る米国の研究データが裏付けにあります。</p>
+    <p>本記事では、4%ルールの起源から具体的な計算方法、そして「日本で適用する際の注意点」まで、徹底解説します。</p>
+
+    <h2>1. 4%ルールとは？</h2>
+    <p>4%ルールとは、<strong>「リタイア時の資産の4%を毎年取り崩していけば、30年間以上資産が枯渇しない確率が高い」</strong>という研究結果から生まれた経験則です。</p>
+
+    <div class="formula">
+      FIRE必要資産 = 年間支出 × 25
+    </div>
+
+    <p>逆に言えば、<strong>「年間支出の25倍の資産」</strong>があれば、その資産を年4%で運用しながら毎年4%（=年間支出分）を取り崩しても、原則として元本は減らずに済むという考え方です。</p>
+
+    <h3>なぜ「4%」なのか？</h3>
+    <p>これは、米国の歴史的な株式・債券の平均リターンから導き出された数字です。</p>
+    <ul>
+      <li>米国株式の長期平均リターン：約7%</li>
+      <li>長期インフレ率：約3%</li>
+      <li>実質リターン：7% - 3% = <strong>約4%</strong></li>
+    </ul>
+    <p>つまり、インフレを考慮した実質リターン分だけ取り崩せば、元本価値は維持できる、という理屈です。</p>
+
+    <!-- 📊 図解1: 4%ルールのしくみ -->
+    <figure style="margin: 24px 0; text-align: center;">
+      <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; max-width:600px;" role="img" aria-label="4%ルールのしくみ：7%リターンから3%インフレと4%取り崩しを引いて元本が維持される">
+        <rect width="600" height="280" fill="#FBF8F1"/>
+        <text x="300" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#1E3A5F">なぜ4%ルールは成立するのか？</text>
+        <text x="300" y="48" text-anchor="middle" font-size="11" fill="#8E97A3">資産の年間変化（米国の長期データの場合）</text>
+
+        <!-- 中心軸 -->
+        <line x1="300" y1="62" x2="300" y2="220" stroke="#1E2A38" stroke-width="1.5"/>
+        <text x="294" y="58" text-anchor="end" font-size="10" fill="#8E97A3">マイナス ←</text>
+        <text x="306" y="58" font-size="10" fill="#8E97A3">→ プラス</text>
+
+        <!-- バー1: +7% リターン（中心から右へ） -->
+        <rect x="300" y="74" width="245" height="32" fill="#1E3A5F" rx="4"/>
+        <text x="535" y="95" text-anchor="end" font-size="14" font-weight="800" fill="white">+7%</text>
+        <text x="295" y="95" text-anchor="end" font-size="12" font-weight="700" fill="#1E3A5F">株式の長期平均リターン</text>
+
+        <!-- バー2: -3% インフレ（中心から左へ） -->
+        <rect x="195" y="114" width="105" height="32" fill="#94A3B8" rx="4"/>
+        <text x="208" y="135" font-size="14" font-weight="800" fill="white">−3%</text>
+        <text x="305" y="135" font-size="12" font-weight="700" fill="#1E3A5F">インフレで実質目減り</text>
+
+        <!-- バー3: -4% 取り崩し -->
+        <rect x="160" y="154" width="140" height="32" fill="#C56A4E" rx="4"/>
+        <text x="173" y="175" font-size="14" font-weight="800" fill="white">−4%</text>
+        <text x="305" y="175" font-size="12" font-weight="700" fill="#1E3A5F">生活費として取り崩し</text>
+
+        <!-- 結果 -->
+        <line x1="80" y1="200" x2="520" y2="200" stroke="#E2D9C7" stroke-width="1"/>
+        <rect x="295" y="206" width="10" height="22" fill="#16A34A" rx="2"/>
+        <text x="320" y="223" font-size="13" font-weight="800" fill="#16A34A">合計：±0%</text>
+        <text x="395" y="223" font-size="12" fill="#1E3A5F">→ 元本は維持される</text>
+
+        <text x="300" y="260" text-anchor="middle" font-size="10" fill="#8E97A3">7% − 3% − 4% = 0%　※ 長期平均ベースの理論値、実際は変動します</text>
+      </svg>
+      <figcaption style="font-size: 12px; color: #8E97A3; margin-top: 8px;">図1: 4%ルールが成立する理屈（7% − 3% − 4% = 0%）</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h2>2. 元論文「Trinity Study」とは</h2>
+    <p>4%ルールの根拠となっているのが、1998年に米国Trinity大学の3人の教授（Cooley, Hubbard, Walz）が発表した「<strong>Trinity Study</strong>」です。</p>
+    <p>この研究では、1926年〜1995年の米国株式・債券のヒストリカルデータを使い、以下の結論を出しました：</p>
+    <blockquote>
+      株式50%・債券50%のポートフォリオで、毎年資産の4%を取り崩した場合、30年間で資産が枯渇しない確率は<strong>95%</strong>。
+    </blockquote>
+    <p>つまり、20回中19回はうまくいく、ということ。これがFIREムーブメントの理論的な基礎になりました。</p>
+  </div>
+
+  <div class="card">
+    <h2>3. 生活費別 FIRE必要資産シミュレーション</h2>
+    <p>あなたの生活費レベル別に、FIRE達成に必要な資産額を計算してみました。</p>
+
+    <table class="calc">
+      <thead>
+        <tr>
+          <th>月生活費</th>
+          <th class="num">年間支出</th>
+          <th class="num">FIRE必要資産（25倍）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>15万円（質素）</td><td class="num">180万円</td><td class="num">4,500万円</td></tr>
+        <tr><td>20万円（標準的）</td><td class="num">240万円</td><td class="num">6,000万円</td></tr>
+        <tr><td>25万円（やや余裕）</td><td class="num">300万円</td><td class="num"><span class="highlight">7,500万円</span></td></tr>
+        <tr><td>30万円（ゆとり）</td><td class="num">360万円</td><td class="num">9,000万円</td></tr>
+        <tr><td>40万円（リッチ）</td><td class="num">480万円</td><td class="num">1.2億円</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 📊 図解2: 月生活費別 必要資産の比較 -->
+    <figure style="margin: 24px 0; text-align: center;">
+      <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; max-width:600px;" role="img" aria-label="月生活費別のFIRE必要資産額を比較する棒グラフ">
+        <rect width="600" height="280" fill="#FBF8F1"/>
+        <text x="300" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#1E3A5F">月生活費別 FIRE必要資産</text>
+        <text x="300" y="48" text-anchor="middle" font-size="11" fill="#8E97A3">年間支出の25倍がFIRE達成の目安</text>
+
+        <!-- 月15万 -->
+        <text x="155" y="80" text-anchor="end" font-size="12" font-weight="700" fill="#1E3A5F">月15万円</text>
+        <rect x="160" y="68" width="135" height="20" fill="#94A3B8" rx="3"/>
+        <text x="305" y="83" font-size="12" font-weight="700" fill="#1E2A38">4,500万円</text>
+
+        <!-- 月20万 -->
+        <text x="155" y="113" text-anchor="end" font-size="12" font-weight="700" fill="#1E3A5F">月20万円</text>
+        <rect x="160" y="100" width="180" height="22" fill="#1E3A5F" rx="3"/>
+        <text x="350" y="115" font-size="12" font-weight="700" fill="#1E2A38">6,000万円</text>
+
+        <!-- 月25万（強調） -->
+        <text x="155" y="146" text-anchor="end" font-size="12" font-weight="800" fill="#C56A4E">月25万円</text>
+        <rect x="160" y="133" width="225" height="22" fill="#C56A4E" rx="3"/>
+        <text x="395" y="148" font-size="12" font-weight="800" fill="#C56A4E">7,500万円</text>
+        <text x="465" y="148" font-size="11" fill="#C56A4E" font-weight="700">★ 現実的な目標</text>
+
+        <!-- 月30万 -->
+        <text x="155" y="179" text-anchor="end" font-size="12" font-weight="700" fill="#1E3A5F">月30万円</text>
+        <rect x="160" y="166" width="270" height="22" fill="#1E3A5F" rx="3"/>
+        <text x="440" y="181" font-size="12" font-weight="700" fill="#1E2A38">9,000万円</text>
+
+        <!-- 月40万 -->
+        <text x="155" y="212" text-anchor="end" font-size="12" font-weight="700" fill="#1E3A5F">月40万円</text>
+        <rect x="160" y="199" width="360" height="22" fill="#1E3A5F" opacity="0.7" rx="3"/>
+        <text x="530" y="214" font-size="12" font-weight="700" fill="#1E2A38">1.2億円</text>
+
+        <text x="300" y="256" text-anchor="middle" font-size="10" fill="#8E97A3">※ FIRE必要資産 = 年間支出（月生活費 × 12）× 25</text>
+      </svg>
+      <figcaption style="font-size: 12px; color: #8E97A3; margin-top: 8px;">図2: 月生活費別の必要資産（月25万円 = 7,500万円が中央値ゾーン）</figcaption>
+    </figure>
+
+    <p>多くのFIRE実現者は<strong>月20〜25万円の生活</strong>を目指しているため、<strong>6,000〜7,500万円が現実的な目標</strong>と言えます。</p>
+  </div>
+
+  <div class="cta-box">
+    <h3>あなたのFIRE達成年齢を計算</h3>
+    <p>現在の資産・月積立額・利回りを入力するだけで、モンテカルロ法でFIRE達成確率と中央値年齢を算出します。</p>
+    <a href="./" class="cta-btn">FIREシミュレーションへ</a>
+  </div>
+
+  <div class="card">
+    <h2>4. 4%ルールの注意点（日本人向け）</h2>
+    <p>4%ルールは強力な指標ですが、<strong>そのまま日本に適用するには注意が必要</strong>です。</p>
+
+    <h3>注意点①：米国データに基づいている</h3>
+    <p>Trinity Studyは米国市場のデータです。日本の場合：</p>
+    <ul>
+      <li>日経平均は1990年から30年以上低迷</li>
+      <li>日本国債の利回りは長期間ほぼゼロ</li>
+      <li>このため日本円ベースでは4%が達成困難な場合あり</li>
+    </ul>
+    <p>解決策：<strong>全世界株式・米国株式インデックスを中心に運用</strong>することで、米国データに近い結果を得られる。</p>
+
+    <h3>注意点②：暴落の連続発生</h3>
+    <p>4%ルールは「平均的な相場」を前提にしていますが、リーマンショック級の暴落が連続すると、たとえ4%取り崩しでも資産が大きく目減りします。</p>
+    <p>解決策：<strong>3.5%ルールに保守化</strong>する、またはリタイア初期は取り崩しを抑える「ガードレール戦略」を採用。</p>
+
+    <h3>注意点③：30年以上のリタイア期間</h3>
+    <p>Trinity Studyは「30年間」が前提。30代でFIREすると60年以上の運用期間になり、4%でも枯渇リスクが高まります。</p>
+    <p>解決策：<strong>3〜3.5%に保守化</strong>、または副業収入で取り崩しを減らす「サイドFIRE」を検討。</p>
+
+    <h3>注意点④：税金・健康保険料</h3>
+    <p>日本では、運用益に約20.315%の税金（NISA等の非課税口座を除く）と、リタイア後の国民健康保険料が発生します。</p>
+    <p>解決策：<strong>新NISA・iDeCoの非課税枠を最大限活用</strong>。</p>
+  </div>
+
+  <div class="card">
+    <h2>5. まとめ：4%ルール活用の3つのポイント</h2>
+    <ol>
+      <li><strong>必要資産 = 年間支出 × 25</strong>がFIREの目安</li>
+      <li>4%ルールは米国データ前提なので、<strong>全世界株などで補正</strong>が必要</li>
+      <li>長期FIREには<strong>3〜3.5%への保守化</strong>がおすすめ</li>
+    </ol>
+    <p>「自分の場合いつFIREできるのか？」を確率付きで知りたい方は、当サイトのFIREシミュレーターで試算してみてください。</p>
+
+    <div class="related">
+      <h4>関連ページ</h4>
+      <ul>
+        <li><a href="./">複利コンパス（計算ツール）</a></li>
+        <li><a href="blog-fukuri-no-chikara.html">複利の力とは？月1万円が30年でいくらになるか</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background: #FBF8F1; border: 1px solid #E2D9C7; border-radius: 12px; padding: 20px 24px; margin: 24px 0;">
+    <h4 style="margin: 0 0 12px; font-size: 14px; color: #1E3A5F;">📚 次に読む</h4>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-monte-carlo.html" style="color: #C56A4E; font-weight: 600;">モンテカルロ法を使った投資シミュレーションのススメ</a></li>
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-nisa-1000man.html" style="color: #C56A4E; font-weight: 600;">新NISAで1000万円つくるには何年かかる？</a></li>
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-sp500-vs-allcountry.html" style="color: #C56A4E; font-weight: 600;">S&P500 vs 全世界株式（オルカン）どっちを選ぶ？</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <p>
+      <a href="./">トップ</a> ・
+      <a href="about.html">運営者情報</a> ・
+      <a href="contact.html">お問い合わせ</a> ・
+      <a href="privacy.html">プライバシー</a>
+    </p>
+    <p>© 2026 複利コンパス編集部</p>
+  </footer>
+</div>
+</body>
+</html>

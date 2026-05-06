@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>複利の力とは？月1万円が30年でいくらになるかシミュレーションしてみた｜複利コンパス</title>
+<meta name="description" content="アインシュタインが「人類最大の発明」と呼んだ複利の力。月1万円・3万円・5万円を年利5%で30年運用すると、いくらになるのか。具体的な数字で複利の威力を可視化します。">
+<meta name="keywords" content="複利,複利の力,複利計算,つみたて,30年,投資シミュレーション">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FFFFFF' stroke='%231E3A5F' stroke-width='2'/%3E%3Cpolygon points='22,10 18,18 10,22 14,14' fill='%23C56A4E'/%3E%3Cpolygon points='22,10 16,16 18,18' fill='%231E3A5F'/%3E%3Ccircle cx='16' cy='16' r='1.8' fill='%231E3A5F'/%3E%3C/svg%3E">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="複利の力とは？月1万円が30年でいくらになるかシミュレーションしてみた">
+<meta property="og:description" content="アインシュタインが「人類最大の発明」と呼んだ複利の力。具体的な数字で威力を可視化します。">
+<meta property="og:image" content="og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
+    color: #1E2A38; background: #F7F3EC;
+    line-height: 1.9; font-size: 16px;
+  }
+  .page { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+  header.hero { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #E2D9C7; }
+  header.hero a { text-decoration: none; color: #1E3A5F; font-size: 14px; font-weight: 600; }
+  .article-tag {
+    display: inline-block; background: #C56A4E; color: white;
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-size: 30px; font-weight: 800; margin: 8px 0 14px;
+    line-height: 1.4; letter-spacing: 0.01em;
+  }
+  .meta { font-size: 12px; color: #8E97A3; }
+  .card {
+    background: white; border: 1px solid #E2D9C7; border-radius: 16px;
+    padding: 32px; margin-bottom: 18px;
+    box-shadow: 0 4px 12px rgba(30,42,56,.06);
+  }
+  h2 {
+    font-size: 22px; font-weight: 700; margin: 32px 0 14px;
+    padding-left: 14px; border-left: 4px solid #C56A4E;
+    color: #1E3A5F;
+  }
+  h3 {
+    font-size: 18px; font-weight: 700; margin: 24px 0 10px; color: #1E3A5F;
+  }
+  p { margin: 0 0 16px; color: #1E2A38; font-size: 15px; }
+  a { color: #C56A4E; }
+  a:hover { color: #A85540; }
+  blockquote {
+    background: #FBF8F1; border-left: 4px solid #1E3A5F;
+    padding: 14px 20px; margin: 16px 0;
+    font-style: italic; color: #4A5568; font-size: 14px;
+    border-radius: 4px;
+  }
+  table.calc {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    font-size: 14px;
+  }
+  table.calc th, table.calc td {
+    padding: 10px 12px; text-align: left;
+    border-bottom: 1px solid #EFE9DD;
+  }
+  table.calc thead th {
+    background: #1E3A5F; color: white;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
+  }
+  table.calc td.num { text-align: right; font-weight: 600; }
+  table.calc tbody tr:hover { background: #FBF8F1; }
+  .highlight {
+    background: linear-gradient(transparent 60%, #FDE68A 60%);
+    font-weight: 700;
+  }
+  .cta-box {
+    background: linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%);
+    color: white; padding: 28px 32px; border-radius: 16px;
+    margin: 24px 0; text-align: center;
+  }
+  .cta-box h3 { color: #FBC97A; margin: 0 0 10px; font-size: 18px; }
+  .cta-box p { color: rgba(255,255,255,0.9); margin: 0 0 16px; font-size: 14px; }
+  .cta-btn {
+    display: inline-block; background: #FBC97A; color: #1E3A5F;
+    padding: 12px 28px; border-radius: 10px;
+    text-decoration: none; font-weight: 700; font-size: 15px;
+    transition: all 0.18s;
+  }
+  .cta-btn:hover { background: #FFD89A; transform: translateY(-2px); color: #1E3A5F; }
+  ul, ol { padding-left: 24px; margin: 12px 0 16px; }
+  li { margin-bottom: 8px; color: #1E2A38; font-size: 15px; }
+  strong { color: #1E3A5F; }
+  footer { text-align: center; margin-top: 36px; font-size: 12px; color: #8E97A3; }
+  footer a { color: #4A5568; text-decoration: none; margin: 0 8px; }
+  footer a:hover { color: #1E3A5F; text-decoration: underline; }
+  .related {
+    background: #FBF8F1; border-radius: 12px; padding: 20px 24px; margin: 20px 0;
+  }
+  .related h4 { margin: 0 0 12px; font-size: 14px; color: #1E3A5F; }
+  .related ul { margin: 0; padding-left: 20px; }
+  .related li { font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <a href="./">🧭 計算ツールに戻る</a> ・ <a href="blog.html">📚 記事一覧</a>
+    <span class="article-tag">基礎知識</span>
+    <h1>複利の力とは？月1万円が30年でいくらになるかシミュレーションしてみた</h1>
+    <p class="meta">2026年5月5日 ・ 複利コンパス編集部</p>
+  </header>
+
+  <div class="card">
+    <p>「複利の力は人類最大の発明だ」――そう語ったとされるのは、アインシュタイン。</p>
+    <p>本記事では、複利のしくみを<strong>具体的な数字</strong>で見たうえで、「月1万円・3万円・5万円を30年積み立てたらいくらになるのか」を、当サイトの計算ツールでシミュレーションしてみます。</p>
+
+    <h2>1. 単利と複利のちがい</h2>
+    <p>まず基本から。<strong>単利</strong>とは「元本にしか利息がつかない」計算方法、<strong>複利</strong>とは「利息にも利息がつく」計算方法のことです。</p>
+
+    <h3>具体例：100万円を年利5%で30年運用</h3>
+    <table class="calc">
+      <thead><tr><th>方式</th><th class="num">10年後</th><th class="num">20年後</th><th class="num">30年後</th></tr></thead>
+      <tbody>
+        <tr><td>単利（毎年5万円ずつ増える）</td><td class="num">150万円</td><td class="num">200万円</td><td class="num">250万円</td></tr>
+        <tr><td>複利（雪だるま式）</td><td class="num">163万円</td><td class="num">265万円</td><td class="num"><span class="highlight">432万円</span></td></tr>
+      </tbody>
+    </table>
+    <p>30年後、複利は単利の<strong>1.7倍</strong>になります。これが「複利の力」です。時間が長くなればなるほど、その差は爆発的に広がります。</p>
+
+    <!-- 📊 図解1: 単利 vs 複利 の差をグラフ化 -->
+    <figure style="margin: 24px 0; text-align: center;">
+      <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; max-width:600px;" role="img" aria-label="単利と複利の30年後の資産差を比較するグラフ">
+        <!-- 背景 -->
+        <rect width="600" height="320" fill="#FBF8F1"/>
+        <!-- グリッド線 -->
+        <line x1="60" y1="50" x2="580" y2="50" stroke="#EFE9DD" stroke-width="1"/>
+        <line x1="60" y1="110" x2="580" y2="110" stroke="#EFE9DD" stroke-width="1"/>
+        <line x1="60" y1="170" x2="580" y2="170" stroke="#EFE9DD" stroke-width="1"/>
+        <line x1="60" y1="230" x2="580" y2="230" stroke="#EFE9DD" stroke-width="1"/>
+        <!-- Y軸ラベル -->
+        <text x="55" y="55" text-anchor="end" font-size="11" fill="#8E97A3">500万</text>
+        <text x="55" y="115" text-anchor="end" font-size="11" fill="#8E97A3">375万</text>
+        <text x="55" y="175" text-anchor="end" font-size="11" fill="#8E97A3">250万</text>
+        <text x="55" y="235" text-anchor="end" font-size="11" fill="#8E97A3">125万</text>
+        <line x1="60" y1="270" x2="580" y2="270" stroke="#1E2A38" stroke-width="2"/>
+        <!-- 単利のライン -->
+        <polyline points="60,254 120,242 200,224 280,206 360,194 460,182 580,164" stroke="#8E97A3" stroke-width="2.5" fill="none" stroke-dasharray="6 4"/>
+        <text x="555" y="158" font-size="12" fill="#8E97A3" font-weight="700">単利 250万</text>
+        <!-- 複利のライン -->
+        <polyline points="60,254 120,236 200,210 280,177 360,142 460,103 580,52" stroke="#C56A4E" stroke-width="3" fill="none"/>
+        <text x="555" y="48" font-size="13" fill="#C56A4E" font-weight="700">複利 432万</text>
+        <!-- データポイント -->
+        <circle cx="60" cy="254" r="4" fill="#1E3A5F"/>
+        <circle cx="200" cy="210" r="4" fill="#C56A4E"/>
+        <circle cx="360" cy="142" r="4" fill="#C56A4E"/>
+        <circle cx="580" cy="52" r="5" fill="#C56A4E"/>
+        <!-- X軸ラベル -->
+        <text x="60" y="290" text-anchor="middle" font-size="11" fill="#4A5568">0年</text>
+        <text x="200" y="290" text-anchor="middle" font-size="11" fill="#4A5568">10年</text>
+        <text x="360" y="290" text-anchor="middle" font-size="11" fill="#4A5568">20年</text>
+        <text x="580" y="290" text-anchor="middle" font-size="11" fill="#4A5568">30年</text>
+        <!-- タイトル -->
+        <text x="300" y="25" text-anchor="middle" font-size="14" font-weight="700" fill="#1E3A5F">100万円を30年運用：単利 vs 複利</text>
+        <!-- 差額を強調 -->
+        <line x1="540" y1="52" x2="540" y2="164" stroke="#C56A4E" stroke-width="1" stroke-dasharray="2 2"/>
+        <text x="535" y="110" text-anchor="end" font-size="11" fill="#C56A4E" font-weight="700">差額 +182万</text>
+      </svg>
+      <figcaption style="font-size:12px; color:#8E97A3; margin-top:8px;">図1：単利では直線的に増えるが、複利は時間が経つほど急激に増える</figcaption>
+    </figure>
+
+    <blockquote>
+      アインシュタインの言葉とされる名言：「複利は世界の8番目の不思議。理解する者はそれを稼ぎ、理解しない者はそれを払う。」
+    </blockquote>
+  </div>
+
+  <div class="card">
+    <h2>2. 月1万円・3万円・5万円つみたての結果</h2>
+    <p>では、実際に毎月コツコツ積み立てた場合の結果を見てみましょう。年利5%（インデックス投資の長期平均値）で30年間つみたてた場合のシミュレーション結果です。</p>
+
+    <table class="calc">
+      <thead>
+        <tr>
+          <th>月積立額</th>
+          <th class="num">元本合計</th>
+          <th class="num">最終資産</th>
+          <th class="num">運用益</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>月1万円</td>
+          <td class="num">360万円</td>
+          <td class="num">832万円</td>
+          <td class="num">+472万円</td>
+        </tr>
+        <tr>
+          <td>月3万円</td>
+          <td class="num">1,080万円</td>
+          <td class="num">2,496万円</td>
+          <td class="num">+1,416万円</td>
+        </tr>
+        <tr>
+          <td>月5万円</td>
+          <td class="num">1,800万円</td>
+          <td class="num"><span class="highlight">4,161万円</span></td>
+          <td class="num">+2,361万円</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><strong>月5万円を30年つみたてた場合、運用益だけで2,361万円</strong>。これは元本(1,800万円)を上回る金額で、まさに「お金がお金を生む」状態です。</p>
+
+    <!-- 📊 図解2: 月積立額別の最終資産バーチャート -->
+    <figure style="margin: 24px 0; text-align: center;">
+      <svg viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; max-width:600px;" role="img" aria-label="月1万・3万・5万円つみたての30年後の最終資産を比較する棒グラフ">
+        <rect width="600" height="360" fill="#FBF8F1"/>
+        <text x="300" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#1E3A5F">月積立額別 30年後の資産（年利5%）</text>
+
+        <!-- 月1万円バー（高さ：832/4161 ≈ 20%） -->
+        <g>
+          <rect x="80" y="220" width="100" height="60" fill="#1E3A5F" rx="4"/>
+          <rect x="80" y="280" width="100" height="20" fill="#7FA882" rx="0"/>
+          <rect x="80" y="280" width="100" height="20" fill="none"/>
+          <text x="130" y="210" text-anchor="middle" font-size="13" font-weight="800" fill="#1E3A5F">832万円</text>
+          <text x="130" y="320" text-anchor="middle" font-size="13" font-weight="700" fill="#1E2A38">月1万円</text>
+          <text x="130" y="338" text-anchor="middle" font-size="10" fill="#8E97A3">元本360万＋運用益472万</text>
+        </g>
+
+        <!-- 月3万円バー（高さ：2496/4161 ≈ 60%） -->
+        <g>
+          <rect x="240" y="120" width="100" height="100" fill="#1E3A5F" rx="4"/>
+          <rect x="240" y="220" width="100" height="80" fill="#7FA882" rx="0"/>
+          <text x="290" y="110" text-anchor="middle" font-size="13" font-weight="800" fill="#1E3A5F">2,496万円</text>
+          <text x="290" y="320" text-anchor="middle" font-size="13" font-weight="700" fill="#1E2A38">月3万円</text>
+          <text x="290" y="338" text-anchor="middle" font-size="10" fill="#8E97A3">元本1,080万＋運用益1,416万</text>
+        </g>
+
+        <!-- 月5万円バー（高さ：4161/4161 = 100%） -->
+        <g>
+          <rect x="400" y="50" width="100" height="120" fill="#1E3A5F" rx="4"/>
+          <rect x="400" y="170" width="100" height="130" fill="#C56A4E" rx="0"/>
+          <text x="450" y="40" text-anchor="middle" font-size="13" font-weight="800" fill="#C56A4E">4,161万円</text>
+          <text x="450" y="320" text-anchor="middle" font-size="13" font-weight="700" fill="#1E2A38">月5万円</text>
+          <text x="450" y="338" text-anchor="middle" font-size="10" fill="#8E97A3">元本1,800万＋運用益2,361万</text>
+        </g>
+
+        <line x1="40" y1="300" x2="560" y2="300" stroke="#1E2A38" stroke-width="1.5"/>
+
+        <!-- 凡例 -->
+        <rect x="60" y="55" width="14" height="10" fill="#1E3A5F"/>
+        <text x="80" y="64" font-size="11" fill="#4A5568">元本</text>
+        <rect x="120" y="55" width="14" height="10" fill="#7FA882"/>
+        <text x="140" y="64" font-size="11" fill="#4A5568">運用益</text>
+      </svg>
+      <figcaption style="font-size:12px; color:#8E97A3; margin-top:8px;">図2：月5万円積み立てると、運用益（オレンジ）が元本を上回る</figcaption>
+    </figure>
+
+    <h3>計算式（参考）</h3>
+    <p>月次複利の最終資産（FV）は次の式で求められます：</p>
+    <blockquote>
+      FV = 月積立額 × ((1 + 月利)^月数 − 1) ÷ 月利<br><br>
+      ※ 月利 = 年利 ÷ 12<br>
+      ※ 月数 = 年数 × 12
+    </blockquote>
+  </div>
+
+  <div class="card">
+    <h2>3. 「期間」と「利回り」、どちらが効く？</h2>
+    <p>同じ複利でも、<strong>期間が10年違うと結果が大きく変わります</strong>。月3万円を年利5%で運用した場合：</p>
+    <table class="calc">
+      <thead><tr><th>期間</th><th class="num">元本</th><th class="num">最終資産</th><th class="num">運用益</th></tr></thead>
+      <tbody>
+        <tr><td>10年</td><td class="num">360万</td><td class="num">466万</td><td class="num">+106万</td></tr>
+        <tr><td>20年</td><td class="num">720万</td><td class="num">1,233万</td><td class="num">+513万</td></tr>
+        <tr><td>30年</td><td class="num">1,080万</td><td class="num">2,496万</td><td class="num"><span class="highlight">+1,416万</span></td></tr>
+      </tbody>
+    </table>
+    <p>10年→20年で運用益は約5倍、20年→30年でさらに約3倍。<strong>後半になるほど雪だるま式に増える</strong>のが複利の特徴です。</p>
+
+    <!-- 📊 図解3: 元本と運用益の比率変化（雪だるま効果） -->
+    <figure style="margin: 24px 0; text-align: center;">
+      <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; max-width:600px;" role="img" aria-label="期間が長くなるほど運用益が元本を上回る様子を示すグラフ">
+        <rect width="600" height="280" fill="#FBF8F1"/>
+        <text x="300" y="25" text-anchor="middle" font-size="14" font-weight="700" fill="#1E3A5F">月3万円つみたて：期間別の元本 vs 運用益</text>
+
+        <!-- 10年: 元本360, 益106, 合計466 -->
+        <g transform="translate(100, 70)">
+          <text x="0" y="-5" text-anchor="middle" font-size="13" font-weight="700" fill="#1E2A38">10年後</text>
+          <rect x="-40" y="0" width="80" height="120" fill="#1E3A5F" rx="3"/>
+          <rect x="-40" y="120" width="80" height="35" fill="#7FA882" rx="0"/>
+          <text x="0" y="170" text-anchor="middle" font-size="11" font-weight="600" fill="#1E2A38">466万</text>
+          <text x="0" y="60" text-anchor="middle" font-size="10" fill="white">元本</text>
+          <text x="0" y="143" text-anchor="middle" font-size="10" fill="white">益</text>
+        </g>
+
+        <!-- 20年: 元本720, 益513, 合計1233 -->
+        <g transform="translate(300, 30)">
+          <text x="0" y="-5" text-anchor="middle" font-size="13" font-weight="700" fill="#1E2A38">20年後</text>
+          <rect x="-40" y="0" width="80" height="115" fill="#1E3A5F" rx="3"/>
+          <rect x="-40" y="115" width="80" height="80" fill="#7FA882" rx="0"/>
+          <text x="0" y="210" text-anchor="middle" font-size="11" font-weight="600" fill="#1E2A38">1,233万</text>
+          <text x="0" y="65" text-anchor="middle" font-size="10" fill="white">元本</text>
+          <text x="0" y="160" text-anchor="middle" font-size="10" fill="white">益</text>
+        </g>
+
+        <!-- 30年: 元本1080, 益1416, 合計2496 (益が元本を超える！) -->
+        <g transform="translate(500, 30)">
+          <text x="0" y="-5" text-anchor="middle" font-size="13" font-weight="700" fill="#C56A4E">30年後 ★</text>
+          <rect x="-40" y="0" width="80" height="92" fill="#1E3A5F" rx="3"/>
+          <rect x="-40" y="92" width="80" height="121" fill="#C56A4E" rx="0"/>
+          <text x="0" y="228" text-anchor="middle" font-size="12" font-weight="800" fill="#C56A4E">2,496万</text>
+          <text x="0" y="55" text-anchor="middle" font-size="10" fill="white">元本</text>
+          <text x="0" y="160" text-anchor="middle" font-size="10" fill="white">益(逆転)</text>
+        </g>
+
+        <text x="300" y="265" text-anchor="middle" font-size="11" fill="#C56A4E" font-weight="700">★ 30年で運用益が元本を超える「複利の臨界点」</text>
+      </svg>
+      <figcaption style="font-size:12px; color:#8E97A3; margin-top:8px;">図3：30年経つと、運用益が元本を上回る「雪だるま効果」が顕著に</figcaption>
+    </figure>
+
+    <p>つまり、<strong>始める時期が早ければ早いほど有利</strong>。同じ最終資産を目指す場合、早く始めれば月々の積立額は少なくて済みます。</p>
+  </div>
+
+  <div class="cta-box">
+    <h3>あなたの場合はいくら？</h3>
+    <p>複利コンパスなら、年齢・月積立額・利回りを入力するだけで、最終資産・必要積立額・必要期間を3秒で計算できます。</p>
+    <a href="./" class="cta-btn">無料で計算する</a>
+  </div>
+
+  <div class="card">
+    <h2>4. 注意点：複利のリスクと現実</h2>
+    <p>複利は強力ですが、「年利5%」は<strong>あくまで長期平均値</strong>です。実際の市場は大きく揺れ、年によってはマイナスになることもあります。</p>
+    <p>また、計算上の数字には以下が含まれていません：</p>
+    <ul>
+      <li><strong>税金</strong>：通常、運用益に約20.315%の税金がかかります（NISA/iDeCo口座は非課税）</li>
+      <li><strong>信託報酬</strong>：投資信託の場合、年0.1〜1.5%程度のコストが発生</li>
+      <li><strong>インフレ</strong>：物価上昇により、将来の1万円は今の1万円より価値が下がる</li>
+    </ul>
+    <p>このため、<strong>新NISAやiDeCoの非課税制度を最大限活用すること</strong>が、複利の力を実感する第一歩です。</p>
+  </div>
+
+  <div class="card">
+    <h2>5. まとめ</h2>
+    <ul>
+      <li>複利は「利息にも利息がつく」しくみで、長期になるほど威力が増す</li>
+      <li>月3万円を年利5%で30年運用すると、元本1,080万円が約2,496万円になる</li>
+      <li>後半10年で運用益が爆発的に増えるため、<strong>始めるのは早ければ早いほど有利</strong></li>
+      <li>新NISA/iDeCoの非課税制度を活用することで、複利の効果を最大化できる</li>
+    </ul>
+
+    <div class="related">
+      <h4>関連ページ</h4>
+      <ul>
+        <li><a href="./">複利コンパス（計算ツール）</a></li>
+        <li><a href="about.html">運営者情報</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background: #FBF8F1; border: 1px solid #E2D9C7; border-radius: 12px; padding: 20px 24px; margin: 24px 0;">
+    <h4 style="margin: 0 0 12px; font-size: 14px; color: #1E3A5F;">📚 次に読む</h4>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-3man-vs-5man.html" style="color: #C56A4E; font-weight: 600;">月3万円 vs 月5万円つみたて、20年後の差額シミュレーション</a></li>
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-shintaku-1percent.html" style="color: #C56A4E; font-weight: 600;">信託報酬1%の差で30年後に何百万円違う？</a></li>
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-dollar-cost.html" style="color: #C56A4E; font-weight: 600;">ドルコスト平均法は本当に有効？モンテカルロで検証</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <p>
+      <a href="./">トップ</a> ・
+      <a href="about.html">運営者情報</a> ・
+      <a href="contact.html">お問い合わせ</a> ・
+      <a href="privacy.html">プライバシー</a>
+    </p>
+    <p>© 2026 複利コンパス編集部</p>
+  </footer>
+</div>
+</body>
+</html>

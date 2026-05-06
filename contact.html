@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>お問い合わせ｜複利コンパス</title>
+<meta name="description" content="複利コンパスへのお問い合わせフォーム。ご意見・ご要望・不具合報告を受け付けています。">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FFFFFF' stroke='%231E3A5F' stroke-width='2'/%3E%3Cpolygon points='22,10 18,18 10,22 14,14' fill='%23C56A4E'/%3E%3Cpolygon points='22,10 16,16 18,18' fill='%231E3A5F'/%3E%3Ccircle cx='16' cy='16' r='1.8' fill='%231E3A5F'/%3E%3C/svg%3E">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
+    color: #1E2A38; background: #F7F3EC;
+    line-height: 1.8; font-size: 15px;
+  }
+  .page { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+  header.hero { text-align: center; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #E2D9C7; }
+  header.hero a { text-decoration: none; color: #1E3A5F; font-size: 14px; font-weight: 600; }
+  h1 { font-size: 28px; font-weight: 700; margin: 8px 0 6px; letter-spacing: 0.02em; }
+  .meta { font-size: 12px; color: #8E97A3; }
+  .card {
+    background: white; border: 1px solid #E2D9C7; border-radius: 16px;
+    padding: 32px; margin-bottom: 18px;
+    box-shadow: 0 4px 12px rgba(30,42,56,.06);
+  }
+  h2 { font-size: 18px; font-weight: 700; margin: 24px 0 12px; padding-bottom: 8px; border-bottom: 2px solid #C56A4E; color: #1E3A5F; }
+  h2:first-child { margin-top: 0; }
+  p { margin: 0 0 12px; color: #4A5568; font-size: 14px; }
+  a { color: #C56A4E; text-decoration: underline; }
+  .field { margin-bottom: 18px; }
+  .field label {
+    display: block; font-size: 13px; font-weight: 700; color: #1E3A5F; margin-bottom: 6px;
+  }
+  .field label .req { color: #C56A4E; margin-left: 4px; }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 11px 14px;
+    font-size: 14px; font-family: inherit; color: #1E2A38;
+    background: white; border: 1px solid #E2D9C7;
+    border-radius: 10px;
+    transition: all 0.15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: #1E3A5F;
+    box-shadow: 0 0 0 3px rgba(30,58,95,0.08);
+  }
+  .field textarea { min-height: 160px; resize: vertical; }
+  .submit-btn {
+    width: 100%; padding: 14px;
+    font-size: 15px; font-weight: 700; font-family: inherit;
+    color: white; background: #1E3A5F;
+    border: none; border-radius: 10px;
+    cursor: pointer; transition: all 0.18s;
+  }
+  .submit-btn:hover { background: #2D3E54; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(30,42,56,.15); }
+  .submit-btn:disabled { opacity: 0.5; cursor: wait; }
+  .note {
+    background: #FBF8F1; border-left: 3px solid #C56A4E;
+    padding: 14px 18px; border-radius: 8px;
+    font-size: 13px; color: #4A5568; line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .note strong { color: #1E3A5F; }
+  .success {
+    background: #DAE5D6; border-left: 3px solid #4F7752;
+    padding: 18px 20px; border-radius: 10px;
+    font-size: 14px; color: #2D5530;
+    display: none; margin-bottom: 18px;
+  }
+  .success.show { display: block; }
+  .error {
+    background: #F1D8D4; border-left: 3px solid #A8483F;
+    padding: 14px 18px; border-radius: 10px;
+    font-size: 13px; color: #A8483F;
+    display: none; margin-bottom: 18px;
+  }
+  .error.show { display: block; }
+  footer { text-align: center; margin-top: 36px; font-size: 12px; color: #8E97A3; }
+  footer a { color: #4A5568; text-decoration: none; margin: 0 8px; }
+  footer a:hover { color: #1E3A5F; text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <a href="./">← 複利コンパスに戻る</a>
+    <h1>お問い合わせ</h1>
+    <p class="meta">ご意見・ご要望・不具合報告などお気軽にどうぞ</p>
+  </header>
+
+  <div class="card">
+    <h2>お問い合わせフォーム</h2>
+
+    <div class="note">
+      <strong>📝 お知らせ</strong><br>
+      • 内容を確認次第、可能な限り返信いたします（個人運営のため返信に数日いただく場合があります）<br>
+      • 計算結果に関する個別アドバイスは投資助言業に該当する可能性があるため、お答えできません<br>
+      • 誹謗中傷・営業目的のメッセージにはお返事しません
+    </div>
+
+    <div class="success" id="successMsg">
+      ✅ お問い合わせを送信しました。ありがとうございます。
+    </div>
+    <div class="error" id="errorMsg">
+      ⚠️ 送信に失敗しました。時間をおいて再度お試しください。
+    </div>
+
+    <form id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+      <!-- Web3Forms Access Key（無料登録後、ご自身のキーに置換してください） -->
+      <input type="hidden" name="access_key" value="0e9b5009-1d23-4d0e-bca5-d18a877e04e7">
+      <input type="hidden" name="subject" value="複利コンパス お問い合わせ">
+      <input type="hidden" name="from_name" value="複利コンパス">
+      <input type="checkbox" name="botcheck" style="display:none;">
+
+      <div class="field">
+        <label for="name">お名前 <span class="req">*</span></label>
+        <input type="text" id="name" name="name" required placeholder="ニックネームでも可">
+      </div>
+
+      <div class="field">
+        <label for="email">メールアドレス <span class="req">*</span></label>
+        <input type="email" id="email" name="email" required placeholder="返信用のアドレス">
+      </div>
+
+      <div class="field">
+        <label for="category">お問い合わせ種別 <span class="req">*</span></label>
+        <select id="category" name="category" required>
+          <option value="">選択してください</option>
+          <option value="不具合報告">不具合報告</option>
+          <option value="機能要望">機能要望</option>
+          <option value="使い方の質問">使い方の質問</option>
+          <option value="計算ロジックの質問">計算ロジックの質問</option>
+          <option value="記事へのご意見">記事へのご意見</option>
+          <option value="広告・提携のお問い合わせ">広告・提携のお問い合わせ</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="message">お問い合わせ内容 <span class="req">*</span></label>
+        <textarea id="message" name="message" required placeholder="具体的な内容をご記入ください（不具合の場合は使用ブラウザ・OSも教えていただけると助かります）"></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">送信する</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>その他の連絡方法</h2>
+    <p>X (Twitter) アカウントからの連絡も受け付けています：<br>
+    <strong>準備中</strong>（公開後にこちらに記載）</p>
+  </div>
+
+  <footer>
+    <p>
+      <a href="./">トップ</a> ・
+      <a href="about.html">運営者情報</a> ・
+      <a href="contact.html">お問い合わせ</a> ・
+      <a href="privacy.html">プライバシー</a>
+    </p>
+    <p>© 2026 複利コンパス編集部</p>
+  </footer>
+</div>
+
+<script>
+const form = document.getElementById('contactForm');
+const successMsg = document.getElementById('successMsg');
+const errorMsg = document.getElementById('errorMsg');
+const submitBtn = document.getElementById('submitBtn');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  successMsg.classList.remove('show');
+  errorMsg.classList.remove('show');
+  submitBtn.disabled = true;
+  submitBtn.textContent = '送信中...';
+
+  const formData = new FormData(form);
+  const accessKey = formData.get('access_key');
+
+  // セットアップ前の場合のフォールバック
+  if (accessKey === 'YOUR_WEB3FORMS_ACCESS_KEY_HERE') {
+    errorMsg.textContent = '⚠️ お問い合わせフォームは現在準備中です。今しばらくお待ちください。';
+    errorMsg.classList.add('show');
+    submitBtn.disabled = false;
+    submitBtn.textContent = '送信する';
+    return;
+  }
+
+  try {
+    const response = await fetch(form.action, {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    });
+    const data = await response.json();
+    if (data.success) {
+      successMsg.classList.add('show');
+      form.reset();
+    } else {
+      throw new Error(data.message || '送信失敗');
+    }
+  } catch (err) {
+    errorMsg.textContent = '⚠️ ' + (err.message || '送信に失敗しました。時間をおいて再度お試しください。');
+    errorMsg.classList.add('show');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = '送信する';
+  }
+});
+</script>
+</body>
+</html>

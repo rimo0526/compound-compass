@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /sw.js
+
+Sitemap: https://compound-compass.mc-apps.workers.dev/sitemap.xml

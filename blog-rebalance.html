@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>リバランスとは？ポートフォリオを定期的に整える理由と実践方法｜複利コンパス</title>
+<meta name="description" content="投資のリバランスとは何か、なぜ必要か、いつ・どうやるかを徹底解説。年1回の定期リバランスから、機会主義型まで、初心者向けに具体的に説明。">
+<meta name="keywords" content="リバランス,ポートフォリオ,アセットアロケーション,株式,債券,投資">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FFFFFF' stroke='%231E3A5F' stroke-width='2'/%3E%3Cpolygon points='22,10 18,18 10,22 14,14' fill='%23C56A4E'/%3E%3Cpolygon points='22,10 16,16 18,18' fill='%231E3A5F'/%3E%3Ccircle cx='16' cy='16' r='1.8' fill='%231E3A5F'/%3E%3C/svg%3E">
+<meta property="og:type" content="article">
+<meta property="og:title" content="リバランスとは？ポートフォリオを定期的に整える理由と実践方法">
+<meta property="og:description" content="投資のリバランスを初心者向けに解説。なぜ必要か、いつやるか。">
+<meta property="og:image" content="og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif; color: #1E2A38; background: #F7F3EC; line-height: 1.9; font-size: 16px; }
+  .page { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+  header.hero { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #E2D9C7; }
+  header.hero a { text-decoration: none; color: #1E3A5F; font-size: 14px; font-weight: 600; }
+  .article-tag { display: inline-block; background: #C56A4E; color: white; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 14px; }
+  h1 { font-size: 28px; font-weight: 800; margin: 8px 0 14px; line-height: 1.4; letter-spacing: 0.01em; }
+  .meta { font-size: 12px; color: #8E97A3; }
+  .card { background: white; border: 1px solid #E2D9C7; border-radius: 16px; padding: 32px; margin-bottom: 18px; box-shadow: 0 4px 12px rgba(30,42,56,.06); }
+  h2 { font-size: 22px; font-weight: 700; margin: 32px 0 14px; padding-left: 14px; border-left: 4px solid #C56A4E; color: #1E3A5F; }
+  h2:first-child { margin-top: 0; }
+  h3 { font-size: 18px; font-weight: 700; margin: 24px 0 10px; color: #1E3A5F; }
+  p { margin: 0 0 16px; color: #1E2A38; font-size: 15px; }
+  a { color: #C56A4E; }
+  blockquote { background: #FBF8F1; border-left: 4px solid #1E3A5F; padding: 14px 20px; margin: 16px 0; color: #4A5568; font-size: 14px; border-radius: 4px; }
+  table.calc { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  table.calc th, table.calc td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #EFE9DD; }
+  table.calc thead th { background: #1E3A5F; color: white; font-size: 12px; font-weight: 700; }
+  table.calc td.num { text-align: right; font-weight: 600; }
+  .highlight { background: linear-gradient(transparent 60%, #FDE68A 60%); font-weight: 700; }
+  .cta-box { background: linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%); color: white; padding: 28px 32px; border-radius: 16px; margin: 24px 0; text-align: center; }
+  .cta-box h3 { color: #FBC97A; margin: 0 0 10px; font-size: 18px; }
+  .cta-box p { color: rgba(255,255,255,0.9); margin: 0 0 16px; font-size: 14px; }
+  .cta-btn { display: inline-block; background: #FBC97A; color: #1E3A5F; padding: 12px 28px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 15px; }
+  ul, ol { padding-left: 24px; margin: 12px 0 16px; }
+  li { margin-bottom: 8px; color: #1E2A38; font-size: 15px; }
+  strong { color: #1E3A5F; }
+  footer { text-align: center; margin-top: 36px; font-size: 12px; color: #8E97A3; }
+  footer a { color: #4A5568; text-decoration: none; margin: 0 8px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <a href="./">🧭 計算ツールに戻る</a> ・ <a href="blog.html">📚 記事一覧</a>
+    <span class="article-tag">基礎知識</span>
+    <h1>リバランスとは？ポートフォリオを定期的に整える理由と実践方法</h1>
+    <p class="meta">2026年5月7日 ・ 複利コンパス編集部</p>
+  </header>
+
+  <div class="card">
+    <p>「リバランスって何？やらなきゃダメ？」</p>
+    <p>長期投資の世界で、複利と並んで重要なのが「リバランス」です。理屈はシンプルですが、なぜ必要なのか、いつどうやるのかがピンと来ない人も多いはず。</p>
+    <p>本記事では、リバランスを「ポートフォリオの定期メンテナンス」と捉え、実践的に解説します。</p>
+
+    <h2>結論：年1回、5%ズレたら整える</h2>
+    <p>初心者向けにシンプルに言えば：</p>
+    <ol>
+      <li><strong>年1回（誕生月など）</strong>に資産配分を確認</li>
+      <li>当初の比率から<strong>5%以上ズレたら整える</strong></li>
+      <li><strong>新規入金で調整</strong>するのが税金的に有利</li>
+    </ol>
+    <p>これだけで「暴落で慌てて売る」「上昇相場で過熱する」という典型的な失敗を防げます。</p>
+  </div>
+
+  <div class="card">
+    <h2>1. リバランスとは何か</h2>
+    <p>リバランスとは、<strong>「目標とした資産配分（アセットアロケーション）からズレた比率を元に戻す作業」</strong>のことです。</p>
+
+    <h3>例：株50% / 債券50% で始めた場合</h3>
+    <p>1年後、株が好調で値上がりすると、ポートフォリオは：</p>
+    <ul>
+      <li>株が60%（増えた）</li>
+      <li>債券が40%（相対的に減った）</li>
+    </ul>
+    <p>この状態で何もしないと、<strong>当初想定より「株式リスク」が10%高い</strong>状態で運用していることになります。</p>
+
+    <p>リバランスでは、株を一部売って債券に振り替え、再び50:50に戻します。<strong>「相対的に値上がりしたものを売り、値下がりしたものを買う」</strong>ことで、自動的に「高く売って安く買う」が実現します。</p>
+  </div>
+
+  <div class="card">
+    <h2>2. なぜリバランスが必要か</h2>
+
+    <h3>理由①：リスクを管理できる</h3>
+    <p>放っておくと、好調な資産の比率が徐々に増え、ポートフォリオ全体のリスクが想定外に高まります。リバランスはリスクを「想定範囲内」に戻すブレーキです。</p>
+
+    <h3>理由②：自動的に逆張りできる</h3>
+    <p>「相対的に上がったものを売る」＝高値売却。「相対的に下がったものを買う」＝底値買い。これを<strong>感情を介さず自動的に</strong>やってくれるのがリバランスの威力です。</p>
+
+    <h3>理由③：暴落時に株を買える</h3>
+    <p>株が大きく下がった年は、ポートフォリオ内で債券比率が上がっている。リバランスは「債券を売って株を買う」というリーマンショック時の最悪心理を逆手に取った行動を機械的に実行します。</p>
+
+    <h3>リバランスのリターン効果</h3>
+    <p>過去30年の検証では、リバランスありとなしで<strong>年0.3〜0.5%の違い</strong>が出るとされます。30年複利で換算すると、最終資産が10〜15%変わるレベルです。</p>
+  </div>
+
+  <div class="card">
+    <h2>3. リバランスのタイミング3パターン</h2>
+
+    <h3>① 定期型（推奨）：年1回</h3>
+    <p>毎年同じ月（誕生月、年末、年度末など）に必ず実施。シンプルで忘れにくい。</p>
+    <ul>
+      <li>✅ ルーチン化でき、感情に左右されない</li>
+      <li>✅ 売買コスト・税金を抑えられる</li>
+      <li>❌ 急変動には対応できない</li>
+    </ul>
+
+    <h3>② 閾値型：5%ズレたら</h3>
+    <p>当初比率から5%（または10%）ズレた時に実施。市場の動きに連動。</p>
+    <ul>
+      <li>✅ 大きな変動に俊敏に対応</li>
+      <li>❌ 頻繁にチェックが必要</li>
+      <li>❌ 小刻みな売買でコスト増の可能性</li>
+    </ul>
+
+    <h3>③ ハイブリッド型：年1回チェック+5%ズレで実施</h3>
+    <p>年1回確認するが、ズレが小さければ何もしない（取引コスト節約）。プロも採用する現実的な方法。</p>
+
+    <table class="calc" style="margin-top:14px;">
+      <thead>
+        <tr><th>方法</th><th>頻度</th><th>難易度</th><th>向いている人</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>定期型</td><td>年1回</td><td>★☆☆</td><td>初心者・忙しい人</td></tr>
+        <tr><td>閾値型</td><td>変動次第</td><td>★★☆</td><td>マメに見られる人</td></tr>
+        <tr><td>ハイブリッド</td><td>年1回 or 大変動時</td><td>★★☆</td><td>万能・推奨</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>4. 具体的なリバランス手順</h2>
+
+    <h3>ステップ①：現在の資産配分を確認</h3>
+    <p>証券会社のサイト・アプリで、現在の各カテゴリ（株式 / 債券 / 不動産 / 現金）の比率を確認します。</p>
+
+    <h3>ステップ②：目標との差分を計算</h3>
+    <p>例：目標 株60% / 債券40%、現状 株70% / 債券30% → 株10%超過、債券10%不足</p>
+
+    <h3>ステップ③：調整方法を選ぶ</h3>
+    <p>2つの方法があります：</p>
+
+    <ul>
+      <li><strong>A. 売って買う方式</strong> — 株を売って債券を買う。NISAなら売却枠が消費される</li>
+      <li><strong>B. 新規入金で調整方式</strong> — 新規追加分をすべて債券に入れる。<strong>こちらが税効率良し</strong></li>
+    </ul>
+
+    <h3>ステップ④：実行</h3>
+    <p>新規入金で調整する場合、毎月の積立先を一時的に「不足してるカテゴリ」だけにすればOK。</p>
+  </div>
+
+  <div class="cta-box">
+    <h3>あなたのポートフォリオでシミュレーション</h3>
+    <p>株式・債券の比率と利回り設定を変えると、最終資産にどう影響するかをMonte Carloで確認できます。</p>
+    <a href="./" class="cta-btn">複利コンパスで試算 →</a>
+  </div>
+
+  <div class="card">
+    <h2>5. リバランスの注意点</h2>
+
+    <h3>注意①：頻繁にやりすぎない</h3>
+    <p>毎月リバランスすると売買コスト・税金で利益が削られます。年1回〜半年に1回が現実的。</p>
+
+    <h3>注意②：NISAでの売却は枠を消費する</h3>
+    <p>NISA枠で買った株を売ると、その分の枠が再利用できなくなります（ただし2024年新NISAは翌年再利用可能）。新規入金調整がベター。</p>
+
+    <h3>注意③：暴落時こそリバランスのチャンス</h3>
+    <p>「株が大暴落して怖い、しばらく様子見」 → これが最悪。リバランスのルールに従って、債券を売って株を買うべき場面です。感情を排除する仕組みを最初から作っておくこと。</p>
+
+    <h3>注意④：オール・カントリー1本ならリバランス不要</h3>
+    <p>S&P500やオルカン1本だけ持っている場合、リバランスは内部で勝手に行われます（指数自体が時価総額加重）。<a href="blog-sp500-vs-allcountry.html">関連記事：S&P500 vs オルカン</a></p>
+  </div>
+
+  <div class="card">
+    <h2>6. まとめ</h2>
+    <ul>
+      <li>リバランスは<strong>「ズレた比率を元に戻す」作業</strong></li>
+      <li><strong>年1回 or 5%ズレで実施</strong>（ハイブリッドが推奨）</li>
+      <li><strong>新規入金で調整</strong>すれば税金的に有利</li>
+      <li>「上がったものを売って下がったものを買う」を<strong>機械的に実行</strong>できる</li>
+      <li>過去30年データで年0.3〜0.5%のリターン改善効果</li>
+    </ul>
+    <p>リバランスは、地味だけど確実に効く投資の基礎技術です。投資を始めて1年経ったら、まず「自分の資産配分は当初通りか？」をチェックする習慣をつけましょう。</p>
+    <blockquote>
+      投資判断はご自身の責任で。本記事は概算と一般論であり、個別の銘柄や運用判断を保証するものではありません。
+    </blockquote>
+  </div>
+
+  <div style="background: #FBF8F1; border: 1px solid #E2D9C7; border-radius: 12px; padding: 20px 24px; margin: 24px 0;">
+    <h4 style="margin: 0 0 12px; font-size: 14px; color: #1E3A5F;">📚 次に読む</h4>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-sp500-vs-allcountry.html" style="color: #C56A4E; font-weight: 600;">S&P500 vs 全世界株式（オルカン）どっちを選ぶ？</a></li>
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-fukuri-no-chikara.html" style="color: #C56A4E; font-weight: 600;">「複利の力」とは？単利との違いを30年シミュで体感</a></li>
+      <li style="font-size: 14px; margin-bottom: 6px;"><a href="blog-fire-withdrawal.html" style="color: #C56A4E; font-weight: 600;">FIRE達成後の取り崩し術完全ガイド</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <p>
+      <a href="./">トップ</a> ・
+      <a href="blog.html">記事一覧</a> ・
+      <a href="about.html">運営者情報</a> ・
+      <a href="contact.html">お問い合わせ</a> ・
+      <a href="privacy.html">プライバシー</a>
+    </p>
+    <p style="margin-top:8px; font-size:11px;">© 2026 複利コンパス編集部 ／ 投資判断はご自身の責任で。</p>
+  </footer>
+</div>
+</body>
+</html>
